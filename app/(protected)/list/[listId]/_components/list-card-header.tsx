@@ -1,10 +1,12 @@
 "use client";
 
+import { Button } from "@/components/ui/button";
 import { CardHeader } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { dateToLocaleString } from "@/lib/date";
 import { cn } from "@/lib/utils";
 import { ListWithItemsAndTheme } from "@/types";
+import { Share } from "lucide-react";
 
 interface ListCardHeaderProps {
     data: ListWithItemsAndTheme;
@@ -29,8 +31,16 @@ export const ListCardHeader = ({
                     {data.theme.emoji}
                 </span>
                 <div className="flex flex-col flex-wrap items-start justify-center w-full">
-                    <h1 className="text-2xl font-semibold">{data.title}</h1>
-                    <span className="text-sm">{dateToLocaleString(data.createdAt)}</span>
+                    <div className="flex w-full items-center justify-between">
+                        <h1 className="text-xl sm:text-2xl font-semibold">{data.title}</h1>
+                        <Button
+                            size="icon"
+                            variant="ghost"
+                        >
+                            <Share />
+                        </Button>
+                    </div>
+                    <span className="text-sm">{dateToLocaleString(data.departAt || data.createdAt)}</span>
                     <div className="pr-1 flex items-center gap-x-3 w-full">
                         <Progress value={(totalCountChecked / data.items.length) * 100} />
                         <span className="text-xs font-normal w-[50px]">{totalCountChecked} / {data.items.length}</span>

@@ -28,15 +28,20 @@ const ListPage = async ({
         }
     });    
 
+    const themes = await db.theme.findMany();
+
+    const categories = await db.category.findMany({
+        where: {
+            userId: user?.id,
+        },
+    });
+
     const totalCountChecked = await db.item.count({
         where: {
             listId: params.listId,
             isChecked: true
         }
-    });
-
-    console.log(list);
-    
+    });    
 
     if (!list) {
         return (
@@ -45,7 +50,7 @@ const ListPage = async ({
     }
 
     return (
-        <ListCard data={list} totalCountChecked={totalCountChecked} />
+        <ListCard data={list} themes={themes} totalCountChecked={totalCountChecked} categories={categories} />
     );
 }
 

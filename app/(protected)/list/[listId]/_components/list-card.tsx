@@ -20,15 +20,7 @@ import {
     TabsList,
     TabsTrigger
 } from "@/components/ui/tabs";
-import {
-    Select,
-    SelectContent,
-    SelectGroup,
-    SelectItem,
-    SelectLabel,
-    SelectTrigger,
-    SelectValue
-} from "@/components/ui/select";
+
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -41,11 +33,20 @@ import { ListCardHeader } from "./list-card-header";
 import { ListSettingsForm } from "./list-settings-form";
 import { ListCardCategory } from "./list-card-category";
 import { ListCardItem } from "./list-card-item";
+import { Category, Theme } from "@prisma/client";
+import { FormInput } from "@/components/form/form-input";
+import { Label } from "@/components/ui/label";
+import { FormSubmit } from "@/components/form/form-submit";
+import { Plus } from "lucide-react";
+import { FormSelect } from "@/components/form/form-select";
+import { ItemForm } from "./item-form";
 
 
 interface ListCardProps {
     data: ListWithItemsThemeCategory;
     totalCountChecked: number;
+    themes: Theme[];
+    categories: Category[];
 }
 
 interface CategoriesMap {
@@ -55,6 +56,8 @@ interface CategoriesMap {
 export const ListCard = ({
     data,
     totalCountChecked,
+    themes,
+    categories,
 }: ListCardProps) => {
 
     const groupedItemsByCategory = data.items.reduce<CategoriesMap>((acc, item) => {
@@ -72,51 +75,22 @@ export const ListCard = ({
 
     const categoriesWithItems = Object.values(groupedItemsByCategory);
 
+    console.log(categoriesWithItems);
+    
+
     return (
-        <Card className="w-full">
+        <Card className="w-full flex flex-col mt-2">
             <ListCardHeader data={data} totalCountChecked={totalCountChecked} />
-            <CardContent>
+            <CardContent className="overflow-y-scroll max-h-full">
                 <Tabs defaultValue="list">
                     <TabsList className="grid w-full grid-cols-2">
                         <TabsTrigger value="list">List</TabsTrigger>
                         <TabsTrigger value="settings">Settings</TabsTrigger>
                     </TabsList>
-                    <TabsContent value="list">
+                    <TabsContent value="list" className="h-full flex flex-col overflow-y-scroll">
                         {/* Add new item */}
-                        {/* <Form>
-                            <form onSubmit={() => { }}>
-                                <div className="flex flex-row items-center gap-x-2 my-10">
-                                    <Input
-                                        className="border-none bg-stone-100"
-                                        placeholder="Hoodies"
-                                        type="text"
-                                    />
-                                    <Select>
-                                        <SelectTrigger className="bg-stone-100 border-none">
-                                            <SelectValue placeholder="Select a category" />
-                                        </SelectTrigger>
-                                        <SelectContent>
-                                            <SelectGroup>
-                                                <SelectLabel>Categories</SelectLabel>
-                                                <SelectItem value="1">Clothes</SelectItem>
-                                                <SelectItem value="2">Electronics</SelectItem>
-                                            </SelectGroup>
-                                        </SelectContent>
-                                    </Select>
-                                    <Input
-                                        className="border-none bg-stone-100 w-24"
-                                        placeholder="Quantity"
-                                        type="number"
-                                        min={0}
-                                    />
-                                    <Button size="icon" className="w-full">
-                                        <PlusIcon />
-                                    </Button>
 
-                                </div>
-                            </form>
-                        </Form> */}
-
+                        <ItemForm categories={categories} list={data} />
 
                         {/* List render (incl. items and categories) */}
                         <Accordion
@@ -126,17 +100,17 @@ export const ListCard = ({
                             {/* Map categories */}
                             {categoriesWithItems.map((category) => (
                                 <ListCardCategory key={category.id} category={category}>
-                                    <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-x-4">
+                                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-4">
                                         {category.items.map((item) => (
-                                            <ListCardItem key={item.id} item={item} />
+                                            <ListCardItem key={item.id} item={item} listId={data.id} />
                                         ))}
                                     </div>
                                 </ListCardCategory>
                             ))}
                         </Accordion>
                     </TabsContent>
-                    <TabsContent value="settings">
-                        <ListSettingsForm />
+                    <TabsContent value="settings" className="h-full flex flex-col overflow-y-scroll">
+                        <ListSettingsForm data={data} themes={themes} />
                     </TabsContent>
                 </Tabs>
 

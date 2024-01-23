@@ -11,7 +11,7 @@ import {
     PopoverTrigger
 } from "@/components/ui/popover";
 import { useAction } from "@/hooks/use-action";
-import { createBoard } from "@/actions/create-board";
+import { createList } from "@/actions/create-list";
 
 import { FormInput } from "./form-input";
 import { FormSubmit } from "./form-submit";
@@ -36,7 +36,7 @@ export const FormPopover = ({
     const router = useRouter();
     const closeRef = useRef<ElementRef<"button">>(null);
 
-    const { execute, fieldErrors } = useAction(createBoard, {
+    const { execute, fieldErrors } = useAction(createList, {
         onSuccess: (data) => {
             toast.success("Board created!");
             closeRef.current?.click();

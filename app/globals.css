@@ -8,6 +8,7 @@ body,
   height: 100%;
 }
 
+
 @layer base {
   :root {
     --background: 0 0% 100%;
@@ -45,7 +46,7 @@ body,
     --background: 20 14.3% 4.1%;
     --foreground: 60 9.1% 97.8%;
  
-    --card: 20 14.3% 4.1%;
+    --card: 24 10% 10%;
     --card-foreground: 60 9.1% 97.8%;
  
     --popover: 20 14.3% 4.1%;

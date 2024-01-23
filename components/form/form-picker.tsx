@@ -1,114 +1,92 @@
 "use client";
 
-import Link from "next/link";
-import { useEffect, useState } from "react";
+import { Theme } from "@prisma/client";
+import { useState } from "react";
 import { useFormStatus } from "react-dom";
-import { Check, Loader2 } from "lucide-react";
-import Image from "next/image";
+import { Check } from "lucide-react";
 
-import { unsplash } from "@/lib/unsplash";
 import { cn } from "@/lib/utils";
-import { defaultImages } from "@/constants/images";
 
 import { FormErrors } from "./form-errors";
+import { Label } from "@/components/ui/label";
 
 interface FormPickerProps {
     id: string;
     errors?: Record<string, string[] | undefined>;
+    data: Theme[];
+    defaultValue?: string;
+    size?: "default" | "sm";
+    label?: string;
 }
 
 export const FormPicker = ({
     id,
-    errors
+    errors,
+    data,
+    defaultValue,
+    size,
+    label,
 }: FormPickerProps) => {
     const { pending } = useFormStatus();
 
-    const [images, setImages] = useState<Array<Record<string, any>>>(defaultImages);
-    const [isLoading, setIsLoading] = useState(true);
-    const [selectedImageId, setSelectedImageId] = useState(null);
-
-    useEffect(() => {
-        const fetchImages = async () => {
-            try {
-                const result = await unsplash.photos.getRandom({
-                    collectionIds: ["317099"],
-                    count: 9,
-                });
-
-                if (result && result.response) {
-                    const newImages = (result.response as Array<Record<string, any>>)
-                    setImages(newImages);
-                } else {
-                    console.error("Failed to get images from Unsplash");
-
-                }
-            } catch (error) {
-                console.log(error);
-                setImages(defaultImages);
-            } finally {
-                setIsLoading(false);
-            }
-        }
-
-        fetchImages();
-    }, []);
-
-    if (isLoading) {
-        return (
-            <div className="p-6 flex items-center justify-center">
-                <Loader2 className="h-6 w-6 text-sky-700 animate-spin" />
-            </div>
-        )
-    }
+    const [themes, setThemes] = useState<Array<Theme>>(data);
+    const [selectedThemeId, setSelectedThemeId] = useState<string | null>(defaultValue || null);
 
     return (
         <div className="relative">
-            <div className="grid grid-cols-3 gap-2 mb-2">
-                {images.map((image) => (
-                    <div
-                        key={image.id}
-                        className={cn(
-                            "cursor-pointer relative aspect-video group hover:opacity-75 transition bg-muted",
-                            pending && "opacity-50 hover:opacity-50 cursor-auto"
-                        )}
-                        onClick={() => {
-                            if (pending) return;
-                            setSelectedImageId(image.id);
-                        }}
-                    >
-                        <input
-                            type="radio"
-                            id={id}
-                            name={id}
-                            className="hidden"
-                            checked={selectedImageId === image.id}
-                            disabled={pending}
-                            value={`${image.id}|${image.urls.thumb}|${image.urls.full}|${image.links.html}|${image.user.name}`}
-                        />
-                        <Image
-                            fill
-                            alt="Unsplash image"
-                            className="object-cover rounded-sm"
-                            src={image.urls.thumb}
-                        />
-                        {selectedImageId === image.id && (
-                            <div className="absolute inset-y-0 h-full w-full bg-black/30 flex items-center justify-center rounded-sm">
-                                <Check className="h-4 w-4 text-white" />
-                            </div>
-                        )}
-                        <Link
-                            href={image.links.html}
-                            target="_blank"
-                            className="opacity-0 group-hover:opacity-100 absolute bottom-0 w-full text-[10px] truncate text-white hover:underline p-1 bg-black/50"
+            {label && (
+                <Label className="text-xs">
+                    {label}
+                </Label>
+            )}
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-x-4">
+
+                {themes?.map((theme) => (
+                    <div className="flex flex-col justify-center items-center gap-y-2">
+                        <div
+                            key={theme.id}
+                            className={cn(
+                                "cursor-pointer relative aspect-square group hover:opacity-75 transition",
+                                pending && "opacity-50 hover:opacity-50 cursor-auto rounded-full"
+                            )}
+                            onClick={() => {
+                                if (pending) return;
+                                setSelectedThemeId(theme.id);
+                            }}
                         >
-                            {image.user.name}
-                        </Link>
+                            <input
+                                type="radio"
+                                id={id}
+                                name={id}
+                                hidden
+                                checked={selectedThemeId === theme.id}
+                                disabled={pending}
+                                value={theme.id}
+                                className="hidden"
+                            />
+                            <span
+                                className={cn(
+                                    "text-6xl rounded-full h-full flex items-center justify-center w-full p-4 shadow-xl",
+                                    `${theme.emojiBackground} ${size === "sm" && "text-3xl p-3"}`
+                                )}
+                            >
+                                {theme.emoji}
+                            </span>
+                            {selectedThemeId === theme.id && (
+                                <div className="absolute inset-y-0 h-full w-full bg-stone-700/20 flex items-center justify-center rounded-full">
+                                    <Check className="h-4 w-4 text-white" />
+                                </div>
+                            )}
+                        </div>
+                        <span className="text-stone-500/80 dark:text-stone-100 text-sm">
+                            {theme.title}
+                        </span>
                     </div>
                 ))}
 
             </div>
             <FormErrors
-                id="image"
+                id="theme"
                 errors={errors}
             />
         </div>

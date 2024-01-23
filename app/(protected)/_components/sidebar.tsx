@@ -15,94 +15,53 @@ import { ThemeToggle } from "@/components/theme-toggle"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { FaUser } from "react-icons/fa"
 import { useCurrentUser } from "@/hooks/use-current-user"
+import { List, Theme } from "@prisma/client";
+import { ListItem } from "../dashboard/_components/list-item";
+import { Home, LayoutDashboard } from "lucide-react";
+import { ListWithItemsAndTheme } from "@/types";
+import { ListFormDrawer } from "../dashboard/_components/list-form-drawer";
 
+interface SidebarProps {
+    lists: ListWithItemsAndTheme[],
+    themes: Theme[],
+    showLogo?: boolean
+}
 
-export const Sidebar = () => {
+export const Sidebar = ({
+    lists,
+    themes,
+    showLogo,
+}: SidebarProps) => {
     const user = useCurrentUser();
 
     return (
-        <div className="h-full bg-stone-200 rounded-lg p-2 w-full shadow-sm overflow-y-hidden">
-            <div className="flex items-center">
-                <Button variant="ghost" className="bg-stone-300/70 py-5 w-full font-bold">
-                    <span className="text-2xl pr-1">🌴</span>
-                    travelsize
-                </Button>
-            </div>
+        <div className="h-full bg-stone-200 dark:bg-stone-800 rounded-lg p-2 w-full shadow-sm overflow-y-hidden">
+            {showLogo && (
+                <div className="flex items-center">
+                    <Button variant="ghost" className="bg-stone-300/70 py-5 w-full font-bold" asChild>
+                        <Link href="/dashboard">
+                            <span className="text-2xl pr-1">🌴</span>
+                            <span>travelsize</span>
+                        </Link>
+                    </Button>
+                </div>
+            )}
 
             {/* Lists & settings */}
+
             <div className="flex flex-col justify-between h-full pt-5 pb-10">
                 {/* Lists */}
                 <div>
-                    <div className="font-medium text-xs flex items-center mb-1">
+                    <div className="font-medium text-xs flex justify-between items-center mb-1">
                         <span className="pl-4">
                             Lists
                         </span>
-                        <Button asChild type="button" size="icon" variant="ghost" className="ml-auto">
-                            <Link href="/list/abc">
-                                <PlusIcon
-                                    className="h-4 w-4"
-                                />
-                            </Link>
-                        </Button>
+                        <ListFormDrawer themes={themes} triggerVariant={"ghost"} />
                     </div>
                     <div className="flex flex-col gap-y-2">
-                        <Button
-                            variant="ghost"
-                            className="space-y-4 w-full flex items-center justify-start p-1.5 bg-stone-300/80 h-auto"
-                            asChild
-                        >
-                            <Link href="/list/abc">
-                                <div className="flex flex-col w-full gap-y-1">
-                                    <div className="flex items-center gap-x-2">
-                                        <span className="text-xl rounded-full bg-sky-100 flex items-center justify-center w-7 h-7">🎿</span>
-                                        <span>Kungsberget</span>
-                                    </div>
-                                    <div className="px-1 flex items-center gap-x-2">
-                                        <Progress value={20} />
-                                        <span className="text-xs font-normal">6/30</span>
-                                    </div>
-
-                                </div>
-                            </Link>
-                        </Button>
-                        <Button
-                            variant="ghost"
-                            className="space-y-4 w-full flex items-center justify-start p-1.5 h-auto"
-                            asChild
-                        >
-                            <Link href="/list/abc">
-                                <div className="flex flex-col w-full gap-y-1">
-                                    <div className="flex items-center gap-x-2">
-                                        <span className="text-xl rounded-full bg-emerald-50 flex items-center justify-center w-7 h-7">🌴</span>
-                                        <span>Frankrike</span>
-                                    </div>
-                                    <div className="px-1 flex items-center gap-x-2">
-                                        <Progress value={67} />
-                                        <span className="text-xs font-normal">20/30</span>
-                                    </div>
-
-                                </div>
-                            </Link>
-                        </Button>
-                        <Button
-                            variant="ghost"
-                            className="space-y-4 w-full flex items-center justify-start p-1.5 h-auto"
-                            asChild
-                        >
-                            <Link href="/list/abc">
-                                <div className="flex flex-col w-full gap-y-1">
-                                    <div className="flex items-center gap-x-2">
-                                        <span className="text-xl rounded-full bg-amber-50 flex items-center justify-center w-7 h-7">🐑</span>
-                                        <span>Östhammar</span>
-                                    </div>
-                                    <div className="px-1 flex items-center gap-x-2">
-                                        <Progress value={60} />
-                                        <span className="text-xs font-normal">6/10</span>
-                                    </div>
-
-                                </div>
-                            </Link>
-                        </Button>
+                        {lists?.length > 0 ? lists.map((list) => (
+                            <ListItem key={list.id} list={list} size="sm" />
+                        )) : <h1>none...</h1>}
                     </div>
                 </div>
                 {/* Settings */}
@@ -116,12 +75,13 @@ export const Sidebar = () => {
                             className="border-none"
                         >
                             <AccordionTrigger
-                                className="flex items-center gap-x-2 p-1.5 text-neutral-700 rounded-md hover:bg-neutral-500/10 transition text-start no-underline hover:no-underline"
+                                className="flex items-center gap-x-2 p-1.5 rounded-md hover:bg-neutral-500/10 transition text-start no-underline hover:no-underline"
                             >
                                 <div className="flex items-center gap-x-2">
-                                    <span className="text-xl rounded-full bg-stone-100/80 flex items-center justify-center w-7 h-7">
+                                    <span className="text-xl rounded-full bg-stone-100/80 dark:bg-stone-500/80 flex items-center justify-center w-7 h-7">
                                         <IoIosCog />
-                                    </span>                                    <span className="font-medium text-sm">
+                                    </span>
+                                    <span className="text-sm">
                                         Settings
                                     </span>
                                 </div>
@@ -138,7 +98,7 @@ export const Sidebar = () => {
                                     <Link href="/settings">
                                         <Avatar className="h-5 w-5">
                                             <AvatarImage src={user?.image || ""} />
-                                            <AvatarFallback className="bg-stone-100/80">
+                                            <AvatarFallback className="bg-stone-100/80 dark:bg-stone-500/80">
                                                 <FaUser />
                                             </AvatarFallback>
                                         </Avatar>
@@ -158,7 +118,7 @@ export const Sidebar = () => {
                             <div>
                                 <div className="flex flex-col w-full gap-y-1">
                                     <div className="flex items-center gap-x-2">
-                                        <span className="text-xl rounded-full bg-stone-100/80 flex items-center justify-center w-7 h-7">
+                                        <span className="text-xl rounded-full bg-stone-100/80 dark:bg-stone-500/80 flex items-center justify-center w-7 h-7">
                                             <ExitIcon />
                                         </span>
 

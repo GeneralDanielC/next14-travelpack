@@ -2,7 +2,9 @@ import { ErrorCard } from "@/components/auth/error-card";
 
 const AuthErrorPage = () => {
     return (
-        <ErrorCard />
+        <div className="h-full flex justify-center items-center w-full">
+            <ErrorCard />
+        </div>
     );
 }
 

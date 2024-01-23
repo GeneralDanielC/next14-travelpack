@@ -19,6 +19,8 @@ interface FormInputProps {
     className?: string;
     defaultValue?: string;
     onBlur?: () => void;
+    min?: number;
+    max?: number;
 }
 
 export const FormInput = forwardRef<HTMLInputElement, FormInputProps>(({
@@ -31,17 +33,19 @@ export const FormInput = forwardRef<HTMLInputElement, FormInputProps>(({
     errors,
     className,
     defaultValue = "",
-    onBlur
+    onBlur,
+    min,
+    max,
 }, ref) => {
     const { pending } = useFormStatus();
 
     return (
-        <div className="space-y-2">
+        <div className="space-y-2 w-full">
             <div className="space-y-1">
                 {label ? (
                     <Label
                         htmlFor={id}
-                        className="text xs font-semibold text-neutral-700"
+                        className="text-xs font-semibold"
                     >
                         {label}
                     </Label>
@@ -57,10 +61,12 @@ export const FormInput = forwardRef<HTMLInputElement, FormInputProps>(({
                     type={type}
                     disabled={pending}
                     className={cn(
-                        "text-sm px-2 py-1 h-7",
+                        "text-sm px-4 py-1",
                         className
                     )}
                     aria-describedby={`${id}-error`}
+                    min={min}
+                    max={max}
                 />
             </div>
             <FormErrors

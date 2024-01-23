@@ -33,75 +33,179 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { useCurrentUser } from "@/hooks/use-current-user";
-import { FormError } from "@/components/form/form-errors";
+import { FormError } from "@/components/form-error";
 import { FormSuccess } from "@/components/form-success";
-import { UserRole } from "@prisma/client";
+import { List, Theme, UserRole } from "@prisma/client";
+import { FormInput } from "@/components/form/form-input";
+import { FormSubmit } from "@/components/form/form-submit";
+import { FormDatePicker } from "@/components/form/form-date-picker";
+import { FormPicker } from "@/components/form/form-picker";
 
-export const ListSettingsForm = () => {
-    const user = useCurrentUser();
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 
-    const { update } = useSession();
-    const [error, setError] = useState<string | undefined>();
-    const [success, setSuccess] = useState<string | undefined>();
-    const [isPending, startTransition] = useTransition();
+import { useAction } from "@/hooks/use-action";
+import { updateList } from "@/actions/update-list";
+import { toast } from "sonner";
+import { deleteList } from "@/actions/delete-list";
+import { copyList } from "@/actions/copy-list";
 
-    const form = useForm<z.infer<typeof ListSchema>>({
-        resolver: zodResolver(ListSchema),
-        defaultValues: {
-            title: undefined,
-        }
-    });
+interface ListSettingsFormProps {
+  data: List;
+  themes: Theme[];
+}
 
-    const onSubmit = (values: z.infer<typeof ListSchema>) => {
-        startTransition(() => {
-            // settings(values)
-            //     .then((data) => {
-            //         if (data.error) {
-            //             setError(data.error);
-            //         }
-            //         if (data.success) {
-            //             update();
-            //             setSuccess(data.success)
-            //         }
-            //     })
-            //     .catch(() => setError("Something went wrong!"));
-        });
+export const ListSettingsForm = ({
+  data,
+  themes,
+}: ListSettingsFormProps) => {
+  const user = useCurrentUser();
+  const [date, setDate] = useState<Date | null | undefined>(data.departAt);
+
+  const { execute: executeUpdate, fieldErrors } = useAction(updateList, {
+    onSuccess: (data) => {
+      toast.success(`List "${data.title}" updated.`);
+    },
+    onError: (error) => {
+      toast.error(error);
     }
+  });
 
-    return (
-        <Form {...form}>
-            <form
-                className="space-y-6"
-                onSubmit={form.handleSubmit(onSubmit)}
-            >
-                <div className="space-y-4">
-                    <FormField
-                        control={form.control}
-                        name="title"
-                        render={({ field }) => (
-                            <FormItem>
-                                <FormLabel>List Title</FormLabel>
-                                <FormControl>
-                                    <Input
-                                        {...field}
-                                        placeholder="Name of the list"
-                                        disabled={isPending}
-                                    />
-                                </FormControl>
-                                <FormMessage />
-                            </FormItem>
-                        )}
-                    />
-                </div>
-                <FormError message={error} />
-                <FormSuccess message={success} />
-                <Button
-                    disabled={isPending}
-                    type="submit"
-                >
-                    Save
-                </Button>
-            </form>
-        </Form>
-    );
+  const { execute: executeCopy } = useAction(copyList, {
+    onSuccess: (data) => {
+      toast.success(`List copied.`);
+    },
+    onError: (error) => {
+      toast.error(error);
+    }
+  });
+
+  const { execute: executeDelete } = useAction(deleteList, {
+    onSuccess: (data) => {
+      toast.success(`List "${data.title}" deleted.`);
+    },
+    onError: (error) => {
+      toast.error(error);
+    }
+  });
+
+  const handleUpdate = (formData: FormData) => {
+    const title = formData.get("title") as string;
+    const themeId = formData.get("themeId") as string;
+    const departAt = date as Date;
+
+    executeUpdate({
+      title,
+      themeId,
+      departAt,
+      listId: data.id,
+    });
+  }
+
+  const handleCopy = (formData: FormData) => {
+    const userId = formData.get("userId") as string;
+    const listId = formData.get("listId") as string;
+
+    executeCopy({
+      userId,
+      listId,
+    });
+  }
+
+  const handleDelete = (formData: FormData) => {
+    const listId = formData.get("listId") as string;
+
+    executeDelete({
+      listId,
+    });
+  }
+
+  return (
+    <div className="flex flex-col space-y-3 h-full">
+      <form
+        action={handleUpdate}
+        className="space-y-3"
+      >
+        <FormInput
+          id="title"
+          label="List Title"
+          type="text"
+          className="w-full border-none bg-stone-100 dark:bg-stone-800"
+          defaultValue={data.title}
+          errors={fieldErrors}
+        />
+        <FormDatePicker
+          id="departAt"
+          date={date || undefined}
+          setDate={setDate}
+          label="Departure Date"
+          className="border-none bg-stone-100 dark:bg-stone-800"
+        />
+        <FormPicker
+          id="themeId"
+          data={themes}
+          defaultValue={data.themeId}
+          size="sm"
+          label="Theme"
+          errors={fieldErrors}
+        />
+        <input
+          hidden
+          id="listId"
+          name="listId"
+          value={data.id}
+        />
+        <FormSubmit
+          className="w-full"
+          variant="outline"
+        >
+          Save
+        </FormSubmit>
+      </form>
+      <form action={handleCopy}>
+        <input
+          hidden
+          id="listId"
+          name="listId"
+          value={data.id}
+        />
+        <input
+          hidden
+          id="userId"
+          name="userId"
+          value={data.userId}
+        />
+        <FormSubmit
+          variant="ghost"
+          className="w-full flex items-center"
+        >
+          Copy
+        </FormSubmit>
+      </form>
+      <form action={handleDelete}>
+        <input
+          hidden
+          id="listId"
+          name="listId"
+          value={data.id}
+        />
+        <FormSubmit
+          variant="ghost"
+          className="text-rose-500 font-extrabold w-full hover:bg-rose-500/10 hover:text-rose-500 hover:border-rose-500/70 hover:border flex items-center"
+        >
+          Delete
+        </FormSubmit>
+      </form>
+    </div>
+
+  );
 }

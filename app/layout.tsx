@@ -1,11 +1,13 @@
 
-import type { Metadata } from 'next'
-import { Nunito } from 'next/font/google'
-import './globals.css'
-import { ThemeProvider } from '@/components/theme-provider';
+import { Toaster } from 'sonner';
+import type { Metadata, Viewport } from 'next';
+import { Nunito } from 'next/font/google';
 import { SessionProvider } from 'next-auth/react';
-import { auth } from '@/auth';
 
+import { auth } from '@/auth';
+import { ThemeProvider } from '@/components/theme-provider';
+
+import './globals.css'
 
 const nunito = Nunito({
   subsets: ['latin'],
@@ -21,6 +23,12 @@ const nunito = Nunito({
     "1000",
   ]
 })
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 1,
+}
 
 export const metadata: Metadata = {
   title: 'Create Next App',
@@ -38,13 +46,18 @@ export default async function RootLayout({
     <SessionProvider session={session}>
 
       <html lang="en">
-        <body className={`${nunito.className} bg-neutral-100 dark:bg-stone-900`}>
+        <body className={
+          `${nunito.className} 
+          bg-neutral-100 dark:bg-stone-800`
+        }>
+          {/* bg-gradient-to-br from-stone-100 to-stone-300 dark:bg-stone-900 */}
           <ThemeProvider
             attribute='class'
             defaultTheme='system'
             enableSystem
             disableTransitionOnChange
           >
+            <Toaster />
             {children}
           </ThemeProvider>
         </body>
