@@ -13,6 +13,7 @@ import { Category, Item, List, Theme } from "@prisma/client";
 import { useState } from "react";
 import { useFormStatus } from "react-dom";
 import { FormErrors } from "./form-errors";
+import { Label } from "@/components/ui/label";
 
 interface FormSelectProps {
     id: string;
@@ -21,6 +22,8 @@ interface FormSelectProps {
     className?: string;
     placeholder?: string;
     errors?: Record<string, string[] | undefined>;
+    label?: string;
+    defaultValue?: string;
 }
 
 export const FormSelect = ({
@@ -30,16 +33,24 @@ export const FormSelect = ({
     className,
     placeholder,
     errors,
+    label,
+    defaultValue,
 }: FormSelectProps) => {
     const { pending } = useFormStatus();
-    const [selectDataId, setSelectedDataId] = useState<string | undefined>();
+    const [selectDataId, setSelectedDataId] = useState<string | undefined>(defaultValue);
 
     return (
         <>
             <Select
                 onValueChange={(e) => setSelectedDataId(e)}
                 disabled={pending}
+                defaultValue={selectDataId}
             >
+                {label && (
+                    <Label htmlFor={id} className="text-xs font-semibold w-full">
+                        {label}
+                    </Label>
+                )}
                 <SelectTrigger className={className}>
                     <SelectValue placeholder={placeholder} />
                 </SelectTrigger>
@@ -49,7 +60,7 @@ export const FormSelect = ({
                             <SelectLabel>{selectLabel}</SelectLabel>
                         )}
                         {data.map((d) => (
-                            <SelectItem value={d.id}>{d.name}</SelectItem>
+                            <SelectItem value={d.id}>{d.displayName}</SelectItem>
                         ))}
 
                     </SelectGroup>

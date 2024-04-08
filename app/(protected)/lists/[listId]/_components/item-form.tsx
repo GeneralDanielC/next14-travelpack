@@ -4,6 +4,7 @@ import { createItem } from "@/actions/create-item";
 import { FormInput } from "@/components/form/form-input"
 import { FormSelect } from "@/components/form/form-select"
 import { FormSubmit } from "@/components/form/form-submit"
+import { Separator } from "@/components/ui/separator";
 import { useAction } from "@/hooks/use-action";
 import { Category, List } from "@prisma/client"
 import { Plus } from "lucide-react"
@@ -33,14 +34,18 @@ export const ItemForm = ({
 
     const handleSubmit = (formData: FormData) => {
         const title = formData.get("title") as string;
-        const categoryId = formData.get("categoryId") as string;
-        const quantity = formData.get("quantity") as string;
+        // const categoryId = formData.get("categoryId") as string;
+        // const quantity = formData.get("quantity") as string;
         const listId = formData.get("listId") as string;
+
+        // if (quantity === "") {
+        //     quantity 
+        // }
 
         execute({
             title,
-            categoryId,
-            quantity: parseInt(quantity),
+            // categoryId,
+            // quantity: quantity === "" ? 0 : parseInt(quantity),
             listId
         });
     }
@@ -50,23 +55,16 @@ export const ItemForm = ({
             ref={formRef}
             action={handleSubmit}
         >
-            <div className="flex flex-row items-center gap-x-2 my-10">
+            <div className="flex flex-row items-center my-5 px-1 gap-2 w-full">
                 <FormInput
                     id="title"
                     type="text"
                     className="w-full border-none bg-stone-100 dark:bg-stone-800"
                     placeholder="Title"
                     errors={fieldErrors}
+                    autofocus
                 />
-                <FormSelect
-                    id="categoryId"
-                    className="border-none bg-stone-100 dark:bg-stone-800"
-                    selectLabel="Category"
-                    data={categories}
-                    placeholder="Select a category"
-                    errors={fieldErrors}
-                />
-                <FormInput
+                {/* <FormInput
                     id="quantity"
                     className="w-full border-none bg-stone-100 dark:bg-stone-800"
                     placeholder="Quantity"
@@ -74,13 +72,21 @@ export const ItemForm = ({
                     min={0}
                     errors={fieldErrors}
                 />
+                <FormSelect
+                    id="categoryId"
+                    className="border-none bg-stone-100 dark:bg-stone-800"
+                    selectLabel="Category"
+                    data={categories}
+                    placeholder="Category"
+                    errors={fieldErrors}
+                /> */}
                 <input
                     id="listId"
                     name="listId"
                     hidden
                     value={list.id}
                 />
-                <FormSubmit size="icon" className="w-full">
+                <FormSubmit size="icon">
                     <Plus className="w-5 h-5" />
                 </FormSubmit>
             </div>

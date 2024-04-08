@@ -17,6 +17,7 @@ interface FormPickerProps {
     defaultValue?: string;
     size?: "default" | "sm";
     label?: string;
+    setValue?: React.Dispatch<React.SetStateAction<string>>;
 }
 
 export const FormPicker = ({
@@ -26,11 +27,12 @@ export const FormPicker = ({
     defaultValue,
     size,
     label,
+    setValue,
 }: FormPickerProps) => {
     const { pending } = useFormStatus();
 
-    const [themes, setThemes] = useState<Array<Theme>>(data);
-    const [selectedThemeId, setSelectedThemeId] = useState<string | null>(defaultValue || null);
+    const [datas, setDatas] = useState<Array<Theme>>(data);
+    const [selectedDataId, setSelectedDataId] = useState<string | null>(defaultValue || null);
 
     return (
         <div className="relative">
@@ -39,19 +41,23 @@ export const FormPicker = ({
                     {label}
                 </Label>
             )}
-            <div className="grid grid-cols-2 sm:grid-cols-3 gap-x-4">
+            <div className={cn(
+                "grid grid-cols-2 sm:grid-cols-3 gap-x-4",
+                size === "sm" && "grid-cols-3"
+            )}>
 
-                {themes?.map((theme) => (
-                    <div className="flex flex-col justify-center items-center gap-y-2">
+                {datas?.map((data) => (
+                    <div className="flex flex-col justify-center items-center gap-y-2 mb-3">
                         <div
-                            key={theme.id}
+                            key={data.id}
                             className={cn(
                                 "cursor-pointer relative aspect-square group hover:opacity-75 transition",
                                 pending && "opacity-50 hover:opacity-50 cursor-auto rounded-full"
                             )}
                             onClick={() => {
                                 if (pending) return;
-                                setSelectedThemeId(theme.id);
+                                setSelectedDataId(data.id);
+                                setValue && setValue(data.title);
                             }}
                         >
                             <input
@@ -59,27 +65,28 @@ export const FormPicker = ({
                                 id={id}
                                 name={id}
                                 hidden
-                                checked={selectedThemeId === theme.id}
+                                checked={selectedDataId === data.id}
                                 disabled={pending}
-                                value={theme.id}
+                                value={data.id}
                                 className="hidden"
                             />
                             <span
                                 className={cn(
                                     "text-6xl rounded-full h-full flex items-center justify-center w-full p-4 shadow-xl",
-                                    `${theme.emojiBackground} ${size === "sm" && "text-3xl p-3"}`
+                                    `${data.emojiBackground} ${size === "sm" && "text-3xl p-3"}`
                                 )}
                             >
-                                {theme.emoji}
+                                {data.emoji}
                             </span>
-                            {selectedThemeId === theme.id && (
-                                <div className="absolute inset-y-0 h-full w-full bg-stone-700/20 flex items-center justify-center rounded-full">
+                            {selectedDataId === data.id && (
+                                <div className="absolute inset-y-0 h-full w-full bg-stone-700/20 backdrop-blur-[1px] flex items-center justify-center rounded-full">
                                     <Check className="h-4 w-4 text-white" />
                                 </div>
                             )}
                         </div>
                         <span className="text-stone-500/80 dark:text-stone-100 text-sm">
-                            {theme.title}
+                            {data.title}
+                            {data.description}
                         </span>
                     </div>
                 ))}

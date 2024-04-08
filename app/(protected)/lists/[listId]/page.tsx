@@ -13,6 +13,10 @@ const ListPage = async ({
 }: ListPageProps) => {
     const user = await currentUser();
 
+    if (!user) {
+        return <p>unauthorized</p>;
+    }
+
     const list = await db.list.findUnique({
         where: {
             id: params.listId,
@@ -25,10 +29,13 @@ const ListPage = async ({
                 },
             },
             theme: true,
+            type: true,
         }
-    });    
+    });
 
-    const themes = await db.theme.findMany();
+    const themes = await db.theme.findMany({
+        where: { isListType: false }
+    });
 
     const categories = await db.category.findMany({
         where: {
@@ -41,7 +48,7 @@ const ListPage = async ({
             listId: params.listId,
             isChecked: true
         }
-    });    
+    });
 
     if (!list) {
         return (
@@ -50,7 +57,7 @@ const ListPage = async ({
     }
 
     return (
-        <ListCard data={list} themes={themes} totalCountChecked={totalCountChecked} categories={categories} />
+        <ListCard data={list} themes={themes} totalCountChecked={totalCountChecked} categories={categories} user={user} />
     );
 }
 

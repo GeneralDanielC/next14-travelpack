@@ -2,6 +2,8 @@ import { currentUser } from "@/lib/auth";
 import { Navbar } from "./_components/navbar";
 import { Sidebar } from "./_components/sidebar";
 import { db } from "@/lib/db";
+import { Button } from "@/components/ui/button";
+import { ArrowLeft } from "lucide-react";
 
 const DashboardLayout = async ({
     children
@@ -14,25 +16,39 @@ const DashboardLayout = async ({
         include: {
             theme: true,
             items: true,
+            type: true,
         }
     });
 
-    const themes = await db.theme.findMany();    
+    const themes = await db.theme.findMany({
+        where: { isListType: false }
+    });
+
+    const types = await db.theme.findMany({
+        where: { isListType: true }
+    })
 
     return (
         <div className="overflow-hidden h-full">
-            <div className="px-4">
-                <Navbar lists={lists} themes={themes} />
+            <div className="absolute inset-0 flex flex-col justify-between">
+                <div className="bg-stone-500/40 dark:bg-stone-900 blur-3xl size-64 ml-40"></div>
+                <div className="bg-stone-400/50 dark:bg-stone-600/70 blur-3xl size-60 ml-60"></div>
+                <div className="bg-stone-300/70 dark:bg-stone-700/50 blur-3xl size-64"></div>
             </div>
-            <main className="pt-3 px-4 max-w-6xl 2xl:max-w-screen-xl mx-auto h-full pb-20">
-                <div className="flex gap-x-5 h-full">
-                    <div className="w-64 shrink-0 hidden md:block">
+            <div className="relative z-10 h-full">
+                {/* <div className="px-4">
+                    <Navbar lists={lists} themes={themes} />
+                </div> */}
+                <main className="pl-4 max-w-6xl 2xl:max-w-screen-xl mx-auto h-full">
+                    <div className="flex gap-x-0.5 h-full">
                         {/* Sidebar */}
-                        <Sidebar lists={lists} themes={themes} />
+                        <Sidebar lists={lists} themes={themes} types={types} />
+
+                        {children}
                     </div>
-                    {children}
-                </div>
-            </main>
+                </main>
+            </div>
+
         </div>
     );
 }

@@ -1,10 +1,9 @@
 "use client";
 
 import { toast } from "sonner";
-import { useEffect, useState } from "react";
-import { Item } from "@prisma/client";
+import { useState } from "react";
+import { Category, Item } from "@prisma/client";
 import { useFormStatus } from "react-dom";
-import { RxDotsHorizontal } from "react-icons/rx";
 
 import { cn } from "@/lib/utils";
 import { useAction } from "@/hooks/use-action";
@@ -12,27 +11,18 @@ import { checkItem } from "@/actions/check-item";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Checkbox } from "@/components/ui/checkbox";
-import {
-    Popover,
-    PopoverClose,
-    PopoverContent,
-    PopoverTrigger,
-} from "@/components/ui/popover";
-import { MoreVertical, Plus, X } from "lucide-react";
-import { FormInput } from "@/components/form/form-input";
-import { ItemForm } from "./item-form";
-import { FormSelect } from "@/components/form/form-select";
-import { FormSubmit } from "@/components/form/form-submit";
+import { ItemSettingsForm } from "./item-settings-form";
 
 interface ListCardItemProps {
     item: Item;
     listId: string;
+    categories: Category[];
 }
 
 export const ListCardItem = ({
     item,
     listId,
+    categories,
 }: ListCardItemProps) => {
     const { pending } = useFormStatus();
 
@@ -96,12 +86,13 @@ export const ListCardItem = ({
                             type="checkbox"
                             checked={itemIsChecked}
                             onClick={handleCheckItem}
-                            className="rounded-md checked:bg-stone-700 shadow-md checked:hover:bg-stone-600 checked:focus:bg-stone-700 focus:ring-stone-700"
+                            className="rounded-md checked:bg-stone-700 shadow-md checked:hover:bg-stone-600 checked:focus:bg-stone-700 focus:ring-stone-700
+                            dark:bg-stone-500"
                         />
                         <span>{item.title}</span>
                     </div>
                     <div className="flex flex-row items-center gap-x-2">
-                        {item.quantity && (
+                        {item.quantity !== 0 && (
                             <Badge className={cn(
                                 "",
                                 itemIsChecked && "bg-stone-400/70 line-through"
@@ -110,12 +101,8 @@ export const ListCardItem = ({
                     </div>
                 </Button>
             </form>
-            <Button
-                size="sm"
-                variant="ghost"
-            >
-                <MoreVertical className="h-4 w-4" />
-            </Button>
+            
+            <ItemSettingsForm item={item} categories={categories} />
         </div>
     )
 }

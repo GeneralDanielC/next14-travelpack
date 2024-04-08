@@ -17,10 +17,11 @@ interface FormInputProps {
     disabled?: boolean;
     errors?: Record<string, string[] | undefined>;
     className?: string;
-    defaultValue?: string;
+    defaultValue?: string | number | readonly string[] | undefined;
     onBlur?: () => void;
     min?: number;
     max?: number;
+    autofocus?: boolean;
 }
 
 export const FormInput = forwardRef<HTMLInputElement, FormInputProps>(({
@@ -36,6 +37,7 @@ export const FormInput = forwardRef<HTMLInputElement, FormInputProps>(({
     onBlur,
     min,
     max,
+    autofocus
 }, ref) => {
     const { pending } = useFormStatus();
 
@@ -50,9 +52,9 @@ export const FormInput = forwardRef<HTMLInputElement, FormInputProps>(({
                         {label}
                     </Label>
                 ) : null}
-                <Input 
+                <Input
                     onBlur={onBlur}
-                    defaultValue={defaultValue}
+                    defaultValue={defaultValue || ""}
                     ref={ref}
                     required={required}
                     name={id}
@@ -67,6 +69,7 @@ export const FormInput = forwardRef<HTMLInputElement, FormInputProps>(({
                     aria-describedby={`${id}-error`}
                     min={min}
                     max={max}
+                    autoFocus={autofocus}
                 />
             </div>
             <FormErrors

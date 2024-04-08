@@ -33,7 +33,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { useCurrentUser } from "@/hooks/use-current-user";
-import { FormError } from "@/components/form/form-errors";
+import { FormError } from "@/components/form-error";
 import { FormSuccess } from "@/components/form-success";
 import { UserRole } from "@prisma/client";
 
@@ -155,7 +155,7 @@ export const UserSettingsForm = () => {
                             />
                         </>
                     )}
-                    <FormField
+                    {/* <FormField
                         control={form.control}
                         name="role"
                         render={({ field }) => (
@@ -183,7 +183,7 @@ export const UserSettingsForm = () => {
                                 <FormMessage />
                             </FormItem>
                         )}
-                    />
+                    /> */}
                     {user?.isOAuth === false && (
                         <FormField
                             control={form.control}
@@ -213,6 +213,7 @@ export const UserSettingsForm = () => {
                 <Button
                     disabled={isPending}
                     type="submit"
+                    className="w-full"
                 >
                     Save
                 </Button>

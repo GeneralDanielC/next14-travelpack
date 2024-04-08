@@ -9,6 +9,9 @@ const config = {
     './src/**/*.{ts,tsx}',
 	],
   prefix: "",
+  safelist: [
+    "bg-amber-100", "bg-emerald-100", "bg-sky-100", "bg-sky-200", "bg-lime-200", "bg-sky-50", "bg-rose-100", "bg-stone-100, bg-stone-50"
+  ],
   theme: {
     container: {
       center: true,

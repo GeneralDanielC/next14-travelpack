@@ -17,22 +17,24 @@ const buttonVariants = cva(
           "border border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground",
         secondary:
           "bg-secondary text-secondary-foreground shadow-sm hover:bg-secondary/80",
+        stone:
+          "bg-stone-200 text-stone-foreground shadow-sm hover:bg-stone/80",
         ghost: "hover:bg-accent hover:text-accent-foreground",
         link: "text-primary underline-offset-4 hover:underline",
-        filled: "border-transparent bg-stone-500 text-rose-foreground shadow hover:bg-stone-400 text-white",
-        
+        filled: "border-transparent bg-stone-500 text-stone-foreground shadow hover:bg-stone-400 text-white",
+      },
+      size: {
+        default: "h-9 px-4 py-2",
+        chip: "h-7 rounded-full px-3 py-0.5",
+        sm: "h-8 rounded-md px-3 text-xs",
+        lg: "h-10 rounded-md px-8",
+        icon: "h-9 w-9",
+      },
     },
-    size: {
-      default: "h-9 px-4 py-2",
-      sm: "h-8 rounded-md px-3 text-xs",
-      lg: "h-10 rounded-md px-8",
-      icon: "h-9 w-9",
+    defaultVariants: {
+      variant: "default",
+      size: "default",
     },
-  },
-  defaultVariants: {
-  variant: "default",
-  size: "default",
-},
   }
 )
 

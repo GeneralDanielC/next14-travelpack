@@ -2,6 +2,7 @@
 
 import { Theme } from "@prisma/client";
 
+import { Types } from "@/types";
 import { FormInput } from "@/components/form/form-input"
 import { FormPicker } from "@/components/form/form-picker"
 import { FormSubmit } from "@/components/form/form-submit"
@@ -9,21 +10,31 @@ import { FormDatePicker } from "@/components/form/form-date-picker"
 import { useAction } from "@/hooks/use-action";
 import { createList } from "@/actions/create-list";
 import { toast } from "sonner";
-import { ElementRef, useRef, useState } from "react";
+import { Dispatch, ElementRef, SetStateAction, useEffect, useRef, useState } from "react";
+import { motion } from "framer-motion";
+
 
 interface ListFormProps {
-    data: Theme[];
+    themes: Theme[];
+    types: Theme[];
+    setOpen: Dispatch<SetStateAction<boolean>>;
 }
 
 export const ListForm = ({
-    data
+    themes,
+    types,
+    setOpen
 }: ListFormProps) => {
     const formRef = useRef<ElementRef<"form">>(null);
     const [date, setDate] = useState<Date>();
+    const [listType, setListType] = useState("");
+    const [displayThemes, setDisplayThemes] = useState(false);
+
 
     const { execute, fieldErrors } = useAction(createList, {
         onSuccess: (data) => {
             toast.success(`List "${data.title}" created.`);
+            setOpen(false);
             formRef.current?.reset();
         },
         onError: (error) => {
@@ -33,28 +44,60 @@ export const ListForm = ({
 
     const handleSubmit = (formData: FormData) => {
         const title = formData.get("title") as string;
-        const themeId = formData.get("themeId") as string;
+        let themeId = formData.get("themeId") as string | undefined;
+        const typeId = formData.get("typeId") as string;
         const departAt = date as Date;
+
+        if (!themeId) {
+            themeId = undefined;
+        }
 
         execute({
             title,
             themeId,
+            typeId,
             departAt
         });
-    }    
+    }
+
+    const animationVariants = {
+        visible: { opacity: 1, filter: "blur(0px)", height: "auto" },
+        hidden: { opacity: 0, filter: "blur(3px)", height: 0 }
+    }
+
+    useEffect(() => {
+        setDisplayThemes(listType === Types.PACKING);
+    }, [listType]);
 
     return (
         <form
             ref={formRef}
             action={handleSubmit}
         >
-            <FormPicker
-                id="themeId"
-                data={data}
-                errors={fieldErrors}
-            />
+            <div className="flex flex-col gap-y-3">
+                <h1 className="text-center uppercase font-bold text-xs text-stone-500">List Type</h1>
+                <FormPicker
+                    id="typeId"
+                    data={types}
+                    setValue={setListType}
+                    size="sm"
+                />
+                <motion.div
+                    initial="hidden"
+                    animate={displayThemes ? "visible" : "hidden"}
+                    transition={{ type: "spring", stiffness: 100 }}
+                    variants={animationVariants}
+                >
+                    <h1 className="text-center uppercase font-bold text-xs text-stone-500">Theme</h1>
+                    <FormPicker
+                        id="themeId"
+                        data={themes}
+                        errors={fieldErrors}
+                    />
+                </motion.div>
 
-            <div className="flex items-center gap-x-2 mt-10 mb-2 w-full">
+            </div>
+            <div className="flex items-center gap-x-2 mt-7 mb-2 w-full">
                 <FormInput
                     id="title"
                     type="text"
@@ -62,13 +105,14 @@ export const ListForm = ({
                     className="w-full border-none bg-stone-100"
                     errors={fieldErrors}
                 />
-                <FormDatePicker
-                    id="departAt"
-                    date={date}
-                    setDate={setDate}
-                    className="w-full border-none bg-stone-100"
-                />
-
+                {listType === Types.PACKING && (
+                    <FormDatePicker
+                        id="departAt"
+                        date={date}
+                        setDate={setDate}
+                        className="w-full border-none bg-stone-100"
+                    />
+                )}
             </div>
             <FormSubmit
                 className="w-full"
@@ -76,7 +120,7 @@ export const ListForm = ({
             >
                 Create
             </FormSubmit>
-        </form>
-        
+        </form >
+
     )
 }

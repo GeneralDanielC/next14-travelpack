@@ -58,9 +58,10 @@ import { updateList } from "@/actions/update-list";
 import { toast } from "sonner";
 import { deleteList } from "@/actions/delete-list";
 import { copyList } from "@/actions/copy-list";
+import { ListWithType, Types } from "@/types";
 
 interface ListSettingsFormProps {
-  data: List;
+  data: ListWithType;
   themes: Theme[];
 }
 
@@ -101,7 +102,9 @@ export const ListSettingsForm = ({
   const handleUpdate = (formData: FormData) => {
     const title = formData.get("title") as string;
     const themeId = formData.get("themeId") as string;
-    const departAt = date as Date;
+    let departAt = date;
+
+    if (departAt === null) { departAt = undefined };
 
     executeUpdate({
       title,
@@ -143,21 +146,26 @@ export const ListSettingsForm = ({
           defaultValue={data.title}
           errors={fieldErrors}
         />
-        <FormDatePicker
-          id="departAt"
-          date={date || undefined}
-          setDate={setDate}
-          label="Departure Date"
-          className="border-none bg-stone-100 dark:bg-stone-800"
-        />
-        <FormPicker
-          id="themeId"
-          data={themes}
-          defaultValue={data.themeId}
-          size="sm"
-          label="Theme"
-          errors={fieldErrors}
-        />
+        {data.type.title === Types.PACKING && (
+          <>
+            <FormDatePicker
+              id="departAt"
+              date={date || undefined}
+              setDate={setDate}
+              label="Departure Date"
+              className="border-none bg-stone-100 dark:bg-stone-800"
+            />
+            <FormPicker
+              id="themeId"
+              data={themes}
+              defaultValue={data.themeId}
+              size="sm"
+              label="Theme"
+              errors={fieldErrors}
+            />
+          </>
+        )}
+
         <input
           hidden
           id="listId"

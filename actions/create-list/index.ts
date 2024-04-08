@@ -9,6 +9,7 @@ import { createSafeAction } from "@/lib/create-safe-action";
 
 import { InputType, ReturnType } from "./types";
 import { CreateList } from "./schema";
+import { Types } from "@/types";
 
 const handler = async (data: InputType): Promise<ReturnType> => {
     const user = await currentUser();
@@ -24,10 +25,27 @@ const handler = async (data: InputType): Promise<ReturnType> => {
     }
 
     // No need to validate this input data since it is already done in the create-safe-action.
-    const { title, themeId, departAt } = data;
+    const { title, themeId, departAt, typeId } = data;
 
-    if (!themeId) {
-        return { error: "Missing fields. Failed to create board." };
+    if (!typeId) {
+        return { error: "Missing fields. Failed to create list." };
+    }
+
+    const packingType = await db.theme.findFirst({
+        where: { 
+            isListType: true,
+            title: Types.PACKING 
+        }
+    })
+
+    if (!packingType) {
+        return { error: "Something went wrong when creating list." }
+    }
+
+    if (typeId === packingType.id) {
+        if (!themeId) {
+            return { error: "Missing fields. Failed to create list." }
+        }
     }
 
     let list;
@@ -39,6 +57,7 @@ const handler = async (data: InputType): Promise<ReturnType> => {
                 title,
                 themeId,
                 departAt,
+                typeId,
                 userId: user.id,
             }
         });

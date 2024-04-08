@@ -1,6 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import OpenAI from "openai";
 
 import { db } from "@/lib/db";
 import { currentUser } from "@/lib/auth";
@@ -9,6 +10,10 @@ import { createSafeAction } from "@/lib/create-safe-action";
 
 import { InputType, ReturnType } from "./types";
 import { CreateItem } from "./schema";
+
+const openai = new OpenAI({
+    apiKey: process.env.OPENAI_API_KEY,
+});
 
 const handler = async (data: InputType): Promise<ReturnType> => {
     const user = await currentUser();
@@ -24,7 +29,53 @@ const handler = async (data: InputType): Promise<ReturnType> => {
     }
 
     // No need to validate this input data since it is already done in the create-safe-action.
-    const { title, categoryId, quantity, listId } = data;
+    // const { title, categoryId, quantity, listId } = data;
+    const { title, listId } = data;
+
+    // CHANGE: add reference to list type.
+    const response = await openai.completions.create({
+        model: "gpt-3.5-turbo-instruct",
+        prompt: `Categorize the following items into one or more categories based on their type, without using any bullet points or dashes. Write the categories in a simple, comma-separated list. For example, "Laptop" would be categorized as "Electroincs", and "Jeans" would be "Clothing, Pants". \nHere are some examples of categorizing:\n- Laptop: Electronics\n- Jeans: Clothing, Pants\n- Coffee mug: Kitchenware\n\nCategorize this item: ${title}\n\n`,
+        temperature: 0,
+        max_tokens: 10,
+        top_p: 1,
+        frequency_penalty: 0,
+        presence_penalty: 0,
+        stop: ["\\n"],
+    });
+
+    const fetchedCategories = response.choices[0].text;
+
+
+    const fetchedCategoryList = fetchedCategories.split(',').map(cat => cat.trim().toLowerCase());
+
+    console.log(fetchedCategoryList);
+
+    const dbCategories = await db.category.findMany({
+        where: {
+            userId: dbUser.id,
+        }
+    });
+
+    const miscCategory = await db.category.findFirst({
+        where: {
+            userId: dbUser.id,
+            workName: "misc"
+        }
+    });
+
+    const findCategoryId = (dbCategories: any, fetchedCategoryList: String[]) => {        
+        for (const dbCat of dbCategories) {
+            
+            if (fetchedCategoryList.includes(dbCat.workName.toLowerCase())) {
+                return dbCat.id;
+            }
+        }
+        return miscCategory?.id;
+    }
+
+    const categoryId = findCategoryId(dbCategories, fetchedCategoryList);
+    console.log(categoryId);
 
     let item;
 
@@ -34,7 +85,7 @@ const handler = async (data: InputType): Promise<ReturnType> => {
             data: {
                 title,
                 categoryId,
-                quantity,
+                quantity: 0,
                 listId,
             }
         });

@@ -4,11 +4,11 @@ import { Button } from "@/components/ui/button"
 import { Menu } from "lucide-react"
 import Link from "next/link"
 import { MobileSidebar } from "./mobile-sidebar"
-import { ListWithItemsAndTheme } from "@/types"
+import { ListWithItemsAndTheme, ListWithItemsThemeAndType } from "@/types"
 import { Theme } from "@prisma/client"
 
 interface NavbarProps {
-    lists: ListWithItemsAndTheme[],
+    lists: ListWithItemsThemeAndType[],
     themes: Theme[],
 }
 

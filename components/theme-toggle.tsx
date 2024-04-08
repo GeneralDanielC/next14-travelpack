@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react"
-import { MoonIcon, SunIcon } from "@radix-ui/react-icons"
+import { MoonIcon } from "@radix-ui/react-icons"
 import { useTheme } from "next-themes"
 
 import { Button } from "@/components/ui/button"
@@ -11,20 +11,26 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
+import { SunIcon } from "lucide-react";
 
-export const ThemeToggle = () => {
+interface ThemeToggleProps {
+  showText?: boolean;
+}
+
+export const ThemeToggle = ({
+  showText
+}: ThemeToggleProps) => {
   const { setTheme } = useTheme()
 
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" size="sm" className="w-full font-normal justify-start pl-10 mb-1 gap-x-2">
-          <div>
-            <SunIcon className="h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
-            <MoonIcon className="absolute h-[1.2rem] w-[1.2rem] rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
+        <Button variant="ghost" size="lg" className="px-3">
+          <div className="w-full flex justify-start items-center gap-x-1.5">
+            <SunIcon className="size-4 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
+            <MoonIcon className="absolute size-4 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
+            {showText && <span>Theme</span>}
           </div>
-          <span className="text-xs">Toggle theme</span>
-          {/* <span className="sr-only">Toggle theme</span> */}
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">

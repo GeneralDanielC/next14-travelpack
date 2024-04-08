@@ -4,12 +4,11 @@ export const CreateList = z.object({
     title: z.string({
         required_error: "Title is required",
         invalid_type_error: "Title is required",
-    }).min(2, {
-        message: "Title is too short."
     }),
-    themeId: z.string({
-        required_error: "Theme is required",
-        invalid_type_error: "Theme is required"
+    themeId: z.optional(z.string()),
+    typeId: z.string({
+        required_error: "Type is required",
+        invalid_type_error: "Type is required"
     }),
     departAt: z.optional(z.date()),
 });

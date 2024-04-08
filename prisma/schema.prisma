@@ -87,25 +87,51 @@ model TwoFactorConfirmation {
   @@unique([userId])
 }
 
+// model ListType {
+//   id              String  @id @default(auto()) @map("_id") @db.ObjectId
+//   title           Types
+//   emoji           String
+//   emojiBackground String
+//   description     String?
+//   List            List[]
+// }
+
+// List has 2 themes, 1 of which refers to the type.
+// If type === packing => theme, else no theme.
+// 
+
+enum Types {
+  TODO
+  PACKING
+  GROCERY
+}
+
 model List {
   id        String    @id @default(auto()) @map("_id") @db.ObjectId
   title     String
   departAt  DateTime?
+  typeId    String    @db.ObjectId
+  type      Theme     @relation(name: "ListType", fields: [typeId], references: [id])
+  themeId   String?   @db.ObjectId
+  theme     Theme?    @relation(name: "ListTheme", fields: [themeId], references: [id])
   userId    String    @db.ObjectId
   user      User      @relation(fields: [userId], references: [id])
-  themeId   String    @db.ObjectId
-  theme     Theme     @relation(fields: [themeId], references: [id])
   items     Item[]
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
+  // ListType   ListType? @relation(fields: [listTypeId], references: [id])
+  // listTypeId String?   @db.ObjectId
 }
 
 model Theme {
-  id              String @id @default(auto()) @map("_id") @db.ObjectId
+  id              String  @id @default(auto()) @map("_id") @db.ObjectId
   title           String
   emoji           String
   emojiBackground String
-  List            List[]
+  description     String?
+  isListType      Boolean @default(false)
+  ListsAsType     List[]  @relation(name: "ListType")
+  List            List[]  @relation(name: "ListTheme")
 }
 
 model Item {
@@ -121,9 +147,11 @@ model Item {
 }
 
 model Category {
-  id     String @id @default(auto()) @map("_id") @db.ObjectId
-  name   String
-  userId String @db.ObjectId
-  user   User   @relation(fields: [userId], references: [id])
-  items  Item[]
+  id          String @id @default(auto()) @map("_id") @db.ObjectId
+  displayName String
+  workName    String
+  userId      String @db.ObjectId
+  user        User   @relation(fields: [userId], references: [id])
+  items       Item[]
+  //isEditable?
 }

@@ -1,32 +1,38 @@
+"use client";
+
 import { Button } from "@/components/ui/button"
-import { Drawer, DrawerContent, DrawerDescription, DrawerHeader, DrawerTitle, DrawerTrigger } from "@/components/ui/drawer"
+import { Drawer, DrawerClose, DrawerContent, DrawerDescription, DrawerHeader, DrawerTitle, DrawerTrigger } from "@/components/ui/drawer"
 import { PlusIcon } from "@radix-ui/react-icons"
 import { ListForm } from "./list-form"
 import { Theme } from "@prisma/client"
+import { useState } from "react"
 
 interface ListFormDrawerProps {
     themes: Theme[],
-    triggerVariant?: "default" | "link" | "destructive" | "outline" | "secondary" | "ghost" | "filled" | null | undefined;
+    types: Theme[],
+    children: React.ReactNode,
 }
 
 export const ListFormDrawer = ({
     themes,
-    triggerVariant = "outline",
-}: ListFormDrawerProps) => {    
+    types,
+    children,
+}: ListFormDrawerProps) => {
+    const [open, setOpen] = useState(false);
+
     return (
-        <Drawer>
+        <Drawer open={open} onOpenChange={setOpen}
+        >
             <DrawerTrigger asChild>
-                <Button variant={triggerVariant} size="icon">
-                    <PlusIcon />
-                </Button>
+                {children}
             </DrawerTrigger>
             <DrawerContent className="pb-10 px-4">
                 <div className="mx-auto w-full max-w-sm">
                     <DrawerHeader>
-                        <DrawerTitle>Create List</DrawerTitle>
-                        <DrawerDescription>Create a new list.</DrawerDescription>
+                        <DrawerTitle className="text-center">Create List</DrawerTitle>
+                        <DrawerDescription className="text-center">Create a new list.</DrawerDescription>
                     </DrawerHeader>
-                    <ListForm data={themes} />
+                    <ListForm themes={themes} types={types} setOpen={setOpen} />
                 </div>
             </DrawerContent>
         </Drawer>
