@@ -8,7 +8,12 @@ import { getUserById } from "@/data/auth/user";
 import { createSafeAction } from "@/lib/create-safe-action";
 
 import { InputType, ReturnType } from "./types";
-import { UpdateList } from "./schema";
+import { ResetCategory } from "./schema";
+import OpenAI from "openai";
+
+const openai = new OpenAI({
+    apiKey: process.env.OPENAI_API_KEY,
+});
 
 const handler = async (data: InputType): Promise<ReturnType> => {
     const user = await currentUser();
@@ -24,36 +29,42 @@ const handler = async (data: InputType): Promise<ReturnType> => {
     }
 
     // No need to validate this input data since it is already done in the create-safe-action.
-    const { title, listId, themeId, departAt } = data;
-    
-    console.log("Recieved data", title);
-    
+    const { categoryId } = data;
 
-    if (!listId) {
-        return { error: "No list found." };
+    if (!categoryId) {
+        return { error: "No category found." };
     }
 
-    let list;
+    const oldCategory = await db.category.findFirst({
+        where: {
+            userId: user.id,
+            id: categoryId,
+        }
+    });
+
+    if (!oldCategory) {
+        return { error: "No category found." };
+    }
+
+    let category;
 
     try {
         // throw new Error("a"); // artificial error - to be removed
-        list = await db.list.update({
+        category = await db.category.update({
             where: {
                 userId: user.id,
-                id: listId,
+                id: categoryId,
             },
             data: {
-                title,
-                themeId,
-                departAt,
+                displayName: oldCategory.workName,
             }
         });
     } catch (error) {
-        return { error: "Failed to update" }
+        return { error: "Failed to reset category." }
     }
 
-    revalidatePath(`/list/${list.id}`);
-    return { data: list };
+    revalidatePath(`/categories`);
+    return { data: category };
 }
 
-export const updateList = createSafeAction(UpdateList, handler);
+export const resetCategory = createSafeAction(ResetCategory, handler);

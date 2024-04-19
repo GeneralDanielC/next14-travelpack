@@ -41,8 +41,12 @@ const handler = async (data: InputType): Promise<ReturnType> => {
                     },
                 },
                 theme: true,
+                type: true,
             }
         });
+
+        console.log(listToCopy);
+        
 
         if (!listToCopy) {
             return { error: "List not found." }
@@ -51,10 +55,11 @@ const handler = async (data: InputType): Promise<ReturnType> => {
         if (listToCopy.items.length === 0) {
             list = await db.list.create({
                 data: {
-                    userId,
+                    userId: dbUser.id,
                     title: `${listToCopy.title} - Copy`,
                     departAt: listToCopy.departAt,
                     themeId: listToCopy.themeId,
+                    typeId: listToCopy.typeId,
                     items: {},
                 },
                 include: {
@@ -65,10 +70,11 @@ const handler = async (data: InputType): Promise<ReturnType> => {
         } else {
             list = await db.list.create({
                 data: {
-                    userId,
+                    userId: dbUser.id,
                     title: `${listToCopy.title} - Copy`,
                     departAt: listToCopy.departAt,
                     themeId: listToCopy.themeId,
+                    typeId: listToCopy.typeId,
                     items: {
                         createMany: {
                             data: listToCopy.items.map((item) => ({
@@ -78,7 +84,7 @@ const handler = async (data: InputType): Promise<ReturnType> => {
                                 categoryId: item.categoryId,
                             })),
                         }
-                    }
+                    },
                 },
                 include: {
                     items: {
@@ -87,6 +93,7 @@ const handler = async (data: InputType): Promise<ReturnType> => {
                         },
                     },
                     theme: true,
+                    type: true,
                 },
             });
         }

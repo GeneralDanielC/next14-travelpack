@@ -15,9 +15,15 @@ import { useFormStatus } from "react-dom";
 import { FormErrors } from "./form-errors";
 import { Label } from "@/components/ui/label";
 
+type editableOptions = {
+    id: string;
+    displayName: string;
+    value: boolean;
+}
+
 interface FormSelectProps {
     id: string;
-    data: Category[];
+    data: Category[] | editableOptions[];
     selectLabel?: string;
     className?: string;
     placeholder?: string;

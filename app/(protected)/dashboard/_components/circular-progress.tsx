@@ -14,6 +14,10 @@ export const CircularProgress = ({
     let totalAmountChecked = 0;
     let totalAmountItems = 0;
 
+    // useEffect(() => {
+
+    // }, [lists]);
+    
     lists.map((list) => {
         if (list.items) totalAmountItems += 1;
         list.items.map((item) => {

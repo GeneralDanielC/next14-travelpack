@@ -34,19 +34,13 @@ export const ItemForm = ({
 
     const handleSubmit = (formData: FormData) => {
         const title = formData.get("title") as string;
-        // const categoryId = formData.get("categoryId") as string;
-        // const quantity = formData.get("quantity") as string;
         const listId = formData.get("listId") as string;
-
-        // if (quantity === "") {
-        //     quantity 
-        // }
+        const ownerUserId = formData.get("ownerUserId") as string;
 
         execute({
             title,
-            // categoryId,
-            // quantity: quantity === "" ? 0 : parseInt(quantity),
-            listId
+            listId,
+            ownerUserId
         });
     }
 
@@ -64,27 +58,17 @@ export const ItemForm = ({
                     errors={fieldErrors}
                     autofocus
                 />
-                {/* <FormInput
-                    id="quantity"
-                    className="w-full border-none bg-stone-100 dark:bg-stone-800"
-                    placeholder="Quantity"
-                    type="number"
-                    min={0}
-                    errors={fieldErrors}
-                />
-                <FormSelect
-                    id="categoryId"
-                    className="border-none bg-stone-100 dark:bg-stone-800"
-                    selectLabel="Category"
-                    data={categories}
-                    placeholder="Category"
-                    errors={fieldErrors}
-                /> */}
                 <input
                     id="listId"
                     name="listId"
                     hidden
                     value={list.id}
+                />
+                <input
+                    id="ownerUserId"
+                    name="ownerUserId"
+                    hidden
+                    value={list.userId}
                 />
                 <FormSubmit size="icon">
                     <Plus className="w-5 h-5" />

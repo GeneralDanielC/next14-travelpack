@@ -48,3 +48,17 @@ export const sendVerificationEmail = async (
         html: `<p>Click <a href="${confirmLink}">here</a> to confirm email.</p>`
     });
 }
+
+export const sendSharedToNotificationEmail = async (
+    email: string,
+    token: string,
+) => {
+    const confirmLink = `${domain}/auth/new-verification?token=${token}`;
+
+    await resend.emails.send({
+        from: "onboarding@resend.dev", // TODO: change domain to real domain to be able to send to all addresses. See video @ 07:54:00
+        to: email,
+        subject: "Confirm your email",
+        html: `<p>Click <a href="${confirmLink}">here</a> to confirm email.</p>`
+    });
+}

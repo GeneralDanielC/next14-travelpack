@@ -14,8 +14,8 @@ import { ListFormDrawer } from "./_components/list-form-drawer";
 import { NoLists } from "../_components/no-lists";
 
 import { Types } from "@/types";
-import { CardHeader } from "@/app/(protected)/_components/card-header";
-import { getListsByUserId, getThemes, getTypes } from "@/data/data";
+import { CardNavigation } from "@/app/(protected)/_components/card-navigation";
+import { getListSharesByUserId, getListsByUserId, getThemes, getTypes } from "@/data/data";
 import { CalendarDaysIcon, CheckCircleIcon, InfoIcon, PlusIcon } from "lucide-react";
 import { Chart } from "./_components/chart";
 import { CircularProgress } from "./_components/circular-progress";
@@ -58,8 +58,8 @@ const DashboardPage = async () => {
 
     return (
         <div className="flex flex-col items-center w-full gap-y-2">
-            <Card className="w-full h-full flex flex-col rounded-l-3xl rounded-r-none shadow-none border-none">
-                <CardHeader
+            <Card className="w-full h-full flex flex-col rounded-l-3xl rounded-r-none xl:rounded-r-3xl shadow-none border-none">
+                <CardNavigation
                     user={user}
                     breadcrumbs={[
                         {
@@ -127,7 +127,7 @@ const DashboardPage = async () => {
                                 </div>
                             </div>
                         </div>
-                        <div className="bg-stone-100 dark:bg-stone-800 rounded-xl p-2 flex flex-col justify-center items-center w-full h-full">
+                        <div className="bg-stone-100 dark:bg-stone-800 rounded-xl p-2 hidden sm:flex flex-col justify-center items-center w-full h-full">
                             <Chart chartData={chartData} />
                             <div className="flex flex-row items-center gap-x-2">
                                 <div className="flex flex-row items-center gap-x-1">
@@ -170,15 +170,17 @@ const DashboardPage = async () => {
                             )}
 
                         </div>
-                        <Button
-                            variant="ghost"
-                            className="w-full"
-                            asChild
-                        >
-                            <Link href="/lists">
-                                See more...
-                            </Link>
-                        </Button>
+                        {lists.length > 0 && (
+                            <Button
+                                variant="ghost"
+                                className="w-full"
+                                asChild
+                            >
+                                <Link href="/lists">
+                                    See more...
+                                </Link>
+                            </Button>
+                        )}
                     </div>
                 </CardContent>
             </Card>

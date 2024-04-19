@@ -16,15 +16,17 @@ type Breadcrumbs = {
     href: string,
 }
 
-interface CardHeaderProps {
-    user: ExtendedUser,
-    breadcrumbs: Breadcrumbs[],
+interface CardNavigationProps {
+    user?: ExtendedUser,
+    breadcrumbs?: Breadcrumbs[],
+    hideUser?: boolean,
 }
 
-export const CardHeader = ({
+export const CardNavigation = ({
     user,
-    breadcrumbs
-}: CardHeaderProps) => {
+    breadcrumbs,
+    hideUser
+}: CardNavigationProps) => {
 
     return (
         <ShadCardHeader className="pb-0">
@@ -32,10 +34,10 @@ export const CardHeader = ({
                 <Breadcrumb>
                     <BreadcrumbList>
                         <BreadcrumbItem>
-                            <BreadcrumbLink href="/">travelsize</BreadcrumbLink>
+                            <BreadcrumbLink href="/dashboard">travelsize</BreadcrumbLink>
                         </BreadcrumbItem>
                         <BreadcrumbSeparator />
-                        {breadcrumbs.map((breadcrumb, index) => (
+                        {breadcrumbs?.map((breadcrumb, index) => (
                             <>
                                 <BreadcrumbItem>
                                     <BreadcrumbLink href={breadcrumb.href}>{breadcrumb.name}</BreadcrumbLink>
@@ -48,20 +50,22 @@ export const CardHeader = ({
                 </Breadcrumb>
                 <div className="flex items-center">
                     <ThemeToggle />
-                    <Button
-                        variant="ghost"
-                        size="icon"
-                        asChild
-                    >
-                        <Link href="/settings/user">
-                            <Avatar className="h-5 w-5">
-                                <AvatarImage src={user?.image || ""} />
-                                <AvatarFallback>
-                                    <User2Icon className="size-5" />
-                                </AvatarFallback>
-                            </Avatar>
-                        </Link>
-                    </Button>
+                    {!hideUser && (
+                        <Button
+                            variant="ghost"
+                            size="icon"
+                            asChild
+                        >
+                            <Link href="/settings/user">
+                                <Avatar className="h-5 w-5">
+                                    <AvatarImage src={user?.image || ""} />
+                                    <AvatarFallback>
+                                        <User2Icon className="size-5" />
+                                    </AvatarFallback>
+                                </Avatar>
+                            </Link>
+                        </Button>
+                    )}
                 </div>
             </div>
         </ShadCardHeader>

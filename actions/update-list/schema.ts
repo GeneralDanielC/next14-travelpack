@@ -7,10 +7,7 @@ export const UpdateList = z.object({
     }).min(2, {
         message: "Title is too short."
     }),
-    themeId: z.string({
-        required_error: "Theme is required",
-        invalid_type_error: "Theme is required"
-    }),
+    themeId: z.union([z.string(), z.null()]).optional(),
     departAt: z.optional(z.date()),
     listId: z.string(),
 });

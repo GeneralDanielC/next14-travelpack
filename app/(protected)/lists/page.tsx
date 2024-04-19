@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader as ShadcnCardHeader } from "@/components/ui/card";
 import Link from "next/link";
-import { CardHeader } from "../_components/card-header";
+import { CardNavigation } from "../_components/card-navigation";
 import { currentUser } from "@/lib/auth";
 import { getListsByUserId } from "@/data/data";
 import { ListWithItemsThemeAndType, Types } from "@/types";
@@ -23,7 +23,7 @@ const ListsPage = async () => {
     return (
         <div className="flex flex-col items-center w-full gap-y-2">
             <Card className="w-full h-full flex flex-col rounded-l-3xl rounded-r-none shadow-none border-none">
-                <CardHeader
+                <CardNavigation
                     user={user}
                     breadcrumbs={[
                         {

@@ -11,10 +11,12 @@ type ChartData = {
 
 interface ChartProps {
     chartData: ChartData[],
+    className?: string,
 }
 
 export const Chart = ({
-    chartData
+    chartData,
+    className
 }: ChartProps) => {
 
     const mounted = useMounted();
@@ -24,7 +26,7 @@ export const Chart = ({
     }
 
     return (
-        <ResponsiveContainer width="100%" height={270}>
+        <ResponsiveContainer className={className} width="100%" height={270}>
             <PieChart>
                 <Pie
                     data={chartData}

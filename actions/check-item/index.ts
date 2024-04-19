@@ -30,14 +30,20 @@ const handler = async (data: InputType): Promise<ReturnType> => {
 
     try {
         // throw new Error("a"); // artificial error - to be removed
+        console.log("userid", dbUser.id);
 
         const existingItem = await db.item.findUnique({
             where: {
+                id: itemId,
                 listId,
                 list: {
-                    userId: dbUser.id,
+                    OR: [
+                        { userId: dbUser.id },
+                        {
+                            shares: { some: { userId: dbUser.id } }
+                        }
+                    ],
                 },
-                id: itemId,
             }
         });
 
@@ -45,7 +51,12 @@ const handler = async (data: InputType): Promise<ReturnType> => {
             where: {
                 listId,
                 list: {
-                    userId: dbUser.id,
+                    OR: [
+                        { userId: dbUser.id },
+                        {
+                            shares: { some: { userId: dbUser.id } }
+                        }
+                    ],
                 },
                 id: itemId,
             },
@@ -55,7 +66,7 @@ const handler = async (data: InputType): Promise<ReturnType> => {
         });
     } catch (error) {
         console.error(error);
-        
+
         return { error: "Failed to update item." }
     }
 

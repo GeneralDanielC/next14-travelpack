@@ -3,15 +3,16 @@
 import Link from "next/link";
 
 import { cn } from "@/lib/utils";
-import { ListWithItems, ListWithItemsThemeAndType, Types } from "@/types";
+import { ListWithItems, ListWithItemsThemeAndType, ListWithItemsThemeTypeAndShares, Types } from "@/types";
 
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { usePathname } from "next/navigation";
 import { useEffect } from "react";
+import { Users } from "lucide-react";
 
 interface ListItemProps {
-    list: ListWithItemsThemeAndType,
+    list: ListWithItemsThemeTypeAndShares,
     size?: "default" | "sm",
 }
 
@@ -41,22 +42,7 @@ export const ListItem = ({
             asChild
         >
             <Link href={`/lists/${list.id}`}>
-                {/* <div className="flex flex-col w-full gap-y-1">
-                    <div className="flex items-center gap-x-2">
-                        <span className={cn(
-                            "text-2xl rounded-full flex items-center justify-center w-10 h-10",
-                            `${list.type.title === Types.PACKING ? list.theme?.emojiBackground : list.type.emojiBackground} ${size === "sm" && "text-xl w-7 h-7"}`
-                        )}>
-                            {list.type.title === Types.PACKING ? list.theme?.emoji : list.type.emoji}
-                        </span>
-                        <span className="text-md">{list.title}</span>
-                    </div>
-                    <div className="px-1 flex items-center gap-x-2">
-                        <Progress value={(totalCountChecked(list) / list.items.length) * 100} />
-                        <span className="text-xs font-normal">{totalCountChecked(list)} / {list.items.length}</span>
-                    </div>
-                </div> */}
-                <div className="flex flex-row gap-y-1 w-full gap-x-2">
+                <div className="flex flex-row gap-y-2 w-full gap-x-2">
                     <div className="flex items-center">
                         <span className={cn(
                             "text-3xl rounded-full flex items-center justify-center size-12",
@@ -66,7 +52,10 @@ export const ListItem = ({
                         </span>
                     </div>
                     <div className="flex flex-col justify-between w-full py-2">
-                        <span className="text-md">{list.title}</span>
+                        <div className="flex flex-row justify-between items-center">
+                            <span className="text-md">{list.title}</span>
+                            {list.shares.length > 0 && <Users className="size-4 mr-1" />}
+                        </div>
                         <div className="flex items-center gap-x-2">
                             <Progress value={(totalCountChecked(list) / list.items.length) * 100} />
                             <span className="text-xs font-normal">{totalCountChecked(list)} / {list.items.length}</span>

@@ -26,7 +26,7 @@ export const ListFormDrawer = ({
             <DrawerTrigger asChild>
                 {children}
             </DrawerTrigger>
-            <DrawerContent className="pb-10 px-4">
+            <DrawerContent className="pb-10 px-4 border-none">
                 <div className="mx-auto w-full max-w-sm">
                     <DrawerHeader>
                         <DrawerTitle className="text-center">Create List</DrawerTitle>

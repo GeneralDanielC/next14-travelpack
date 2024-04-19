@@ -23,7 +23,7 @@ import { ListFormDrawer } from "../dashboard/_components/list-form-drawer";
 import { NoLists } from "./no-lists";
 import { usePathname } from "next/navigation";
 import { motion } from "framer-motion";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 interface SidebarProps {
     lists: ListWithItemsThemeAndType[],
@@ -41,49 +41,66 @@ export const Sidebar = ({
     const user = useCurrentUser();
     const pathname = usePathname();
 
+    const isSmallScreen = window.innerWidth < 640;
+
     const [isExpanded, setIsExpanded] = useState(true);
-    const [width, setWidth] = useState("11rem");
-    const [paddingLeft, setPaddingLeft] = useState("0.5rem");
+    const [width, setWidth] = useState("10rem");
+    const [paddingLeft, setPaddingLeft] = useState("0");
     const [rotate, setRotate] = useState(0);
 
-    const textVariants = {
-        visible: { opacity: 1 },
-        hidden: { opacity: 0 }
-    }
+    useEffect(() => {
+        // This function adjusts the sidebar based on the initial viewport size
+        function adjustSidebarForViewport() {
+            const shouldCollapse = window.innerWidth < 640;
+            setIsExpanded(!shouldCollapse);
+            setWidth(shouldCollapse ? "2.5rem" : "10rem");
+            setRotate(shouldCollapse ? 180 : 0);
+        }
+
+        // Run once on component mount
+        adjustSidebarForViewport();
+
+        // Add event listener for window resize if you want to adjust the sidebar dynamically when resizing
+        window.addEventListener('resize', adjustSidebarForViewport);
+
+        return () => window.removeEventListener('resize', adjustSidebarForViewport);
+    }, []);
 
     const toggleSidebar = () => {
         if (isExpanded) {
-            setWidth("3rem");
+            setWidth("2.5rem");
             setRotate(180);
         } else {
-            setWidth("11rem");
+            setWidth("10rem");
             setRotate(0);
         }
         setIsExpanded(!isExpanded);
     }
 
     return (
-        <div className="flex flex-row h-full items-center">
+        <div className="flex flex-row h-full items-center justify-center px-2 sm:px-4">
             <motion.div
-                className="w-44 shrink-0 hidden sm:block h-full"
+                className="w-40 shrink-0 h-full"
                 animate={{ width }}
                 transition={{ type: "spring" }}
             >
                 <motion.div
                     className={cn(
-                        "h-full rounded-lg pl-2 py-4 w-full overflow-y-hidden",
+                        "h-full rounded-lg py-4 w-full overflow-y-hidden",
                     )}
                     animate={{ width, paddingLeft }}
                     transition={{ type: "spring" }}
                 >
-                    <div>
+                    <div className="flex flex-col justify-between h-full">
                         {/* Lists & settings */}
                         <div className="flex flex-col justify-start h-full pt-5 pb-10 space-y-8">
-                            <Button>
-                                <div className="flex flex-row justify-center items-center gap-x-1">
-                                    <span className="text-xl">🍋</span>
-                                    {isExpanded && <span>travelsize</span>}
-                                </div>
+                            <Button asChild>
+                                <Link href="/dashboard">
+                                    <div className="flex flex-row justify-center items-center gap-x-1">
+                                        <span className="text-xl">🍋</span>
+                                        {isExpanded && <span>travelsize</span>}
+                                    </div>
+                                </Link>
                             </Button>
 
                             {/* Button container */}
@@ -115,7 +132,7 @@ export const Sidebar = ({
                                             className="border-none"
                                         >
                                             <AccordionTrigger
-                                                
+
                                                 className={cn(
                                                     "px-3 hover:bg-accent h-10 rounded-md hover:no-underline",
                                                     pathname.includes("/lists") && "bg-accent"
@@ -183,10 +200,27 @@ export const Sidebar = ({
                                 </LogoutButton>
                             </div>
                         </div>
+                        <Button
+                            variant="ghost"
+                            size="lg"
+                            className="px-3 w-full"
+                            onClick={toggleSidebar}
+                        >
+                            <div className="w-full flex justify-start items-center gap-x-1.5">
+                                <motion.div
+                                    animate={{ rotate }}
+                                    transition={{ type: "spring" }}
+                                >
+                                    <ArrowLeft className="size-4" />
+                                </motion.div>
+                                {isExpanded && <span>Collapse</span>}
+                            </div>
+                        </Button>
                     </div>
                 </motion.div>
+
             </motion.div>
-            <Button
+            {/* <Button
                 variant="ghost"
                 size="icon"
                 onClick={toggleSidebar}
@@ -197,8 +231,7 @@ export const Sidebar = ({
                 >
                     <ArrowLeft />
                 </motion.div>
-
-            </Button>
+            </Button> */}
         </div>
 
     )

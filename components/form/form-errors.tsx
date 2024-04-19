@@ -11,6 +11,8 @@ export const FormErrors = ({
 }: FormErrorsProps) => {
     if (!errors) return null;
 
+    console.log(errors);
+
     return (
         <div
         id={`${id}-error`}

@@ -30,6 +30,7 @@ export const ListForm = ({
     const [listType, setListType] = useState("");
     const [displayThemes, setDisplayThemes] = useState(false);
 
+    const isSmallScreen = window.innerWidth < 640;
 
     const { execute, fieldErrors } = useAction(createList, {
         onSuccess: (data) => {
@@ -61,8 +62,8 @@ export const ListForm = ({
     }
 
     const animationVariants = {
-        visible: { opacity: 1, filter: "blur(0px)", height: "auto" },
-        hidden: { opacity: 0, filter: "blur(3px)", height: 0 }
+        visible: { display: "block", opacity: 1, filter: "blur(0px)", height: "auto" },
+        hidden: { display: "none", opacity: 0, filter: "blur(3px)", height: 0 }
     }
 
     useEffect(() => {
@@ -87,12 +88,14 @@ export const ListForm = ({
                     animate={displayThemes ? "visible" : "hidden"}
                     transition={{ type: "spring", stiffness: 100 }}
                     variants={animationVariants}
+                    className="overflow-hidden"
                 >
                     <h1 className="text-center uppercase font-bold text-xs text-stone-500">Theme</h1>
                     <FormPicker
                         id="themeId"
                         data={themes}
                         errors={fieldErrors}
+                        size={isSmallScreen ? "sm" : "default"}
                     />
                 </motion.div>
 
@@ -102,7 +105,7 @@ export const ListForm = ({
                     id="title"
                     type="text"
                     placeholder="List title..."
-                    className="w-full border-none bg-stone-100"
+                    className="w-full border-none bg-accent"
                     errors={fieldErrors}
                 />
                 {listType === Types.PACKING && (
@@ -110,13 +113,12 @@ export const ListForm = ({
                         id="departAt"
                         date={date}
                         setDate={setDate}
-                        className="w-full border-none bg-stone-100"
+                        className="w-full border-none bg-accent"
                     />
                 )}
             </div>
             <FormSubmit
                 className="w-full"
-                variant="outline"
             >
                 Create
             </FormSubmit>

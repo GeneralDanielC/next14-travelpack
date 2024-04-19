@@ -22,7 +22,7 @@ import { toast } from "sonner";
 
 interface ItemSettingsForm {
     item: Item;
-    categories: Category[];
+    categories?: Category[];
 }
 
 export const ItemSettingsForm = ({

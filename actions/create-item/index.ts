@@ -10,6 +10,7 @@ import { createSafeAction } from "@/lib/create-safe-action";
 
 import { InputType, ReturnType } from "./types";
 import { CreateItem } from "./schema";
+import { getListByIdAndUserId, getThemes } from "@/data/data";
 
 const openai = new OpenAI({
     apiKey: process.env.OPENAI_API_KEY,
@@ -30,12 +31,43 @@ const handler = async (data: InputType): Promise<ReturnType> => {
 
     // No need to validate this input data since it is already done in the create-safe-action.
     // const { title, categoryId, quantity, listId } = data;
-    const { title, listId } = data;
+    const { title, listId, ownerUserId } = data;
+
+    const list = await getListByIdAndUserId(listId, ownerUserId);
+
+    const themes = await getThemes();
+
+    const themesString = themes.map((theme) => {
+        if (!theme.isListType) {
+            return `Theme Name: ${theme.title || 'N/A'}, Description: ${theme.description || 'No description available'}`;
+        }
+    });
+
+    const prompt = `
+        Categorize the following items into one or more categories based on their type, without using any bullet points or dashes. Write the categories in a simple, comma-separated list. 
+        
+        For example, "Laptop" would be categorized as "Electroincs", and "Jeans" would be "Clothing, Pants". 
+
+        \nHere are some examples of categorizing:
+        \n- Laptop: Electronics
+        \n- Jeans: Clothing, Pants
+        \n- Coffee mug: Kitchenware
+
+        \nPlease consider the list type and theme when categorizing the item. 
+        \nThe list types are "Packing list", "To-do list" and "Grocery/shopping list". 
+        \nThe themes are ${themesString}.
+        
+        \n\nCategorize this item: ${title}
+        \nThe list type is: ${list?.type.title}
+        \nThe theme is: ${list?.theme?.title || "none"}
+        \nRemember to write the categories in a simple, comma-separated list.`;        
 
     // CHANGE: add reference to list type.
+    // CHANGE: possibly add a long string of all the categories that are available... Maybe unnecessary...
+    // ADD THIS CODE WITHIN A TRY CATCH BLOCK
     const response = await openai.completions.create({
         model: "gpt-3.5-turbo-instruct",
-        prompt: `Categorize the following items into one or more categories based on their type, without using any bullet points or dashes. Write the categories in a simple, comma-separated list. For example, "Laptop" would be categorized as "Electroincs", and "Jeans" would be "Clothing, Pants". \nHere are some examples of categorizing:\n- Laptop: Electronics\n- Jeans: Clothing, Pants\n- Coffee mug: Kitchenware\n\nCategorize this item: ${title}\n\n`,
+        prompt,
         temperature: 0,
         max_tokens: 10,
         top_p: 1,
@@ -46,27 +78,26 @@ const handler = async (data: InputType): Promise<ReturnType> => {
 
     const fetchedCategories = response.choices[0].text;
 
-
     const fetchedCategoryList = fetchedCategories.split(',').map(cat => cat.trim().toLowerCase());
 
-    console.log(fetchedCategoryList);
+    console.log("fetchedCategoryList", fetchedCategoryList);
 
     const dbCategories = await db.category.findMany({
         where: {
-            userId: dbUser.id,
+            userId: ownerUserId,
         }
     });
 
     const miscCategory = await db.category.findFirst({
         where: {
-            userId: dbUser.id,
-            workName: "misc"
+            userId: ownerUserId,
+            workName: "Miscellaneous"
         }
     });
 
-    const findCategoryId = (dbCategories: any, fetchedCategoryList: String[]) => {        
+    const findCategoryId = (dbCategories: any, fetchedCategoryList: String[]) => {
         for (const dbCat of dbCategories) {
-            
+
             if (fetchedCategoryList.includes(dbCat.workName.toLowerCase())) {
                 return dbCat.id;
             }
@@ -75,7 +106,6 @@ const handler = async (data: InputType): Promise<ReturnType> => {
     }
 
     const categoryId = findCategoryId(dbCategories, fetchedCategoryList);
-    console.log(categoryId);
 
     let item;
 

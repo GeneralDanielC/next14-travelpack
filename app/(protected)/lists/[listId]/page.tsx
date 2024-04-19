@@ -1,6 +1,8 @@
 import { db } from "@/lib/db";
 import { ListCard } from "./_components/list-card";
 import { currentUser } from "@/lib/auth";
+import { getCategoriesByUserId, getListByIdAndUserId, getThemes } from "@/data/data";
+import { FullscreenError } from "../../_components/fullscreen-error";
 
 interface ListPageProps {
     params: {
@@ -14,34 +16,18 @@ const ListPage = async ({
     const user = await currentUser();
 
     if (!user) {
-        return <p>unauthorized</p>;
+        return <FullscreenError code={401} heading="Unauthorized" message="It seems as if you don't have access to this page." />;
     }
 
-    const list = await db.list.findUnique({
-        where: {
-            id: params.listId,
-            userId: user?.id,
-        },
-        include: {
-            items: {
-                include: {
-                    category: true,
-                },
-            },
-            theme: true,
-            type: true,
-        }
-    });
+    const list = await getListByIdAndUserId(params.listId, user?.id);
 
-    const themes = await db.theme.findMany({
-        where: { isListType: false }
-    });
+    if (!list) {
+        return <FullscreenError code={404} heading="Not Found" message="The list you were looking for could not be found." />
+    }
 
-    const categories = await db.category.findMany({
-        where: {
-            userId: user?.id,
-        },
-    });
+    const themes = await getThemes();
+    
+    const categories = await getCategoriesByUserId(list.userId);
 
     const totalCountChecked = await db.item.count({
         where: {
@@ -57,7 +43,7 @@ const ListPage = async ({
     }
 
     return (
-        <ListCard data={list} themes={themes} totalCountChecked={totalCountChecked} categories={categories} user={user} />
+        <ListCard list={list} themes={themes} totalCountChecked={totalCountChecked} categories={categories} />
     );
 }
 

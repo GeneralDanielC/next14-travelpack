@@ -24,7 +24,7 @@ const MarketingPage = async () => {
 
                 </h1>
                 <h2 className="mb-6 text-2xl md:text-5xl text-center font-semibold text-stone-600 dark:text-stone-400">
-                    The Ultimate Packing Web App.
+                    The Ultimate Packing App.
                 </h2>
                 <div className="text-3xl md:text-4xl bg-gradient-to-r from-stone-500 to-stone-300 text-transparent bg-clip-text px-4 p-2 rounded-md w-fit font-extrabold">
                     travelsize.

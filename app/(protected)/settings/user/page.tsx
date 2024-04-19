@@ -3,7 +3,7 @@ import { Card, CardContent, CardHeader as ShadcnCardHeader } from "@/components/
 import { UserSettingsForm } from "@/components/user-settings-form";
 import Link from "next/link";
 import { FaAngleLeft } from "react-icons/fa";
-import { CardHeader } from "../../_components/card-header";
+import { CardNavigation } from "../../_components/card-navigation";
 import { currentUser } from "@/lib/auth";
 
 const SettingsPage = async () => {
@@ -15,7 +15,7 @@ const SettingsPage = async () => {
 
     return (
         <Card className="w-full h-full flex flex-col rounded-l-3xl rounded-r-none shadow-none border-none">
-            <CardHeader 
+            <CardNavigation 
                 user={user}
                 breadcrumbs={[
                     {

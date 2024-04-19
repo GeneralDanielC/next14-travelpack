@@ -16,7 +16,7 @@ import { ItemSettingsForm } from "./item-settings-form";
 interface ListCardItemProps {
     item: Item;
     listId: string;
-    categories: Category[];
+    categories?: Category[];
 }
 
 export const ListCardItem = ({
@@ -75,12 +75,6 @@ export const ListCardItem = ({
                         "flex flex-row items-center gap-x-2",
                         itemIsChecked && "line-through text-stone-400/70"
                     )}>
-                        {/* <Checkbox
-                            disabled={pending}
-                            defaultChecked={itemIsChecked}
-                            checked={itemIsChecked}
-                            onClick={handleCheckItem}
-                        /> */}
                         <input
                             disabled={pending}
                             type="checkbox"

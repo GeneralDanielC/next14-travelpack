@@ -31,16 +31,16 @@ const DashboardLayout = async ({
     return (
         <div className="overflow-hidden h-full">
             <div className="absolute inset-0 flex flex-col justify-between">
-                <div className="bg-stone-500/40 dark:bg-stone-900 blur-3xl size-64 ml-40"></div>
-                <div className="bg-stone-400/50 dark:bg-stone-600/70 blur-3xl size-60 ml-60"></div>
-                <div className="bg-stone-300/70 dark:bg-stone-700/50 blur-3xl size-64"></div>
+                <div className="bg-stone-500/40 dark:bg-stone-900 blur-3xl size-52 sm:size-64 ml-36 sm:ml-40"></div>
+                <div className="bg-stone-400/50 dark:bg-stone-600/70 blur-3xl size-48 md:size-64 ml-48 md:ml-60"></div>
+                <div className="bg-stone-300/70 dark:bg-stone-700/50 blur-3xl ml-4 size-64"></div>
             </div>
             <div className="relative z-10 h-full">
                 {/* <div className="px-4">
                     <Navbar lists={lists} themes={themes} />
                 </div> */}
-                <main className="pl-4 max-w-6xl 2xl:max-w-screen-xl mx-auto h-full">
-                    <div className="flex gap-x-0.5 h-full">
+                <main className="max-w-6xl 2xl:max-w-screen-xl mx-auto h-full">
+                    <div className="flex h-full">
                         {/* Sidebar */}
                         <Sidebar lists={lists} themes={themes} types={types} />
 

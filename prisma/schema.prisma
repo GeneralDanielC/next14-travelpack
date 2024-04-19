@@ -30,6 +30,7 @@ model User {
 
   lists      List[]
   categories Category[]
+  ListShare  ListShare[]
 }
 
 model Account {
@@ -107,20 +108,28 @@ enum Types {
 }
 
 model List {
-  id        String    @id @default(auto()) @map("_id") @db.ObjectId
+  id        String      @id @default(auto()) @map("_id") @db.ObjectId
   title     String
   departAt  DateTime?
-  typeId    String    @db.ObjectId
-  type      Theme     @relation(name: "ListType", fields: [typeId], references: [id])
-  themeId   String?   @db.ObjectId
-  theme     Theme?    @relation(name: "ListTheme", fields: [themeId], references: [id])
-  userId    String    @db.ObjectId
-  user      User      @relation(fields: [userId], references: [id])
+  typeId    String      @db.ObjectId
+  type      Theme       @relation(name: "ListType", fields: [typeId], references: [id])
+  themeId   String?     @db.ObjectId
+  theme     Theme?      @relation(name: "ListTheme", fields: [themeId], references: [id])
+  userId    String      @db.ObjectId
+  user      User        @relation(fields: [userId], references: [id])
   items     Item[]
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
-  // ListType   ListType? @relation(fields: [listTypeId], references: [id])
-  // listTypeId String?   @db.ObjectId
+  shares    ListShare[]
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+}
+
+model ListShare {
+  id      String  @id @default(auto()) @map("_id") @db.ObjectId
+  listId  String  @db.ObjectId
+  userId  String  @db.ObjectId
+  list    List    @relation(fields: [listId], references: [id])
+  user    User    @relation(fields: [userId], references: [id])
+  canEdit Boolean
 }
 
 model Theme {

@@ -7,13 +7,9 @@ export const CreateItem = z.object({
     }).min(2, {
         message: "Title is too short."
     }),
-    // categoryId: z.string({
-    //     required_error: "Category is required",
-    //     invalid_type_error: "Category is required"
-    // }),
     listId: z.string({
         required_error: "Category is required",
         invalid_type_error: "Category is required"
     }),
-    // quantity: z.optional(z.number()),
+    ownerUserId: z.string(),
 });
