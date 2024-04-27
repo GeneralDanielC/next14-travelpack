@@ -10,7 +10,7 @@ const config = {
 	],
   prefix: "",
   safelist: [
-    "bg-amber-100", "bg-emerald-100", "bg-sky-100", "bg-sky-200", "bg-lime-200", "bg-sky-50", "bg-rose-100", "bg-stone-100, bg-stone-50"
+    "bg-amber-100", "bg-emerald-100", "bg-sky-100", "bg-sky-200", "bg-lime-200", "bg-sky-50", "bg-rose-100", "bg-stone-100", "bg-stone-50", "bg-orange-100", "bg-lime-100", "bg-red-100", "bg-cyan-100", "bg-green-100"
   ],
   theme: {
     container: {

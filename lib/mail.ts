@@ -1,3 +1,4 @@
+import { getUserByEmail } from "@/data/auth/user";
 import { Resend } from "resend";
 
 // Create a new instance of the Resend class using the API key from environment variables.
@@ -51,14 +52,14 @@ export const sendVerificationEmail = async (
 
 export const sendSharedToNotificationEmail = async (
     email: string,
-    token: string,
+    listId: string,
 ) => {
-    const confirmLink = `${domain}/auth/new-verification?token=${token}`;
+    const link = `${domain}/lists/${listId}`;
 
     await resend.emails.send({
         from: "onboarding@resend.dev", // TODO: change domain to real domain to be able to send to all addresses. See video @ 07:54:00
         to: email,
-        subject: "Confirm your email",
-        html: `<p>Click <a href="${confirmLink}">here</a> to confirm email.</p>`
+        subject: `New List Shared`,
+        html: `<p>${email} shared a list with you. Click <a href="${link}">here</a> see the list.</p>`
     });
 }

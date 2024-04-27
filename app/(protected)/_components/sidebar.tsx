@@ -82,14 +82,14 @@ export const Sidebar = ({
             <motion.div
                 className="w-40 shrink-0 h-full"
                 animate={{ width }}
-                transition={{ type: "spring" }}
+                // transition={{ type: "spring" }}
             >
                 <motion.div
                     className={cn(
                         "h-full rounded-lg py-4 w-full overflow-y-hidden",
                     )}
                     animate={{ width, paddingLeft }}
-                    transition={{ type: "spring" }}
+                    // transition={{ type: "spring" }}
                 >
                     <div className="flex flex-col justify-between h-full">
                         {/* Lists & settings */}
@@ -209,7 +209,7 @@ export const Sidebar = ({
                             <div className="w-full flex justify-start items-center gap-x-1.5">
                                 <motion.div
                                     animate={{ rotate }}
-                                    transition={{ type: "spring" }}
+                                    // transition={{ type: "spring" }}
                                 >
                                     <ArrowLeft className="size-4" />
                                 </motion.div>

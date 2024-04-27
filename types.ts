@@ -1,4 +1,4 @@
-import { List, Item, Theme, Category, ListShare, User } from "@prisma/client";
+import { List, Item, Theme, Category, ListShare, User, Suggestion } from "@prisma/client";
 import { ExtendedUser } from "./auth";
 
 export type ListWithItems = List & { items: Item[] };
@@ -33,8 +33,37 @@ export type CategoryWithItems = Category & { items: Item[] };
 
 export type ItemWithList = Item & { list: List };
 
+export type SuggestionWithCategoryAndTheme = Suggestion & { category: Category, themes: Theme[] };
+
+
 export enum Types {
     TODO = 'TODO',
     PACKING = 'PACKING',
     GROCERY = 'GROCERY'
 };
+
+export enum ThemeNames {
+    BEACH = "Beach Vacation",
+    COUNTRYSIDE = "Countryside",
+    GETAWAY = "Getaway",
+    BOATING = "Boating Trip",
+    NATURE = "Nature Adventure",
+    SKIING = "Skiing Holiday"
+}
+
+export enum CategoryWorkNames {
+    MISC = "miscellaneous",
+    CLOTHING = "clothing",
+    OUTDOOR = "outdoor clothes & gear",
+    TOILETRIES = "toiletries",
+    ELECTRONICS = "electronics",
+    FOODDRINKS = "food & drinks",
+    ACCESSORIES = "accessories",
+    FOOTWEAR = "footwear",
+    DOCUMENTS = "travel documents",
+    PETS = "pet supplies",
+    BABY = "baby supplies",
+    MONEY = "money & finances",
+    MAKEUP = "make-up",
+    TRAINING = "training gear",
+}

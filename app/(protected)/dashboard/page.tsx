@@ -103,7 +103,7 @@ const DashboardPage = async () => {
                                     <span className="text-xs">Upcoming</span>
                                 </div>
                                 <div className="h-full flex flex-col items-center justify-center">
-                                    {sortedListsDepartAt.map((list, index) => {
+                                    {sortedListsDepartAt.length > 0 ? sortedListsDepartAt.map((list, index) => {
                                         if (list.type.title === Types.PACKING && list.departAt && index < 3) {
                                             return (
                                                 <Button
@@ -123,7 +123,9 @@ const DashboardPage = async () => {
 
                                             )
                                         }
-                                    })}
+                                    }) : (
+                                        <span className="text-left text-xs w-full mt-2">No lists yet.</span>
+                                    )}
                                 </div>
                             </div>
                         </div>
@@ -170,7 +172,7 @@ const DashboardPage = async () => {
                             )}
 
                         </div>
-                        {lists.length > 0 && (
+                        {lists.length > 2 && (
                             <Button
                                 variant="ghost"
                                 className="w-full"

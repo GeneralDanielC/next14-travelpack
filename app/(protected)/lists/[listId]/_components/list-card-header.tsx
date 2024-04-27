@@ -17,18 +17,22 @@ import { toast } from "sonner";
 import { Separator } from "@/components/ui/separator";
 import { ListShareForm } from "./list-share-form";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/hover-card";
+import { FormSubmit } from "@/components/form/form-submit";
+import { ListShareUnshareForm } from "./list-share-unshare-form";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 
 interface ListCardHeaderProps {
     list: ListComplete;
     totalCountChecked: number;
     hideButtons?: boolean;
+    userIsNotOwnerOfList?: boolean;
 }
 
 export const ListCardHeader = ({
     list,
     totalCountChecked,
-    hideButtons
+    hideButtons,
+    userIsNotOwnerOfList
 }: ListCardHeaderProps) => {
     const pathname = usePathname();
 
@@ -65,35 +69,70 @@ export const ListCardHeader = ({
                             </DialogHeader>
                             <div className="flex flex-col gap-y-5">
                                 <div>
-                                    {list.shares?.length && (
+                                    {list?.shares?.length > 0 && (
                                         <div className="flex flex-row items-center gap-x-2 mb-4">
+
+                                            <Popover>
+                                                <PopoverTrigger>
+                                                    <Avatar className="size-10 border border-accent">
+                                                        <AvatarImage src={list.user?.image || ""} />
+                                                        <AvatarFallback className="bg-stone-100 dark:bg-stone-700  rounded-full">
+                                                            <User2Icon className="size-10" />
+                                                        </AvatarFallback>
+                                                    </Avatar>
+                                                </PopoverTrigger>
+                                                <PopoverContent className="w-full">
+                                                    <div className="w-full h-full flex flex-row gap-x-3 items-center">
+                                                        <div>
+                                                            <Avatar className="size-14">
+                                                                <AvatarImage src={list?.user?.image || ""} />
+                                                                <AvatarFallback className="bg-stone-100 dark:bg-stone-700 rounded-full">
+                                                                    <User2Icon className="size-10" />
+                                                                </AvatarFallback>
+                                                            </Avatar>
+                                                        </div>
+                                                        <div className="flex flex-col gap-y-1">
+                                                            <h1>{list?.user?.name}</h1>
+                                                            <span className="text-xs">{list?.user?.email}</span>
+                                                            <i className="text-xs">Owner {!userIsNotOwnerOfList && ("(me)")}</i>
+                                                        </div>
+                                                    </div>
+                                                </PopoverContent>
+                                            </Popover>
                                             {list.shares.map((share) => (
-                                                <HoverCard>
-                                                    <HoverCardTrigger>
+                                                <Popover>
+                                                    <PopoverTrigger>
                                                         <Avatar className="size-10 border border-accent">
                                                             <AvatarImage src={share?.user?.image || ""} />
-                                                            <AvatarFallback className="bg-stone-100 rounded-full">
+                                                            <AvatarFallback className="bg-stone-100 dark:bg-stone-700  rounded-full">
                                                                 <User2Icon className="size-10" />
                                                             </AvatarFallback>
                                                         </Avatar>
-                                                    </HoverCardTrigger>
-                                                    <HoverCardContent>
+                                                    </PopoverTrigger>
+                                                    <PopoverContent className="w-full">
                                                         <div className="w-full h-full flex flex-row gap-x-3 items-center">
                                                             <div>
                                                                 <Avatar className="size-14">
                                                                     <AvatarImage src={share?.user?.image || ""} />
-                                                                    <AvatarFallback className="bg-stone-100 rounded-full">
+                                                                    <AvatarFallback className="bg-stone-100 dark:bg-stone-700 rounded-full">
                                                                         <User2Icon className="size-10" />
                                                                     </AvatarFallback>
                                                                 </Avatar>
                                                             </div>
-                                                            <div className="flex flex-col gap-y-1.5">
+                                                            <div className="flex flex-col gap-y-1">
                                                                 <h1>{share?.user?.name}</h1>
                                                                 <span className="text-xs">{share?.user?.email}</span>
+                                                                <div className="flex flex-row items-center justify-between">
+                                                                    <span className="text-xs">{share?.canEdit ? "Can edit" : "Read-only"}</span>
+                                                                    {!userIsNotOwnerOfList && (
+                                                                        <ListShareUnshareForm share={share} />
+                                                                    )}
+                                                                </div>
+
                                                             </div>
                                                         </div>
-                                                    </HoverCardContent>
-                                                </HoverCard>
+                                                    </PopoverContent>
+                                                </Popover>
 
                                             ))}
                                         </div>

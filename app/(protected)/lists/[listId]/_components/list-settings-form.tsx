@@ -17,6 +17,8 @@ import { toast } from "sonner";
 import { deleteList } from "@/actions/delete-list";
 import { copyList } from "@/actions/copy-list";
 import { ListComplete, Types } from "@/types";
+import { leaveListShare } from "@/actions/leave-list-share";
+import { redirect, useRouter } from "next/navigation";
 
 interface ListSettingsFormProps {
   list: ListComplete;
@@ -31,6 +33,8 @@ export const ListSettingsForm = ({
 }: ListSettingsFormProps) => {
   const user = useCurrentUser();
   const [date, setDate] = useState<Date | null | undefined>(list.departAt);
+
+  const router = useRouter();
 
   const { execute: executeUpdate, fieldErrors } = useAction(updateList, {
     onSuccess: (data) => {
@@ -53,6 +57,15 @@ export const ListSettingsForm = ({
   const { execute: executeDelete } = useAction(deleteList, {
     onSuccess: (data) => {
       toast.success(`List "${data.title}" deleted.`);
+    },
+    onError: (error) => {
+      toast.error(error);
+    }
+  });
+
+  const { execute: executeLeaveShare } = useAction(leaveListShare, {
+    onSuccess: (data) => {
+      toast.success(`Shared list successfully deleted.`);
     },
     onError: (error) => {
       toast.error(error);
@@ -90,6 +103,15 @@ export const ListSettingsForm = ({
     executeDelete({
       listId,
     });
+  }
+
+  const handleLeaveShare = (formData: FormData) => {
+    const listId = formData.get("listId") as string;
+
+    executeLeaveShare({
+      listId,
+    });
+    router.push("/dashboard");
   }
 
   return (
@@ -179,6 +201,23 @@ export const ListSettingsForm = ({
             className="text-rose-500 font-extrabold w-full hover:bg-rose-500/10 hover:text-rose-500 hover:border-rose-500/70 hover:border flex items-center"
           >
             Delete
+          </FormSubmit>
+        </form>
+      )}
+
+      {userIsNotOwnerOfList && (
+        <form action={handleLeaveShare}>
+          <input
+            hidden
+            id="listId"
+            name="listId"
+            value={list.id}
+          />
+          <FormSubmit
+            variant="ghost"
+            className="text-rose-500 font-extrabold w-full hover:bg-rose-500/10 hover:text-rose-500 hover:border-rose-500/70 hover:border flex items-center"
+          >
+            Leave this list
           </FormSubmit>
         </form>
       )}

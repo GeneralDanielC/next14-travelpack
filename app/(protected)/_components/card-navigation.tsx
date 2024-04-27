@@ -34,9 +34,11 @@ export const CardNavigation = ({
                 <Breadcrumb>
                     <BreadcrumbList>
                         <BreadcrumbItem>
-                            <BreadcrumbLink href="/dashboard">travelsize</BreadcrumbLink>
+                            <BreadcrumbLink href={hideUser ? "/" : "/dashboard"}>travelsize</BreadcrumbLink>
                         </BreadcrumbItem>
-                        <BreadcrumbSeparator />
+                        {!hideUser && (
+                            <BreadcrumbSeparator />
+                        )}
                         {breadcrumbs?.map((breadcrumb, index) => (
                             <>
                                 <BreadcrumbItem>

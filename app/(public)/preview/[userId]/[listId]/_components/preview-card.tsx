@@ -9,12 +9,12 @@ import { ListSettingsForm } from "@/app/(protected)/lists/[listId]/_components/l
 import { Accordion } from "@/components/ui/accordion";
 import { Card, CardContent } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { CategoryWithItems, ListWithItemsThemeCategoryTypeAndShares } from "@/types";
+import { CategoryWithItems, ListComplete, ListWithItemsThemeCategoryTypeAndShares } from "@/types";
 import { useState } from "react";
 import { PreviewItem } from "./preview-item";
 
 interface PreviewCardProps {
-    data: ListWithItemsThemeCategoryTypeAndShares;
+    data: ListComplete;
     totalCountChecked: number;
 }
 
@@ -53,7 +53,7 @@ export const PreviewCard = ({
     return (
         <Card className="w-full h-full flex flex-col rounded-l-3xl rounded-r-none shadow-none border-none">
             <CardNavigation hideUser />
-            <ListCardHeader data={data} totalCountChecked={totalCountChecked} hideButtons />
+            <ListCardHeader list={data} totalCountChecked={totalCountChecked} hideButtons />
             <CardContent className="overflow-y-scroll max-h-full">
                 {/* List render (incl. items and categories) */}
                 <Accordion

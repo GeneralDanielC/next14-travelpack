@@ -1,0 +1,86 @@
+export const initialCategories = (userId: string, listTypePackingId: string) => [
+    {
+        displayName: "Miscellaneous",
+        workName: "miscellaneous",
+        userId,
+        listTypeId: listTypePackingId,
+    },
+    {
+        displayName: "Clothing",
+        workName: "clothing",
+        userId,
+        listTypeId: listTypePackingId,
+    },
+    {
+        displayName: "Outdoor Clothes & Gear",
+        workName: "outdoor clothes & gear",
+        userId,
+        listTypeId: listTypePackingId,
+    },
+    {
+        displayName: "Toiletries",
+        workName: "toiletries",
+        userId,
+        listTypeId: listTypePackingId,
+    },
+    {
+        displayName: "Electronics",
+        workName: "electronics",
+        userId,
+        listTypeId: listTypePackingId,
+    },
+    {
+        displayName: "Food & Drinks",
+        workName: "food & drinks",
+        userId,
+        listTypeId: listTypePackingId,
+    },
+    {
+        displayName: "Accessories",
+        workName: "accessories",
+        userId,
+        listTypeId: listTypePackingId,
+    },
+    {
+        displayName: "Footwear",
+        workName: "footwear",
+        userId,
+        listTypeId: listTypePackingId,
+    },
+    {
+        displayName: "Travel Documents",
+        workName: "travel documents",
+        userId,
+        listTypeId: listTypePackingId,
+    },
+    {
+        displayName: "Pet Supplies",
+        workName: "pet supplies",
+        userId,
+        listTypeId: listTypePackingId,
+    },
+    {
+        displayName: "Baby Supplies",
+        workName: "baby supplies",
+        userId,
+        listTypeId: listTypePackingId,
+    },
+    {
+        displayName: "Money & Finances",
+        workName: "money & finances",
+        userId,
+        listTypeId: listTypePackingId,
+    },
+    {
+        displayName: "Make-up",
+        workName: "make-up",
+        userId,
+        listTypeId: listTypePackingId,
+    },
+    {
+        displayName: "Training Gear",
+        workName: "training gear",
+        userId,
+        listTypeId: listTypePackingId,
+    },
+];

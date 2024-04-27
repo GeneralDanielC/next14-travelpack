@@ -22,8 +22,9 @@ export const PreviewItem = ({
             variant="ghost"
             className="w-full flex flex-row items-center justify-between"
             onClick={() => toast.error("Insufficient permission.")}
+            disabled
         >
-            <div key={item.id} className="flex items-center">
+            <div key={item.id} className="flex items-center justify-between w-full">
                 <div className={cn(
                     "flex flex-row items-center gap-x-2",
                     itemIsChecked && "line-through text-stone-400/70"

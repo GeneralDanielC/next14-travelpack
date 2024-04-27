@@ -10,7 +10,7 @@ import {
 } from "@/components/ui/tabs";
 
 
-import { CategoryWithItems, ListComplete, ListWithItemsThemeCategoryAndType } from "@/types";
+import { CategoryWithItems, ListComplete, ListWithItemsThemeCategoryAndType, SuggestionWithCategoryAndTheme } from "@/types";
 
 import { ListCardHeader } from "./list-card-header";
 import { ListSettingsForm } from "./list-settings-form";
@@ -21,6 +21,7 @@ import { ItemForm } from "./item-form";
 import { CardNavigation } from "@/app/(protected)/_components/card-navigation";
 import { ExtendedUser } from "@/auth";
 import { useCurrentUser } from "@/hooks/use-current-user";
+import { useState } from "react";
 
 
 interface ListCardProps {
@@ -28,6 +29,7 @@ interface ListCardProps {
     totalCountChecked: number;
     themes: Theme[];
     categories: Category[];
+    suggestions: SuggestionWithCategoryAndTheme[];
 }
 
 interface CategoriesMap {
@@ -39,6 +41,7 @@ export const ListCard = ({
     totalCountChecked,
     themes,
     categories,
+    suggestions,
 }: ListCardProps) => {
     const user = useCurrentUser();
 
@@ -67,6 +70,8 @@ export const ListCard = ({
 
     const userIsNotOwnerOfList = list.shares.some((share) => share.userId === user?.id);
 
+    const userHasEditingRights = !userIsNotOwnerOfList || list.shares.some((share) => share.userId === user?.id && share.canEdit);
+
     return (
         <Card className="w-full h-full flex flex-col rounded-l-3xl rounded-r-none shadow-none border-none">
             <CardNavigation
@@ -82,7 +87,7 @@ export const ListCard = ({
                     }
                 ]}
             />
-            <ListCardHeader list={list} totalCountChecked={totalCountChecked} />
+            <ListCardHeader list={list} totalCountChecked={totalCountChecked} userIsNotOwnerOfList={userIsNotOwnerOfList} />
             <CardContent className="overflow-y-scroll max-h-full">
                 <Tabs defaultValue="list">
                     <TabsList className="grid w-full grid-cols-2">
@@ -92,31 +97,41 @@ export const ListCard = ({
                     <TabsContent value="list" className="h-full flex flex-col overflow-y-scroll">
                         {/* Add new item */}
 
-                        <ItemForm categories={categories} list={list} />
+                        <ItemForm categories={categories} list={list} userHasEditingRights={userHasEditingRights} suggestions={suggestions} />
 
                         {/* List render (incl. items and categories) */}
                         <Accordion
                             type="multiple"
                             className="w-full"
+                            defaultValue={categoriesWithItems.map((category) => {
+                                let checkedItems = 0;
+                                category.items.map((item) => {
+                                    if (item.isChecked) {
+                                        checkedItems += 1;
+                                    }
+                                })
+                                
+                                if (checkedItems !== category.items.length) return category.id;
+                            })}
                         >
-                            {/* Map categories */}
-                            {categoriesWithItems.map((category) => (
-                                <ListCardCategory key={category.id} category={category}>
-                                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-4">
-                                        {category.items.map((item) => (
-                                            <ListCardItem key={item.id} item={item} listId={list.id} categories={categories} />
-                                        ))}
-                                    </div>
-                                </ListCardCategory>
-                            ))}
-                        </Accordion>
-                    </TabsContent>
-                    <TabsContent value="settings" className="h-full flex flex-col overflow-y-scroll">
-                        <ListSettingsForm list={list} themes={themes} userIsNotOwnerOfList={userIsNotOwnerOfList} />
-                    </TabsContent>
-                </Tabs>
+                        {/* Map categories */}
+                        {categoriesWithItems.map((category) => (
+                            <ListCardCategory key={category.id} category={category}>
+                                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-4">
+                                    {category.items.map((item) => (
+                                        <ListCardItem key={item.id} item={item} listId={list.id} categories={categories} userHasEditingRights={userHasEditingRights} />
+                                    ))}
+                                </div>
+                            </ListCardCategory>
+                        ))}
+                    </Accordion>
+                </TabsContent>
+                <TabsContent value="settings" className="h-full flex flex-col overflow-y-scroll">
+                    <ListSettingsForm list={list} themes={themes} userIsNotOwnerOfList={userIsNotOwnerOfList} />
+                </TabsContent>
+            </Tabs>
 
-            </CardContent>
-        </Card>
+        </CardContent>
+        </Card >
     )
 }

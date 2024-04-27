@@ -29,6 +29,19 @@ const ListPage = async ({
     
     const categories = await getCategoriesByUserId(list.userId);
 
+    const suggestions = await db.suggestion.findMany({
+        where: {
+            userId: user.id,
+            themeIds: {
+                has: list.themeId
+            }
+        },
+        include: {
+            category: true,
+            themes: true,
+        }
+    });
+
     const totalCountChecked = await db.item.count({
         where: {
             listId: params.listId,
@@ -43,7 +56,7 @@ const ListPage = async ({
     }
 
     return (
-        <ListCard list={list} themes={themes} totalCountChecked={totalCountChecked} categories={categories} />
+        <ListCard list={list} themes={themes} totalCountChecked={totalCountChecked} categories={categories} suggestions={suggestions} />
     );
 }
 

@@ -9,6 +9,7 @@ import { createSafeAction } from "@/lib/create-safe-action";
 
 import { InputType, ReturnType } from "./types";
 import { CreateListShare } from "./schema";
+import { sendSharedToNotificationEmail } from "@/lib/mail";
 
 const handler = async (data: InputType): Promise<ReturnType> => {
     const user = await currentUser();
@@ -30,7 +31,18 @@ const handler = async (data: InputType): Promise<ReturnType> => {
 
     if (!newShareUser) {
         return { error: "No user found. Try again with another email." };
-    }    
+    }
+
+    let existingListShare = await db.listShare.findFirst({
+        where: {
+            listId,
+            userId: dbUser.id
+        }
+    })
+
+    if (existingListShare) return { error: "List is already shared with this user." }
+
+    if (newShareUser.id === dbUser.id) return { error: "You can't share the list with yourself." }
 
     let listShare;
 
@@ -45,10 +57,11 @@ const handler = async (data: InputType): Promise<ReturnType> => {
         });
     } catch (error) {
         console.error("Error sharing list:", error);
-        console.error("DB object status:", db);        
+        console.error("DB object status:", db);
         return { error: "Failed to share list." }
     }
 
+    await sendSharedToNotificationEmail(userEmail, listId);
     revalidatePath(`/list/${listId}`);
     return { data: listShare };
 }

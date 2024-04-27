@@ -19,6 +19,8 @@ interface FormInputProps {
     className?: string;
     defaultValue?: string | number | readonly string[] | undefined;
     onBlur?: () => void;
+    onFocus?: () => void;
+    onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
     min?: number;
     max?: number;
     autofocus?: boolean;
@@ -35,6 +37,8 @@ export const FormInput = forwardRef<HTMLInputElement, FormInputProps>(({
     className,
     defaultValue = "",
     onBlur,
+    onFocus,
+    onChange,
     min,
     max,
     autofocus
@@ -54,6 +58,8 @@ export const FormInput = forwardRef<HTMLInputElement, FormInputProps>(({
                 ) : null}
                 <Input
                     onBlur={onBlur}
+                    onFocus={onFocus}
+                    onChange={onChange}
                     defaultValue={defaultValue || ""}
                     ref={ref}
                     required={required}

@@ -1,6 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import lodash from "lodash";
 
 import { db } from "@/lib/db";
 import { currentUser } from "@/lib/auth";
@@ -56,7 +57,7 @@ const handler = async (data: InputType): Promise<ReturnType> => {
                 id: categoryId,
             },
             data: {
-                displayName: oldCategory.workName,
+                displayName: lodash.startCase(oldCategory.workName),
             }
         });
     } catch (error) {

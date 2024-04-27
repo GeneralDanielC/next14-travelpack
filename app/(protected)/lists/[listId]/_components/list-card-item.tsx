@@ -17,12 +17,14 @@ interface ListCardItemProps {
     item: Item;
     listId: string;
     categories?: Category[];
+    userHasEditingRights?: boolean;
 }
 
 export const ListCardItem = ({
     item,
     listId,
     categories,
+    userHasEditingRights
 }: ListCardItemProps) => {
     const { pending } = useFormStatus();
 
@@ -40,6 +42,8 @@ export const ListCardItem = ({
 
     const handleSubmit = (formData: FormData) => {
         const itemId = formData.get("itemId") as string;
+
+        if (!userHasEditingRights) return;
 
         execute({
             itemId,
@@ -63,9 +67,10 @@ export const ListCardItem = ({
                     id="itemId"
                     name="itemId"
                     value={item.id}
+                    disabled={!userHasEditingRights}
                 />
                 <Button
-                    disabled={pending}
+                    disabled={!userHasEditingRights || pending}
                     size="sm"
                     variant="ghost"
                     className="w-full flex flex-row items-center justify-between"
@@ -95,8 +100,9 @@ export const ListCardItem = ({
                     </div>
                 </Button>
             </form>
-            
-            <ItemSettingsForm item={item} categories={categories} />
+            {userHasEditingRights && (
+                <ItemSettingsForm item={item} categories={categories} />
+            )}
         </div>
     )
 }

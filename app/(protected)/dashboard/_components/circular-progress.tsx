@@ -31,7 +31,7 @@ export const CircularProgress = ({
                 svg: "w-full h-full",
                 track: "stroke-black/10 dark:stroke-white/10"
             }}
-            value={(totalAmountChecked / totalAmountItems) * 100}
+            value={totalAmountItems === 0 ? 0 :(totalAmountChecked / totalAmountItems) * 100}
             showValueLabel
         />
     )

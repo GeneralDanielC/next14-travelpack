@@ -12,6 +12,7 @@ import { Category } from "@prisma/client";
 import { ArrowRightIcon } from "lucide-react";
 import { ElementRef, useRef } from "react";
 import { toast } from "sonner";
+import lodash from "lodash";
 
 interface CategoryFormProps {
     category: Category,
@@ -94,9 +95,9 @@ export const CategoryForm = ({
                     hidden
                     value={category.workName}
                 />
-                {category.workName !== category.displayName && (
+                {category.workName.toLowerCase() !== category.displayName.toLowerCase() && (
                     <div className="flex flex-row justify-around items-center bg-accent p-1.5 rounded-lg">
-                        <span className="line-through text-xs">{category.workName}</span>
+                        <span className="line-through text-xs">{lodash.startCase(category.workName)}</span>
                         <ArrowRightIcon className="size-4" />
                         <div className="flex flex-col justify-center items-center">
                             <i className="text-xs text-rose-500">New!</i>
@@ -108,9 +109,7 @@ export const CategoryForm = ({
                     <FormSubmit className="">
                         Save
                     </FormSubmit>
-
                 </div>
-
             </form>
             <form
                 ref={formRef}
