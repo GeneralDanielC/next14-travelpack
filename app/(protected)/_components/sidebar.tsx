@@ -81,9 +81,10 @@ export const Sidebar = ({
         <div className="flex flex-row h-full items-center justify-center px-2 sm:px-4">
             <motion.div
                 className="w-40 shrink-0 h-full"
+                // animate={{ transform: `translateX(${isExpanded ? 1:0.25})` }} 
                 animate={{ width }}
-                // transition={{ type: "spring" }}
-            >
+                // transition={{ type: "spring", stiffness: 100, damping: 10 }}
+                >
                 <motion.div
                     className={cn(
                         "h-full rounded-lg py-4 w-full overflow-y-hidden",

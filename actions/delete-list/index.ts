@@ -10,6 +10,8 @@ import { createSafeAction } from "@/lib/create-safe-action";
 import { InputType, ReturnType } from "./types";
 import { DeleteList } from "./schema";
 import { redirect } from "next/navigation";
+import { decreaseAvailableCount } from "@/lib/list-limit";
+import { checkSubscription } from "@/lib/subscription";
 
 const handler = async (data: InputType): Promise<ReturnType> => {
     const user = await currentUser();
@@ -24,6 +26,8 @@ const handler = async (data: InputType): Promise<ReturnType> => {
         return { error: "Unauthorized" }
     }
 
+    const isPro = await checkSubscription();
+
     // No need to validate this input data since it is already done in the create-safe-action.
     const { listId } = data;
 
@@ -36,7 +40,12 @@ const handler = async (data: InputType): Promise<ReturnType> => {
                 id: listId,
             },
         });
-       
+
+
+        if (!isPro) {
+            await decreaseAvailableCount();
+        }
+
     } catch (error) {
         return { error: "Failed to delete" }
     }

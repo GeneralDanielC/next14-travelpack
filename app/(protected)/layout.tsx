@@ -4,6 +4,7 @@ import { Sidebar } from "./_components/sidebar";
 import { db } from "@/lib/db";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
+import { ModalProvider } from "@/components/providers/modal-provider";
 
 const DashboardLayout = async ({
     children
@@ -48,7 +49,7 @@ const DashboardLayout = async ({
                     </div>
                 </main>
             </div>
-
+            <ModalProvider />
         </div>
     );
 }

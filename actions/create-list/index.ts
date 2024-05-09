@@ -10,6 +10,8 @@ import { createSafeAction } from "@/lib/create-safe-action";
 import { InputType, ReturnType } from "./types";
 import { CreateList } from "./schema";
 import { Types } from "@/types";
+import { incrementAvailableCount, hasAvailableCount } from "@/lib/list-limit";
+import { checkSubscription } from "@/lib/subscription";
 
 const handler = async (data: InputType): Promise<ReturnType> => {
     const user = await currentUser();
@@ -24,6 +26,13 @@ const handler = async (data: InputType): Promise<ReturnType> => {
         return { error: "Unauthorized" }
     }
 
+    const canCreate = await hasAvailableCount();
+    const isPro = await checkSubscription();
+
+    if (!canCreate && !isPro) {
+        return { error: "You have reached your limit of free lists. Please upgrade to create more." }
+    }
+
     // No need to validate this input data since it is already done in the create-safe-action.
     const { title, themeId, departAt, typeId } = data;
 
@@ -32,9 +41,9 @@ const handler = async (data: InputType): Promise<ReturnType> => {
     }
 
     const packingType = await db.theme.findFirst({
-        where: { 
+        where: {
             isListType: true,
-            title: Types.PACKING 
+            title: Types.PACKING
         }
     })
 
@@ -61,6 +70,11 @@ const handler = async (data: InputType): Promise<ReturnType> => {
                 userId: user.id,
             }
         });
+
+        if (!isPro) {
+            await incrementAvailableCount();
+        }
+
     } catch (error) {
         return { error: "Failed to create" }
     }

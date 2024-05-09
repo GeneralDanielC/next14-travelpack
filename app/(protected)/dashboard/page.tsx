@@ -20,6 +20,9 @@ import { CalendarDaysIcon, CheckCircleIcon, InfoIcon, PlusIcon } from "lucide-re
 import { Chart } from "./_components/chart";
 import { CircularProgress } from "./_components/circular-progress";
 import Link from "next/link";
+import { getAvailableCount } from "@/lib/list-limit";
+import { MAX_FREE_LISTS } from "@/constants/lists";
+import { checkSubscription } from "@/lib/subscription";
 
 const DashboardPage = async () => {
     const user = await currentUser();
@@ -32,6 +35,9 @@ const DashboardPage = async () => {
     const themes = await getThemes();
 
     const types = await getTypes();
+
+    const availableCount = await getAvailableCount();
+    const isPro = await checkSubscription();
 
     lists.sort((a, b) => +new Date(b.updatedAt) - +new Date(a.updatedAt));
 
@@ -155,9 +161,15 @@ const DashboardPage = async () => {
                                     className="bg-green-400 rounded-lg p-1.5 hover:bg-green-400/80 h-16"
                                     size="lg"
                                 >
-                                    <div className="flex flex-row items-center gap-x-1">
-                                        <PlusIcon />
-                                        <span>Create New List</span>
+                                    <div className="flex flex-col justify-center">
+                                        <div className="flex flex-row items-center gap-x-1">
+                                            <PlusIcon />
+                                            <div className="flex flex-col justify-center items-center">
+                                                <span>Create New List</span>
+                                            </div>
+
+                                        </div>
+                                        <span className="text-xs">{isPro ? "Unlimited" : `${MAX_FREE_LISTS - availableCount} remaining`}</span>
                                     </div>
                                 </Button>
                             </ListFormDrawer>

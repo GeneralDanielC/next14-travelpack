@@ -12,7 +12,7 @@ import { createList } from "@/actions/create-list";
 import { toast } from "sonner";
 import { Dispatch, ElementRef, SetStateAction, useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
-
+import { useProModal } from "@/hooks/use-pro-modal";
 
 interface ListFormProps {
     themes: Theme[];
@@ -29,6 +29,7 @@ export const ListForm = ({
     const [date, setDate] = useState<Date>();
     const [listType, setListType] = useState("");
     const [displayThemes, setDisplayThemes] = useState(false);
+    const proModal = useProModal();
 
     const isSmallScreen = window.innerWidth < 640;
 
@@ -40,6 +41,7 @@ export const ListForm = ({
         },
         onError: (error) => {
             toast.error(error);
+            proModal.onOpen();
         }
     });
 
