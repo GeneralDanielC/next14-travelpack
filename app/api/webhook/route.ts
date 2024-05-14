@@ -41,13 +41,14 @@ export async function POST(req: Request) {
                 stripeCurrentPeriodEnd: new Date(
                     subscription.current_period_end * 1000
                 ),
+                stripeCancelAtPeriodEnd: subscription.cancel_at_period_end,
             },
         });
     }
 
     if (event.type === "invoice.payment_succeeded") {
         const subscription = await stripe.subscriptions.retrieve(
-            session.subscription as string
+            session.id as string
         );
 
         await db.userSubscription.update({
@@ -59,6 +60,24 @@ export async function POST(req: Request) {
                 stripeCurrentPeriodEnd: new Date(
                     subscription.current_period_end * 1000,
                 )
+            }
+        })
+    }
+
+    if (event.type === "customer.subscription.updated") {
+        const subscription = await stripe.subscriptions.retrieve(
+            session.id as string
+        );
+
+        await db.userSubscription.update({
+            where: {
+                stripeSubscriptionId: subscription.id
+            },
+            data: {
+                stripeCurrentPeriodEnd: new Date(
+                    subscription.current_period_end * 1000,
+                ),
+                stripeCancelAtPeriodEnd: subscription.cancel_at_period_end,
             }
         })
     }

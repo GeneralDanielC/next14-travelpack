@@ -6,8 +6,8 @@ import { FaAngleLeft } from "react-icons/fa";
 import { CardNavigation } from "../../_components/card-navigation";
 import { currentUser } from "@/lib/auth";
 import { SubscriptionButton } from "./_components/subscription-button";
-import { checkSubscription } from "@/lib/subscription";
-import { Check, CheckCircle, CreditCard } from "lucide-react";
+import { checkSubscription, subscriptionIsAnnulled, subscriptionPeriodEnd } from "@/lib/subscription";
+import { ArrowDown, Check, CheckCircle, CreditCard } from "lucide-react";
 import { BillingListItem } from "./_components/billing-list-item";
 import { Separator } from "@/components/ui/separator";
 import { cn } from "@/lib/utils";
@@ -15,9 +15,15 @@ import { cn } from "@/lib/utils";
 const SettingsPage = async () => {
     const user = await currentUser();
     const isPro = await checkSubscription();
+    let periodEnd = await subscriptionPeriodEnd();
+    const isAnnulled = await subscriptionIsAnnulled();
 
     if (!user) {
         return <p>unauthorized</p>
+    }
+
+    if (!periodEnd) {
+        periodEnd = new Date();
     }
 
     return (
@@ -42,6 +48,7 @@ const SettingsPage = async () => {
                                 <div className="flex flex-col">
                                     <span className="font-extrabold text-lg">Free</span>
                                     <span className="font-semibold text-md text-accent-foreground/70">0 SEK/mo</span>
+                                    {!isPro && <i className="text-xs text-accent-foreground/60">Your current plan</i>}
                                 </div>
                                 {!isPro && <CheckCircle className="text-lime-500 size-7" />}
                             </div>
@@ -75,8 +82,10 @@ const SettingsPage = async () => {
                                 <div className="flex flex-col">
                                     <span className="font-extrabold text-lg">Plus+</span>
                                     <span className="font-semibold text-md text-accent-foreground/70">29 SEK/mo</span>
+                                    {isPro && <i className="text-xs text-accent-foreground/60">Your current plan</i>}
+                                    {isAnnulled && <i className="text-xs text-accent-foreground/60">You still have access to Plus+ until {new Date(periodEnd).toLocaleDateString()}</i>}
                                 </div>
-                                {isPro && <CheckCircle className="text-lime-500 size-10" />}
+                                {isPro && !isAnnulled ? <CheckCircle className="text-lime-500 size-10" /> : <ArrowDown className="text-blue-400 size-10" />}
                             </div>
                             <SubscriptionButton isPro={isPro} />
                             <div className="flex flex-col p-2 gap-y-0.5">

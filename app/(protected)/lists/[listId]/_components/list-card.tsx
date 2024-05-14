@@ -10,7 +10,7 @@ import {
 } from "@/components/ui/tabs";
 
 
-import { CategoryWithItems, ListComplete, ListWithItemsThemeCategoryAndType, SuggestionWithCategoryAndTheme } from "@/types";
+import { CategoryWithItems, ItemWithCategory, ListComplete, ListWithItemsThemeCategoryAndType, SuggestionWithCategoryAndTheme } from "@/types";
 
 import { ListCardHeader } from "./list-card-header";
 import { ListSettingsForm } from "./list-settings-form";
@@ -21,12 +21,12 @@ import { ItemForm } from "./item-form";
 import { CardNavigation } from "@/app/(protected)/_components/card-navigation";
 import { ExtendedUser } from "@/auth";
 import { useCurrentUser } from "@/hooks/use-current-user";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useRealtimeList } from "@/hooks/use-realtime-list";
 
 
 interface ListCardProps {
     list: ListComplete;
-    totalCountChecked: number;
     themes: Theme[];
     categories: Category[];
     suggestions: SuggestionWithCategoryAndTheme[];
@@ -37,40 +37,57 @@ interface CategoriesMap {
 }
 
 export const ListCard = ({
-    list,
-    totalCountChecked,
+    list: passedList,
     themes,
     categories,
     suggestions,
 }: ListCardProps) => {
     const user = useCurrentUser();
+    const list = useRealtimeList(passedList);
 
-    const groupedItemsByCategory = list.items.reduce<CategoriesMap>((acc, item) => {
-        const categoryId = item.category.id;
+    const [totalCountChecked, setTotalCountChecked] = useState(list.items.filter(item => item.isChecked).length);
 
-        if (!acc[categoryId]) {
-            acc[categoryId] = {
-                ...item.category,
-                items: [],
+    const groupItemsByCategory = (items: ItemWithCategory[]): CategoriesMap => {
+        return items.reduce<CategoriesMap>((acc, item) => {
+            const categoryId = item.categoryId;
+            if (!acc[categoryId]) {
+                acc[categoryId] = {
+                    ...item.category,
+                    items: [],
+                };
             }
-        }
-        acc[categoryId].items.push(item);
-        return acc;
-    }, {});
+            acc[categoryId].items.push(item);
+            return acc;
+        }, {});
+    }
 
-    const categoriesWithItems = Object.values(groupedItemsByCategory).sort((a, b) => {
-        if (a.displayName.toLowerCase() < b.displayName.toLowerCase()) {
-            return -1;
-        }
-        if (a.displayName.toLowerCase() > b.displayName.toLowerCase()) {
-            return 1;
-        }
-        return 0;
-    });
+    const sortCategoriesByDisplayName = (categoriesMap: CategoriesMap): CategoryWithItems[] => {
+        return Object.values(categoriesMap).sort((a, b) => {
+            const nameA = a.displayName.toLowerCase();
+            const nameB = b.displayName.toLowerCase();
+            if (nameA < nameB) return -1;
+            if (nameA > nameB) return 1;
+            return 0;
+        });
+    }
+
+    console.log(list);
+
+    const [groupedItemsByCategory, setGroupedItemsByCategory] = useState(groupItemsByCategory(list.items));
+    const [categoriesWithItems, setCategoriesWithItems] = useState(sortCategoriesByDisplayName(groupedItemsByCategory));
 
     const userIsNotOwnerOfList = list.shares.some((share) => share.userId === user?.id);
 
     const userHasEditingRights = !userIsNotOwnerOfList || list.shares.some((share) => share.userId === user?.id && share.canEdit);
+
+    useEffect(() => {
+        setGroupedItemsByCategory(groupItemsByCategory(list.items));
+        setTotalCountChecked(list.items.filter(item => item.isChecked).length);
+    }, [list]);
+
+    useEffect(() => {
+        setCategoriesWithItems(sortCategoriesByDisplayName(groupedItemsByCategory));
+    }, [groupedItemsByCategory]);
 
     return (
         <Card className="w-full h-full flex flex-col rounded-l-3xl rounded-r-none shadow-none border-none">
@@ -110,28 +127,28 @@ export const ListCard = ({
                                         checkedItems += 1;
                                     }
                                 })
-                                
+
                                 if (checkedItems !== category.items.length) return category.id;
                             })}
                         >
-                        {/* Map categories */}
-                        {categoriesWithItems.map((category) => (
-                            <ListCardCategory key={category.id} category={category}>
-                                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-4">
-                                    {category.items.map((item) => (
-                                        <ListCardItem key={item.id} item={item} listId={list.id} categories={categories} userHasEditingRights={userHasEditingRights} />
-                                    ))}
-                                </div>
-                            </ListCardCategory>
-                        ))}
-                    </Accordion>
-                </TabsContent>
-                <TabsContent value="settings" className="h-full flex flex-col overflow-y-scroll">
-                    <ListSettingsForm list={list} themes={themes} userIsNotOwnerOfList={userIsNotOwnerOfList} />
-                </TabsContent>
-            </Tabs>
+                            {/* Map categories */}
+                            {categoriesWithItems.map((category) => (
+                                <ListCardCategory key={category.id} category={category}>
+                                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-4">
+                                        {category.items.map((item) => (
+                                            <ListCardItem key={item.id} item={item} listId={list.id} categories={categories} userHasEditingRights={userHasEditingRights} />
+                                        ))}
+                                    </div>
+                                </ListCardCategory>
+                            ))}
+                        </Accordion>
+                    </TabsContent>
+                    <TabsContent value="settings" className="h-full flex flex-col overflow-y-scroll">
+                        <ListSettingsForm list={list} themes={themes} userIsNotOwnerOfList={userIsNotOwnerOfList} />
+                    </TabsContent>
+                </Tabs>
 
-        </CardContent>
+            </CardContent>
         </Card >
     )
 }

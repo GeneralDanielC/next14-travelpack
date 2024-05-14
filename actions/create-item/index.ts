@@ -11,6 +11,7 @@ import { createSafeAction } from "@/lib/create-safe-action";
 import { InputType, ReturnType } from "./types";
 import { CreateItem } from "./schema";
 import { getListByIdAndUserId, getThemes } from "@/data/data";
+import pusher from "@/lib/pusher";
 
 const openai = new OpenAI({
     apiKey: process.env.OPENAI_API_KEY,
@@ -118,6 +119,11 @@ const handler = async (data: InputType): Promise<ReturnType> => {
                 quantity: 0,
                 listId,
             }
+        });
+        
+        await pusher.trigger(`list-${listId}`, 'item-created', {
+            item: item,
+            action: 'update'
         });
     } catch (error) {
         return { error: "Failed to create" }

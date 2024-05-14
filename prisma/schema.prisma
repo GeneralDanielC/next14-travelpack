@@ -200,4 +200,5 @@ model UserSubscription {
   stripeSubscriptionId   String?   @unique @map(name: "stripe_subscription_id")
   stripePriceId          String?   @map(name: "stripe_price_id")
   stripeCurrentPeriodEnd DateTime? @map(name: "stripe_current_period_end")
+  stripeCancelAtPeriodEnd Boolean? @map(name: "stripe_cancel_at_period_end")
 }

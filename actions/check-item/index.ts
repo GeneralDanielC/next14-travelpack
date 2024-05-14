@@ -9,6 +9,7 @@ import { createSafeAction } from "@/lib/create-safe-action";
 
 import { InputType, ReturnType } from "./types";
 import { CheckItem } from "./schema";
+import pusher from "@/lib/pusher";
 
 const handler = async (data: InputType): Promise<ReturnType> => {
     const user = await currentUser();
@@ -63,6 +64,11 @@ const handler = async (data: InputType): Promise<ReturnType> => {
             data: {
                 isChecked: !existingItem?.isChecked,
             },
+        });
+
+        await pusher.trigger(`list-${listId}`, 'item-checked', {
+            item: item,
+            action: 'update'
         });
     } catch (error) {
         console.error(error);

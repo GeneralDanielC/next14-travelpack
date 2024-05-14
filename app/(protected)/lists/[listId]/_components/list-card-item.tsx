@@ -1,7 +1,7 @@
 "use client";
 
 import { toast } from "sonner";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Category, Item } from "@prisma/client";
 import { useFormStatus } from "react-dom";
 
@@ -32,7 +32,7 @@ export const ListCardItem = ({
 
     const { execute } = useAction(checkItem, {
         onSuccess: (data) => {
-            toast.success(`Item "${data.title}" updated.`);
+            // toast.success(`Item "${data.title}" updated.`);
             setItemIsChecked(data.isChecked);
         },
         onError: (error) => {
@@ -50,6 +50,10 @@ export const ListCardItem = ({
             listId
         });
     }
+
+    useEffect(() => {
+        setItemIsChecked(item.isChecked);
+    }, [item]);
 
     const handleCheckItem = (e: React.MouseEvent) => {
         e.stopPropagation();

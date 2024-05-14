@@ -42,12 +42,12 @@ const ListPage = async ({
         }
     });
 
-    const totalCountChecked = await db.item.count({
-        where: {
-            listId: params.listId,
-            isChecked: true
-        }
-    });
+    // const totalCountChecked = await db.item.count({
+    //     where: {
+    //         listId: params.listId,
+    //         isChecked: true
+    //     }
+    // });
 
     if (!list) {
         return (
@@ -56,7 +56,7 @@ const ListPage = async ({
     }
 
     return (
-        <ListCard list={list} themes={themes} totalCountChecked={totalCountChecked} categories={categories} suggestions={suggestions} />
+        <ListCard list={list} themes={themes} categories={categories} suggestions={suggestions} />
     );
 }
 

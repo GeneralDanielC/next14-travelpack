@@ -10,6 +10,7 @@ import { createSafeAction } from "@/lib/create-safe-action";
 import { InputType, ReturnType } from "./types";
 import { DeleteItem } from "./schema";
 import { redirect } from "next/navigation";
+import pusher from "@/lib/pusher";
 
 const handler = async (data: InputType): Promise<ReturnType> => {
     const user = await currentUser();
@@ -35,6 +36,11 @@ const handler = async (data: InputType): Promise<ReturnType> => {
                 listId,
                 id: itemId
             },
+        });
+
+        await pusher.trigger(`list-${listId}`, 'item-deleted', {
+            item: item,
+            action: 'update'
         });
        
     } catch (error) {
