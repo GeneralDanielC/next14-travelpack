@@ -18,7 +18,7 @@ import { useCurrentUser } from "@/hooks/use-current-user"
 import { List, Theme } from "@prisma/client";
 import { ListItem } from "../dashboard/_components/list-item";
 import { ArrowLeft, BookAIcon, Home, HomeIcon, LayoutDashboard, ListChecksIcon, LogOutIcon, SunIcon } from "lucide-react";
-import { ListWithItemsThemeAndType } from "@/types";
+import { ListComplete } from "@/types";
 import { ListFormDrawer } from "../dashboard/_components/list-form-drawer";
 import { NoLists } from "./no-lists";
 import { usePathname } from "next/navigation";
@@ -26,7 +26,7 @@ import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
 
 interface SidebarProps {
-    lists: ListWithItemsThemeAndType[],
+    lists: ListComplete[],
     themes: Theme[],
     types: Theme[],
     showLogo?: boolean
@@ -83,14 +83,14 @@ export const Sidebar = ({
                 className="w-40 shrink-0 h-full"
                 // animate={{ transform: `translateX(${isExpanded ? 1:0.25})` }} 
                 animate={{ width }}
-                // transition={{ type: "spring", stiffness: 100, damping: 10 }}
-                >
+            // transition={{ type: "spring", stiffness: 100, damping: 10 }}
+            >
                 <motion.div
                     className={cn(
                         "h-full rounded-lg py-4 w-full overflow-y-hidden",
                     )}
                     animate={{ width, paddingLeft }}
-                    // transition={{ type: "spring" }}
+                // transition={{ type: "spring" }}
                 >
                     <div className="flex flex-col justify-between h-full">
                         {/* Lists & settings */}
@@ -122,54 +122,22 @@ export const Sidebar = ({
                                         </div>
                                     </Link>
                                 </Button>
-                                {isExpanded ?
-                                    <Accordion
-                                        type="single"
-                                        collapsible
-                                        className="w-full"
-                                    >
-                                        <AccordionItem
-                                            value="lists"
-                                            className="border-none"
-                                        >
-                                            <AccordionTrigger
-
-                                                className={cn(
-                                                    "px-3 hover:bg-accent h-10 rounded-md hover:no-underline",
-                                                    pathname.includes("/lists") && "bg-accent"
-                                                )}
-                                            >
-                                                <div className="w-full flex justify-start items-center gap-x-1.5">
-                                                    <ListChecksIcon className="size-4" />
-                                                    {isExpanded && <span>Lists</span>}
-                                                </div>
-                                            </AccordionTrigger>
-                                            <AccordionContent className="space-y-1 pt-1">
-                                                {lists?.length > 0 ? lists.map((list) => (
-                                                    <ListItem key={list.id} list={list} size="sm" />
-                                                )) : <NoLists />}
-                                            </AccordionContent>
-                                        </AccordionItem>
-                                    </Accordion>
-                                    :
-                                    <Button
-                                        variant="ghost"
-                                        size="lg"
-                                        className={cn(
-                                            "px-3",
-                                            pathname.includes("/lists") && "bg-accent"
-                                        )}
-                                        asChild
-                                    >
-                                        <Link href="/lists">
-                                            <div className="w-full flex justify-start items-center gap-x-1.5">
-                                                <ListChecksIcon className="size-4" />
-                                                {isExpanded && <span>Lists</span>}
-                                            </div>
-                                        </Link>
-                                    </Button>
-                                }
-
+                                <Button
+                                    variant="ghost"
+                                    size="lg"
+                                    className={cn(
+                                        "px-3",
+                                        pathname.includes("/lists") && "bg-accent"
+                                    )}
+                                    asChild
+                                >
+                                    <Link href="/lists">
+                                        <div className="w-full flex justify-start items-center gap-x-1.5">
+                                            <ListChecksIcon className="size-4" />
+                                            {isExpanded && <span>Lists</span>}
+                                        </div>
+                                    </Link>
+                                </Button>
                                 <Button
                                     variant="ghost"
                                     size="lg"
@@ -210,7 +178,7 @@ export const Sidebar = ({
                             <div className="w-full flex justify-start items-center gap-x-1.5">
                                 <motion.div
                                     animate={{ rotate }}
-                                    // transition={{ type: "spring" }}
+                                // transition={{ type: "spring" }}
                                 >
                                     <ArrowLeft className="size-4" />
                                 </motion.div>

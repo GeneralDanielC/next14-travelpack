@@ -61,7 +61,7 @@ export const ItemSettingsForm = ({
 
         executeUpdate({
             title,
-            quantity: parseInt(quantity),
+            quantity: quantity !== "" ? parseInt(quantity) : 0,
             categoryId,
             listId,
             itemId,

@@ -40,7 +40,7 @@ const handler = async (data: InputType): Promise<ReturnType> => {
 
         await pusher.trigger(`list-${listId}`, 'item-deleted', {
             item: item,
-            action: 'update'
+            action: 'delete'
         });
        
     } catch (error) {

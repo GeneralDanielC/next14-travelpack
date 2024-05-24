@@ -9,6 +9,7 @@ import { createSafeAction } from "@/lib/create-safe-action";
 
 import { InputType, ReturnType } from "./types";
 import { UpdateList } from "./schema";
+import pusher from "@/lib/pusher";
 
 const handler = async (data: InputType): Promise<ReturnType> => {
     const user = await currentUser();
@@ -47,6 +48,11 @@ const handler = async (data: InputType): Promise<ReturnType> => {
                 themeId,
                 departAt,
             }
+        });
+
+        await pusher.trigger(`list-${listId}`, 'list-updated', {
+            list: list,
+            action: 'update'
         });
     } catch (error) {
         return { error: "Failed to update" }

@@ -1,4 +1,6 @@
 
+import { NextRequest, NextResponse } from 'next/server';
+import createIntlMiddleware from 'next-intl/middleware';
 import NextAuth from "next-auth";
 
 import {
@@ -8,11 +10,19 @@ import {
     publicRoutes
 } from "@/routes";
 import authConfig from "@/auth.config";
-import { currentUser } from "@/lib/auth";
+
+// const locales = ['en', 'sv'];
+// const defaultLocale = 'en';
+
+// const intlMiddleware = createIntlMiddleware({
+//     locales,
+//     defaultLocale
+// });
 
 const { auth } = NextAuth(authConfig);
 
 export default auth((req) => {
+    
     const { nextUrl } = req;
     const isLoggedIn = !!req.auth;
 

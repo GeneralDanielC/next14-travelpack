@@ -1,10 +1,21 @@
 import { ListComplete } from '@/types';
+import { Item, List } from '@prisma/client';
 import Pusher from 'pusher-js';
 import { useEffect, useState } from 'react';
 
+type ItemDataType = {
+    action: string;
+    item: Item;
+}
+
+type ListDataType = {
+    action: string;
+    list: List;
+}
+
 export const useRealtimeList = (completeList: ListComplete) => {
     const [list, setList] = useState(completeList);
-    
+
     useEffect(() => {
         const pusher = new Pusher(process.env.NEXT_PUBLIC_PUSHER_KEY as string, {
             cluster: process.env.NEXT_PUBLIC_PUSHER_CLUSTER as string,
@@ -15,7 +26,7 @@ export const useRealtimeList = (completeList: ListComplete) => {
 
         const channel = pusher.subscribe(`list-${list.id}`);
 
-        const handleItemUpdated = (data) => {
+        const handleItemUpdated = (data: ItemDataType) => {
             setList(prevList => ({
                 ...prevList,
                 items: prevList.items.map(item =>
@@ -24,23 +35,25 @@ export const useRealtimeList = (completeList: ListComplete) => {
             }));
         }
 
-        const handleItemCreated = (data) => {
+        const handleItemCreated = (data: ItemDataType) => {
             setList(prevList => ({
                 ...prevList,
                 items: [...prevList.items, data.item]
             }));
         };
 
-        const handleItemDeleted = (data) => {
+        const handleItemDeleted = (data: ItemDataType) => {
+            console.log(data);
+
             setList(prevList => ({
                 ...prevList,
-                items: prevList.items.filter(item => item.id !== data.id)
+                items: prevList.items.filter(item => item.id !== data.item.id)
             }));
         };
 
-        const handleItemChecked = (data) => {
+        const handleItemChecked = (data: ItemDataType) => {
             console.log("Data", data);
-            
+
             setList(prevList => ({
                 ...prevList,
                 items: prevList.items.map(item =>
@@ -49,7 +62,7 @@ export const useRealtimeList = (completeList: ListComplete) => {
             }));
         };
 
-        const handleListUpdated = (data) => {
+        const handleListUpdated = (data: ListDataType) => {
             setList(prevList => ({
                 ...prevList,
                 ...data.list

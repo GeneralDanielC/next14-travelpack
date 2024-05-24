@@ -19,11 +19,11 @@ import { useFormStatus } from "react-dom";
 interface FormDatePickerProps {
     id: string;
     date: Date | undefined;
-    setDate: Dispatch<SetStateAction<Date | null | undefined>>;
+    setDate: Dispatch<SetStateAction<Date | undefined>>;
     label?: string;
     className?: string;
     variant?: "default" | "destructive" | "outline" | "secondary" | "ghost" | "link";
-}
+} 
 
 export const FormDatePicker = ({
     id,

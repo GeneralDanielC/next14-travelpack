@@ -3,6 +3,7 @@ import { Toaster } from 'sonner';
 import type { Metadata, Viewport } from 'next';
 import { Nunito } from 'next/font/google';
 import { SessionProvider } from 'next-auth/react';
+import { getMessages } from 'next-intl/server';
 
 import { auth } from '@/auth';
 import { ThemeProvider } from '@/components/theme-provider';
@@ -43,7 +44,7 @@ export const metadata: Metadata = {
 export default async function RootLayout({
   children,
 }: {
-  children: React.ReactNode
+  children: React.ReactNode,
 }) {
   const session = await auth();
 
@@ -55,16 +56,18 @@ export default async function RootLayout({
           `${nunito.className} 
           bg-stone-200/90 dark:bg-stone-800`
         }>
-          {/* bg-gradient-to-br from-stone-100 to-stone-300 dark:bg-stone-900 */}
-          <ThemeProvider
-            attribute='class'
-            defaultTheme='system'
-            enableSystem
-            disableTransitionOnChange
-          >
-            <Toaster />
-            {children}
-          </ThemeProvider>
+          {/* <NextIntlClientProvider messages={messages}> */}
+            {/* bg-gradient-to-br from-stone-100 to-stone-300 dark:bg-stone-900 */}
+            <ThemeProvider
+              attribute='class'
+              defaultTheme='system'
+              enableSystem
+              disableTransitionOnChange
+            >
+              <Toaster />
+              {children}
+            </ThemeProvider>
+          {/* </NextIntlClientProvider> */}
         </body>
       </html>
     </SessionProvider>

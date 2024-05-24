@@ -3,13 +3,13 @@ import { Button } from "@/components/ui/button";
 import Link from "next/link";
 
 const MarketingPage = async () => {
-
+    
     return (
         <div className="w-full space-y-14">
             <div className="flex items-center justify-center flex-col">
                 <div className="flex items-center justify-center flex-col mb-10 gap-y-2">
                     <Badge>
-                        travelsize
+                        travelpack
                     </Badge>
                     <h1 className="text-3xl md:text-6xl text-center font-extrabold text-stone-700 dark:text-stone-200">
                         <span>Pack </span>

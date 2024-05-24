@@ -52,14 +52,19 @@ export const ListItem = ({
                         </span>
                     </div>
                     <div className="flex flex-col justify-between w-full py-2">
-                        <div className="flex flex-row justify-between items-center">
-                            <span className="text-md">{list.title}</span>
-                            {list.shares?.length > 0 && <Users className="size-4 mr-1" />}
+                        <div className="flex flex-row justify-between items-center max-w-sm">
+                            <span className="text-md w-full block truncate">{list.title}</span>
+                            {size !== "sm" && (
+                                list.shares?.length > 0 && <Users className="size-4 mr-1" />
+                            )}
+
                         </div>
-                        <div className="flex items-center gap-x-2">
-                            <Progress value={(totalCountChecked(list) / list.items.length) * 100} />
-                            <span className="text-xs font-normal">{totalCountChecked(list)} / {list.items.length}</span>
-                        </div>
+                        {size !== "sm" && (
+                            <div className="flex items-center gap-x-2">
+                                <Progress value={(totalCountChecked(list) / list.items.length) * 100} />
+                                <span className="text-xs font-normal">{totalCountChecked(list)} / {list.items.length}</span>
+                            </div>
+                        )}
                     </div>
                 </div>
             </Link>

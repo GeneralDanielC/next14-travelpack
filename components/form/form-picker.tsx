@@ -4,6 +4,7 @@ import { Theme } from "@prisma/client";
 import { useState } from "react";
 import { useFormStatus } from "react-dom";
 import { Check } from "lucide-react";
+import { Swiper, SwiperSlide } from 'swiper/react';
 
 import { cn } from "@/lib/utils";
 
@@ -45,7 +46,6 @@ export const FormPicker = ({
                 "grid grid-cols-2 sm:grid-cols-3 gap-x-4",
                 size === "sm" && "grid-cols-3"
             )}>
-
                 {datas?.map((data) => (
                     <div className="flex flex-col justify-center items-center gap-y-2 mb-3">
                         <div
