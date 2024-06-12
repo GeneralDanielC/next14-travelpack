@@ -29,25 +29,19 @@ const ListPage = async ({
     
     const categories = await getCategoriesByUserId(list.userId);
 
-    const suggestions = await db.suggestion.findMany({
-        where: {
-            userId: user.id,
-            themeIds: {
-                has: list.themeId
-            }
-        },
-        include: {
-            category: true,
-            themes: true,
-        }
-    });
-
-    // const totalCountChecked = await db.item.count({
+    // const suggestions = await db.suggestion.findMany({
     //     where: {
-    //         listId: params.listId,
-    //         isChecked: true
+    //         userId: user.id,
+    //         themeIds: {
+    //             has: list.themeId
+    //         }
+    //     },
+    //     include: {
+    //         category: true,
+    //         themes: true,
     //     }
     // });
+
 
     if (!list) {
         return (
@@ -56,7 +50,7 @@ const ListPage = async ({
     }
 
     return (
-        <ListCard list={list} themes={themes} categories={categories} suggestions={suggestions} />
+        <ListCard list={list} themes={themes} categories={categories} />
     );
 }
 

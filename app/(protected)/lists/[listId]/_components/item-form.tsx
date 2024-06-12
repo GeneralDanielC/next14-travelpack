@@ -18,7 +18,7 @@ interface ItemFormProps {
     categories: Category[];
     list: List;
     userHasEditingRights?: boolean;
-    suggestions: SuggestionWithCategoryAndTheme[];
+    suggestions?: SuggestionWithCategoryAndTheme[];
 }
 
 export const ItemForm = ({
@@ -59,7 +59,7 @@ export const ItemForm = ({
         setSearchTerm(e.target.value);
     }
 
-    const filteredSuggestions = suggestions.filter((suggestion) => {
+    const filteredSuggestions = suggestions?.filter((suggestion) => {
         if (!searchTerm.trim()) return true; // return all categories if search term is empty.
 
         return suggestion.title.toLowerCase().includes(searchTerm.toLowerCase());
@@ -100,7 +100,7 @@ export const ItemForm = ({
                             />
                             {false && ( // suggestions to come...
                                 <div className="w-full border-[1px] border-black rounded-md p-2">
-                                    {filteredSuggestions.map((suggestion) => (
+                                    {filteredSuggestions?.map((suggestion) => (
                                         <Button
                                             key={suggestion.id}
                                             className="w-full justify-between"

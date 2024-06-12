@@ -44,24 +44,35 @@ const handler = async (data: InputType): Promise<ReturnType> => {
         }
     });
 
+    const dbCategories = await db.category.findMany({
+        where: {
+            userId: ownerUserId,
+        }
+    });
+
+    const categoriesString = dbCategories.map((category) => {
+        return `${category.displayName}, `;
+    });
+
     const prompt = `
-        Categorize the following items into one or more categories based on their type, without using any bullet points or dashes. Write the categories in a simple, comma-separated list. 
+        Categorize the following items into one category based on their type, without using any bullet points or dashes. Write the category in a simple word/words. Use the categories from the provided list below.
         
-        For example, "Laptop" would be categorized as "Electroincs", and "Jeans" would be "Clothing, Pants". 
+        For example, "Laptop" would be categorized as "Electroincs", and "Jeans" would be "Clothing". 
 
         \nHere are some examples of categorizing:
         \n- Laptop: Electronics
-        \n- Jeans: Clothing, Pants
+        \n- Jeans: Clothing
         \n- Coffee mug: Kitchenware
 
         \nPlease consider the list type and theme when categorizing the item. 
         \nThe list types are "Packing list", "To-do list" and "Grocery/shopping list". 
         \nThe themes are ${themesString}.
+        \nThe categories are ${categoriesString}.
         
         \n\nCategorize this item: ${title}
         \nThe list type is: ${list?.type.title}
         \nThe theme is: ${list?.theme?.title || "none"}
-        \nRemember to write the categories in a simple, comma-separated list.`;        
+        \nRemember to pick a category from the list and return the category ONLY typing the category name.`;        
 
     // CHANGE: add reference to list type.
     // CHANGE: possibly add a long string of all the categories that are available... Maybe unnecessary...
@@ -82,12 +93,6 @@ const handler = async (data: InputType): Promise<ReturnType> => {
     const fetchedCategoryList = fetchedCategories.split(',').map(cat => cat.trim().toLowerCase());
 
     console.log("fetchedCategoryList", fetchedCategoryList);
-
-    const dbCategories = await db.category.findMany({
-        where: {
-            userId: ownerUserId,
-        }
-    });
 
     const miscCategory = await db.category.findFirst({
         where: {

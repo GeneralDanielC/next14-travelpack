@@ -11,16 +11,15 @@ export const setupInitialData = async (userId: string) => {
         where: { isListType: false }
     });
 
-    const listTypePacking = await db.theme.findFirst({
-        where: {
-            isListType: true,
-            title: Types.PACKING,
-        }
-    });
-
+    const listTypePacking = themes.find((theme) => theme.isListType === true && theme.title === Types.PACKING);
+    
     if (!listTypePacking) return { error: "Something went wrong" }
 
-    const categories = await createInitialCategories(userId, listTypePacking.id);
+    const listTypeGrocery = themes.find((theme) => theme.isListType === true && theme.title === Types.GROCERY);
+    
+    if (!listTypeGrocery) return { error: "Something went wrong" }
+    
+    const categories = await createInitialCategories(userId, listTypePacking.id, listTypeGrocery.id);
 
     if (!categories) return { error: "Something went wrong initalizing categories." }
 
@@ -39,14 +38,14 @@ const createInitialSuggestions = async (userId: string, themes: Theme[], categor
         return acc;
     }, {});
 
-    await db.suggestion.createMany({
-        data: initialSuggestions(userId, themeIdsByTitle, categoryMap, themes)
-    });
+    // await db.suggestion.createMany({
+    //     data: initialSuggestions(userId, themeIdsByTitle, categoryMap, themes)
+    // });
 }
 
-const createInitialCategories = async (userId: string, listTypePackingId: string) => {
+const createInitialCategories = async (userId: string, listTypePackingId: string, listTypeGroceryId: string) => {
     await db.category.createMany({
-        data: initialCategories(userId, listTypePackingId),
+        data: initialCategories(userId, listTypePackingId, listTypeGroceryId),
     });
 
     const categories = await db.category.findMany({

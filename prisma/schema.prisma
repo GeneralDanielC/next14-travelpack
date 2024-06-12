@@ -143,8 +143,8 @@ model Theme {
   isListType      Boolean      @default(false)
   ListsAsType     List[]       @relation(name: "ListType")
   List            List[]       @relation(name: "ListTheme")
-  suggestionIds   String[]     @db.ObjectId
-  suggestions     Suggestion[] @relation(fields: [suggestionIds], references: [id])
+  // suggestionIds   String[]     @db.ObjectId
+  // suggestions     Suggestion[] @relation(fields: [suggestionIds], references: [id])
   categories      Category[]
 }
 
@@ -179,8 +179,8 @@ model Suggestion {
   title      String
   categoryId String   @db.ObjectId
   category   Category @relation(fields: [categoryId], references: [id])
-  themeIds   String[] @db.ObjectId
-  themes     Theme[]  @relation(fields: [themeIds], references: [id])
+  // themeIds   String[] @db.ObjectId
+  // themes     Theme[]  @relation(fields: [themeIds], references: [id])
 }
 
 model ListLimit {

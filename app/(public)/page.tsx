@@ -9,7 +9,7 @@ const MarketingPage = async () => {
             <div className="flex items-center justify-center flex-col">
                 <div className="flex items-center justify-center flex-col mb-10 gap-y-2">
                     <Badge>
-                        travelpack
+                        pakkit
                     </Badge>
                     <h1 className="text-3xl md:text-6xl text-center font-extrabold text-stone-700 dark:text-stone-200">
                         <span>Pack </span>
@@ -27,7 +27,7 @@ const MarketingPage = async () => {
                         The Ultimate Packing App.
                     </h2>
                     <div className="text-3xl md:text-4xl bg-gradient-to-r from-stone-500 to-stone-300 text-transparent bg-clip-text px-4 p-2 rounded-md w-fit font-extrabold">
-                        travelsize.
+                        pakkit, lystio, .
                     </div>
                 </div>
                 <div className="flex items-center justify-center flex-row gap-x-5">
@@ -44,7 +44,7 @@ const MarketingPage = async () => {
                 </div>
 
             </div>
-            <div className="w-full h-full bg-stone-600 rounded-t-3xl">
+            <div className="w-full h-full bg-stone-400/40 rounded-t-3xl">
                 <div className="p-4">
                     <h2 className="text-lg font-bold">test</h2>
                 </div>

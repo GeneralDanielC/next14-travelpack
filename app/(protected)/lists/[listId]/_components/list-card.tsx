@@ -29,7 +29,7 @@ interface ListCardProps {
     list: ListComplete;
     themes: Theme[];
     categories: Category[];
-    suggestions: SuggestionWithCategoryAndTheme[];
+    suggestions?: SuggestionWithCategoryAndTheme[];
 }
 
 interface CategoriesMap {
@@ -62,7 +62,7 @@ export const ListCard = ({
     }
 
     const sortCategoriesByDisplayName = (categoriesMap: CategoriesMap): CategoryWithItems[] => {
-        return Object.values(categoriesMap).sort((a, b) => {
+        return Object.values(categoriesMap).sort((a, b) => {            
             const nameA = a.displayName.toLowerCase();
             const nameB = b.displayName.toLowerCase();
             if (nameA < nameB) return -1;
@@ -114,7 +114,7 @@ export const ListCard = ({
                     <TabsContent value="list" className="h-full flex flex-col overflow-y-scroll">
                         {/* Add new item */}
 
-                        <ItemForm categories={categories} list={list} userHasEditingRights={userHasEditingRights} suggestions={suggestions} />
+                        <ItemForm categories={categories} list={list} userHasEditingRights={userHasEditingRights}  />
 
                         {/* List render (incl. items and categories) */}
                         <Accordion
