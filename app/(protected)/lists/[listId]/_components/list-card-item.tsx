@@ -46,8 +46,7 @@ export const ListCardItem = ({
         if (!userHasEditingRights) return;
 
         execute({
-            itemId,
-            listId
+            item
         });
     }
 

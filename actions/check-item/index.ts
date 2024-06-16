@@ -25,7 +25,7 @@ const handler = async (data: InputType): Promise<ReturnType> => {
     }
 
     // No need to validate this input data since it is already done in the create-safe-action.
-    const { itemId, listId } = data;
+    const { item: passedItem } = data;
 
     let item;
 
@@ -33,24 +33,23 @@ const handler = async (data: InputType): Promise<ReturnType> => {
         // throw new Error("a"); // artificial error - to be removed
         console.log("userid", dbUser.id);
 
-        const existingItem = await db.item.findUnique({
-            where: {
-                id: itemId,
-                listId,
-                list: {
-                    OR: [
-                        { userId: dbUser.id },
-                        {
-                            shares: { some: { userId: dbUser.id } }
-                        }
-                    ],
-                },
-            }
-        });
+        // const existingItem = await db.item.findUnique({
+        //     where: {
+        //         id: itemId,
+        //         listId,
+        //         list: {
+        //             OR: [
+        //                 { userId: dbUser.id },
+        //                 {
+        //                     shares: { some: { userId: dbUser.id } }
+        //                 }
+        //             ],
+        //         },
+        //     }
+        // });
 
         item = await db.item.update({
             where: {
-                listId,
                 list: {
                     OR: [
                         { userId: dbUser.id },
@@ -59,14 +58,14 @@ const handler = async (data: InputType): Promise<ReturnType> => {
                         }
                     ],
                 },
-                id: itemId,
+                id: passedItem.id,
             },
             data: {
-                isChecked: !existingItem?.isChecked,
+                isChecked: !passedItem?.isChecked,
             },
         });
 
-        await pusher.trigger(`list-${listId}`, 'item-checked', {
+        await pusher.trigger(`list-${item.listId}`, 'item-checked', {
             item: item,
             action: 'update'
         });
@@ -76,7 +75,7 @@ const handler = async (data: InputType): Promise<ReturnType> => {
         return { error: "Failed to update item." }
     }
 
-    revalidatePath(`/list/${listId}`);
+    revalidatePath(`/list/${item.listId}`);
     return { data: item };
 }
 

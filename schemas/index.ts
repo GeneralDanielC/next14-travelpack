@@ -73,35 +73,40 @@ export const RegisterSchema = z.object({
 });
 
 export const ListSchema = z.object({
-    title: z.string().min(1, {
-        message: "Minimum 1 character required"
-    }),
-    departAt: z.optional(z.date()),
-    themeId: z.string(),
+    id: z.string(),
+    title: z.string(),
+    departAt: z.date().optional(),
+    typeId: z.string(),
+    themeId: z.string().optional(),
+    userId: z.string(),
+    createdAt: z.date(),
+    updatedAt: z.date(),
 });
 
+
 export const ThemeSchema = z.object({
-    title: z.string().min(1, {
-        message: "Minimum 1 character required"
-    }),
-    emoji: z.string().min(1).max(1),
-    emojiBackground: z.string(), // Tailwind classname
+    id: z.string(),
+    title: z.string(),
+    emoji: z.string(),
+    emojiBackground: z.string(),
+    description: z.string().optional(),
+    isListType: z.boolean().default(false),
 });
 
 export const ItemSchema = z.object({
-    title: z.string().min(1, {
-        message: "Minimum 1 character required"
-    }),
-    quantity: z.optional(z.number().min(1, {
-        message: "Minimum quantity of 1"
-    }).max(99, {
-        message: "Maximum quantity of 99"
-    })),
-    category: z.string(),
+    id: z.string(),
+    title: z.string(),
+    quantity: z.number().optional(),
+    isChecked: z.boolean().default(false),
+    createdAt: z.date(),
+    listId: z.string(),
+    categoryId: z.string(),
 });
 
+
 export const CategorySchema = z.object({
-    name: z.string().min(1, {
-        message: "Minimum 1 character required"
-    }),
+    id: z.string(),
+    displayName: z.string(),
+    workName: z.string(),
+    userId: z.string(),
 });

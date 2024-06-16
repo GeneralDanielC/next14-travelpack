@@ -1,6 +1,6 @@
 import * as z from "zod";
+import { ItemSchema } from "@/schemas";
 
 export const CheckItem = z.object({
-    itemId: z.string(),
-    listId: z.string(),
+    item: ItemSchema
 });
