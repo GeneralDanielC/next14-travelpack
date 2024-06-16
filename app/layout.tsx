@@ -4,6 +4,7 @@ import type { Metadata, Viewport } from 'next';
 import { Nunito } from 'next/font/google';
 import { SessionProvider } from 'next-auth/react';
 import { getMessages } from 'next-intl/server';
+import { Analytics } from "@vercel/analytics/react"
 
 import { auth } from '@/auth';
 import { ThemeProvider } from '@/components/theme-provider';
@@ -68,6 +69,7 @@ export default async function RootLayout({
               {children}
             </ThemeProvider>
           {/* </NextIntlClientProvider> */}
+          <Analytics />
         </body>
       </html>
     </SessionProvider>
