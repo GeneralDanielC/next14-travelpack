@@ -91,7 +91,7 @@ export const ItemSettingsForm = ({
             <DrawerContent className="pb-10 px-4">
                 <div className="mx-auto w-full max-w-sm">
                     <DrawerHeader>
-                        <DrawerTitle>Edit '{item.title}'</DrawerTitle>
+                        <DrawerTitle>Edit {item.title}</DrawerTitle>
                         <DrawerDescription>Edit your list item.</DrawerDescription>
                     </DrawerHeader>
                     <form
