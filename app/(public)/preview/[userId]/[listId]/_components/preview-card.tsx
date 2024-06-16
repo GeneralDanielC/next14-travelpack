@@ -65,7 +65,7 @@ export const PreviewCard = ({
                         <ListCardCategory key={category.id} category={category}>
                             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-4">
                                 {category.items.map((item) => (
-                                    <PreviewItem item={item} />
+                                    <PreviewItem key={item.id} item={item} />
                                 ))}
                             </div>
                         </ListCardCategory>

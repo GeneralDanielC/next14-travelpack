@@ -66,7 +66,7 @@ export const FormSelect = ({
                             <SelectLabel>{selectLabel}</SelectLabel>
                         )}
                         {data.map((d) => (
-                            <SelectItem value={d.id}>{d.displayName}</SelectItem>
+                            <SelectItem key={d.id} value={d.id}>{d.displayName}</SelectItem>
                         ))}
 
                     </SelectGroup>

@@ -44,7 +44,7 @@ export const Sidebar = ({
                     <Button variant="ghost" className="bg-stone-300/70 py-5 w-full font-bold " asChild>
                         <Link href="/dashboard">
                             <span className="text-2xl pr-1">🌴</span>
-                            <span>travelsize</span>
+                            <span>pakkit</span>
                         </Link>
                     </Button>
                 </div>

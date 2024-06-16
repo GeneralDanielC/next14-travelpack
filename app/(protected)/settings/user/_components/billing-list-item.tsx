@@ -1,5 +1,7 @@
 "use client";
 
+import React from "react";
+
 type Item = {
     freeIcon: React.ReactElement,
     freeTitle: string,
@@ -19,8 +21,8 @@ export const BillingListItem = ({
     return (
         <div className="flex flex-row">
             <span>{sectionTitle}</span>
-            {billingItems.map((item) => (
-                <>
+            {billingItems.map((item, index) => (
+                <React.Fragment key={index}>
                     <div className="dark:bg-stone-900 p-2 rounded-xl flex flex-row gap-x-2">
                         {item.freeIcon}
                         <span className="text-xs">{item.freeTitle}</span>
@@ -29,7 +31,7 @@ export const BillingListItem = ({
                         {item.proIcon}
                         <span className="text-xs">{item.proTitle}</span>
                     </div>
-                </>
+                </React.Fragment>
             ))}
 
         </div>

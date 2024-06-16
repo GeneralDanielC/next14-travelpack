@@ -100,7 +100,7 @@ export const ListCardHeader = ({
                                                 </PopoverContent>
                                             </Popover>
                                             {list.shares.map((share) => (
-                                                <Popover>
+                                                <Popover key={share.id}>
                                                     <PopoverTrigger>
                                                         <Avatar className="size-10 border border-accent">
                                                             <AvatarImage src={share?.user?.image || ""} />

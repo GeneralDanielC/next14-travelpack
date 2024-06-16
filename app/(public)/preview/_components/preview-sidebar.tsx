@@ -69,7 +69,7 @@ export const PreviewSidebar = () => {
                                 <Link href="/">
                                     <div className="flex flex-row justify-center items-center gap-x-1">
                                         <span className="text-xl">🍋</span>
-                                        {isExpanded && <span>travelsize</span>}
+                                        {isExpanded && <span>pakkit</span>}
                                     </div>
                                 </Link>
                             </Button>

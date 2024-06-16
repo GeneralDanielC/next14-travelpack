@@ -10,6 +10,7 @@ import Link from "next/link";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { User2Icon } from "lucide-react";
 import { ExtendedUser } from "@/auth";
+import React from "react";
 
 type Breadcrumbs = {
     name: string,
@@ -34,18 +35,18 @@ export const CardNavigation = ({
                 <Breadcrumb>
                     <BreadcrumbList>
                         <BreadcrumbItem>
-                            <BreadcrumbLink href={hideUser ? "/" : "/dashboard"}>travelsize</BreadcrumbLink>
+                            <BreadcrumbLink href={hideUser ? "/" : "/dashboard"}>pakkit</BreadcrumbLink>
                         </BreadcrumbItem>
                         {!hideUser && (
                             <BreadcrumbSeparator />
                         )}
                         {breadcrumbs?.map((breadcrumb, index) => (
-                            <>
+                            <React.Fragment key={index}>
                                 <BreadcrumbItem>
                                     <BreadcrumbLink href={breadcrumb.href}>{breadcrumb.name}</BreadcrumbLink>
                                 </BreadcrumbItem>
                                 {breadcrumbs.length - 1 !== index && <BreadcrumbSeparator />}
-                            </>
+                            </React.Fragment>
                         ))}
 
                     </BreadcrumbList>

@@ -47,9 +47,8 @@ export const FormPicker = ({
                 size === "sm" && "grid-cols-3"
             )}>
                 {datas?.map((data) => (
-                    <div className="flex flex-col justify-center items-center gap-y-2 mb-3">
+                    <div key={data.id} className="flex flex-col justify-center items-center gap-y-2 mb-3">
                         <div
-                            key={data.id}
                             className={cn(
                                 "cursor-pointer relative aspect-square group hover:opacity-75 transition",
                                 pending && "opacity-50 hover:opacity-50 cursor-auto rounded-full"

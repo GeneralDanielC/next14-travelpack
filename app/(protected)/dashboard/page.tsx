@@ -113,6 +113,7 @@ const DashboardPage = async () => {
                                         if (list.type.title === Types.PACKING && list.departAt && index < 3) {
                                             return (
                                                 <Button
+                                                    key={list.id}
                                                     variant="ghost"
                                                     className="flex flex-row items-center gap-x-2 justify-start w-full pl-0"
                                                     asChild

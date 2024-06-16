@@ -31,7 +31,7 @@ export const Navbar = ({
                     >
                         <Link href="/dashboard">
                             <span className="text-2xl pr-1">🌴</span>
-                            <span>travelsize</span>
+                            <span>pakkit</span>
                         </Link>
                     </Button>
                 </div>
