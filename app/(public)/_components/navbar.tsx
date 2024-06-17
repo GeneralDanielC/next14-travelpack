@@ -18,7 +18,7 @@ export const Navbar = ({
                         variant="ghost"
                         asChild
                     >
-                        <Link href="/">
+                        <Link prefetch={true} href="/">
                             <span className="text-2xl pr-1">🌴</span>
                             <span>pakkit</span>
                         </Link>

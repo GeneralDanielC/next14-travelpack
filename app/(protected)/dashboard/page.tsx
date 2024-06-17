@@ -118,7 +118,7 @@ const DashboardPage = async () => {
                                                     className="flex flex-row items-center gap-x-2 justify-start w-full pl-0"
                                                     asChild
                                                 >
-                                                    <Link href={`/lists/${list.id}`}>
+                                                    <Link prefetch={true} href={`/lists/${list.id}`}>
                                                         <div className="bg-stone-200 dark:bg-stone-700 p-1 text-xs rounded-lg">
                                                             {new Date(list.departAt).toLocaleString("sv-SV", { day: "2-digit", month: "long" })}
                                                         </div>
@@ -191,7 +191,7 @@ const DashboardPage = async () => {
                                 className="w-full"
                                 asChild
                             >
-                                <Link href="/lists">
+                                <Link prefetch={true} href="/lists">
                                     See more...
                                 </Link>
                             </Button>

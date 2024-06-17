@@ -41,7 +41,7 @@ export const ListItem = ({
             )}
             asChild
         >
-            <Link href={`/lists/${list.id}`}>
+            <Link prefetch={true} href={`/lists/${list.id}`}>
                 <div className="flex flex-row gap-y-2 w-full gap-x-2">
                     <div className="flex items-center">
                         <span className={cn(

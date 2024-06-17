@@ -4,7 +4,7 @@ import { PiSuitcaseRollingBold } from "react-icons/pi"
 
 export const Logo = () => {
     return (
-        <Link href="/" className="flex flex-row items-center gap-x-1">
+        <Link prefetch={true} href="/" className="flex flex-row items-center gap-x-1">
             <PiSuitcaseRollingBold
                 width={100} height={100}
                 className="text-rose-500" />

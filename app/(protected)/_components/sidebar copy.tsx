@@ -42,7 +42,7 @@ export const Sidebar = ({
             {showLogo && (
                 <div className="flex items-center">
                     <Button variant="ghost" className="bg-stone-300/70 py-5 w-full font-bold " asChild>
-                        <Link href="/dashboard">
+                        <Link prefetch={true} href="/dashboard">
                             <span className="text-2xl pr-1">🌴</span>
                             <span>pakkit</span>
                         </Link>
@@ -114,7 +114,7 @@ export const Sidebar = ({
                                     className="w-full font-normal justify-start pl-10 mb-1 gap-x-2"
                                     asChild
                                 >
-                                    <Link href="/settings/user">
+                                    <Link prefetch={true} href="/settings/user">
                                         <Avatar className="h-5 w-5">
                                             <AvatarImage src={user?.image || ""} />
                                             <AvatarFallback className="bg-stone-100/80 dark:bg-stone-500/80">
@@ -130,7 +130,7 @@ export const Sidebar = ({
                                     className="w-full font-normal justify-start pl-10 mb-1 gap-x-2"
                                     asChild
                                 >
-                                    <Link href="/settings/categories">
+                                    <Link prefetch={true} href="/settings/categories">
 
                                         <span>Categories</span>
                                     </Link>

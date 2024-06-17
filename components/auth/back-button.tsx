@@ -19,7 +19,7 @@ export const BackButton = ({
             size="sm"
             asChild
         >
-            <Link href={href}>
+            <Link prefetch={true} href={href}>
                 {label}
             </Link>
         </Button>

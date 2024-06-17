@@ -139,7 +139,7 @@ export const LoginForm = () => {
                                                 />
                                             </FormControl>
                                             <Button size="sm" variant="link" asChild className="px-0 font-normal">
-                                                <Link href="/auth/reset">
+                                                <Link prefetch={true} href="/auth/reset">
                                                     Forgot password?
                                                 </Link>
                                             </Button>

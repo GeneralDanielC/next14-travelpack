@@ -25,7 +25,7 @@ const handler = async (data: InputType): Promise<ReturnType> => {
     }
 
     // No need to validate this input data since it is already done in the create-safe-action.
-    const { item: passedItem } = data;
+    const { itemId, listId } = data;
 
     let item;
 
@@ -33,39 +33,26 @@ const handler = async (data: InputType): Promise<ReturnType> => {
         // throw new Error("a"); // artificial error - to be removed
         console.log("userid", dbUser.id);
 
-        // const existingItem = await db.item.findUnique({
-        //     where: {
-        //         id: itemId,
-        //         listId,
-        //         list: {
-        //             OR: [
-        //                 { userId: dbUser.id },
-        //                 {
-        //                     shares: { some: { userId: dbUser.id } }
-        //                 }
-        //             ],
-        //         },
-        //     }
-        // });
-
         item = await db.item.update({
             where: {
+                id: itemId,
+                listId,
                 list: {
                     OR: [
                         { userId: dbUser.id },
-                        {
-                            shares: { some: { userId: dbUser.id } }
-                        }
+                        { shares: { some: { userId: dbUser.id } } },
                     ],
                 },
-                id: passedItem.id,
             },
             data: {
-                isChecked: !passedItem?.isChecked,
+                isChecked: {
+                    // Use a more performant toggle mechanism if available
+                    set: db.raw('NOT isChecked'),
+                },
             },
         });
 
-        await pusher.trigger(`list-${item.listId}`, 'item-checked', {
+        await pusher.trigger(`list-${listId}`, 'item-checked', {
             item: item,
             action: 'update'
         });
@@ -75,7 +62,7 @@ const handler = async (data: InputType): Promise<ReturnType> => {
         return { error: "Failed to update item." }
     }
 
-    revalidatePath(`/list/${item.listId}`);
+    revalidatePath(`/list/${listId}`);
     return { data: item };
 }
 

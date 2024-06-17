@@ -29,7 +29,7 @@ export const Navbar = ({
                         variant="ghost"
                         asChild
                     >
-                        <Link href="/dashboard">
+                        <Link prefetch={true} href="/dashboard">
                             <span className="text-2xl pr-1">🌴</span>
                             <span>pakkit</span>
                         </Link>

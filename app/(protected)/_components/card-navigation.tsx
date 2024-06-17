@@ -59,7 +59,7 @@ export const CardNavigation = ({
                             size="icon"
                             asChild
                         >
-                            <Link href="/settings/user">
+                            <Link prefetch={true} href="/settings/user">
                                 <Avatar className="h-5 w-5">
                                     <AvatarImage src={user?.image || ""} />
                                     <AvatarFallback>

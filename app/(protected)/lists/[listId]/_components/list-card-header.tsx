@@ -43,7 +43,7 @@ export const ListCardHeader = ({
             {!hideButtons && (
                 <div className="flex flex-row justify-between items-center">
                     <Button size="sm" variant="ghost" asChild>
-                        <Link href="/dashboard">
+                        <Link prefetch={true} href="/dashboard">
                             <FaAngleLeft className="w-4 h-4" />
                             Back
                         </Link>

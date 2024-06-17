@@ -96,7 +96,7 @@ export const Sidebar = ({
                         {/* Lists & settings */}
                         <div className="flex flex-col justify-start h-full pt-5 pb-10 space-y-8">
                             <Button asChild>
-                                <Link href="/dashboard">
+                                <Link prefetch={true} href="/dashboard">
                                     <div className="flex flex-row justify-center items-center gap-x-1">
                                         <span className="text-xl">🍋</span>
                                         {isExpanded && <span>pakkit</span>}
@@ -115,7 +115,7 @@ export const Sidebar = ({
                                     )}
                                     asChild
                                 >
-                                    <Link href="/dashboard">
+                                    <Link prefetch={true} href="/dashboard">
                                         <div className="w-full flex justify-start items-center gap-x-1.5">
                                             <HomeIcon className="size-4" />
                                             {isExpanded && <span>Dashboard</span>}
@@ -131,7 +131,7 @@ export const Sidebar = ({
                                     )}
                                     asChild
                                 >
-                                    <Link href="/lists">
+                                    <Link prefetch={true} href="/lists">
                                         <div className="w-full flex justify-start items-center gap-x-1.5">
                                             <ListChecksIcon className="size-4" />
                                             {isExpanded && <span>Lists</span>}
@@ -147,7 +147,7 @@ export const Sidebar = ({
                                     )}
                                     asChild
                                 >
-                                    <Link href="/settings/categories">
+                                    <Link prefetch={true} href="/settings/categories">
                                         <div className="w-full flex justify-start items-center gap-x-1.5">
                                             <BookAIcon className="size-4" />
                                             {isExpanded && <span>Categories</span>}

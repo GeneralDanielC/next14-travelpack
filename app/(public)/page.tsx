@@ -32,12 +32,12 @@ const MarketingPage = async () => {
                 </div>
                 <div className="flex items-center justify-center flex-row gap-x-5">
                     <Button variant="filled" asChild>
-                        <Link href="/auth/register">
+                        <Link prefetch={true} href="/auth/register">
                             Get started
                         </Link>
                     </Button>
                     <Button variant="outline" asChild>
-                        <Link href="/auth/login">
+                        <Link prefetch={true} href="/auth/login">
                             Sign in
                         </Link>
                     </Button>

@@ -6,6 +6,8 @@ import { SessionProvider } from 'next-auth/react';
 import { getMessages } from 'next-intl/server';
 import { Analytics } from "@vercel/analytics/react";
 import { SpeedInsights } from "@vercel/speed-insights/next"
+import NextTopLoader from 'nextjs-toploader';
+
 
 import { auth } from '@/auth';
 import { ThemeProvider } from '@/components/theme-provider';
@@ -58,6 +60,7 @@ export default async function RootLayout({
           `${nunito.className} 
           bg-stone-200/90 dark:bg-stone-800`
         }>
+          <NextTopLoader />
           {/* <NextIntlClientProvider messages={messages}> */}
             {/* bg-gradient-to-br from-stone-100 to-stone-300 dark:bg-stone-900 */}
             <ThemeProvider

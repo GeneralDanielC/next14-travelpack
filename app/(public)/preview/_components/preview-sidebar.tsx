@@ -66,7 +66,7 @@ export const PreviewSidebar = () => {
                         {/* Lists & settings */}
                         <div className="flex flex-col justify-start h-full pt-5 pb-10 space-y-8">
                             <Button asChild>
-                                <Link href="/">
+                                <Link prefetch={true} href="/">
                                     <div className="flex flex-row justify-center items-center gap-x-1">
                                         <span className="text-xl">🍋</span>
                                         {isExpanded && <span>pakkit</span>}
