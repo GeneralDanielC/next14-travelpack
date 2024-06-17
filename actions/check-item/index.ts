@@ -25,7 +25,7 @@ const handler = async (data: InputType): Promise<ReturnType> => {
     }
 
     // No need to validate this input data since it is already done in the create-safe-action.
-    const { itemId, listId } = data;
+    const { itemId, listId, isChecked } = data;
 
     let item;
 
@@ -45,10 +45,7 @@ const handler = async (data: InputType): Promise<ReturnType> => {
                 },
             },
             data: {
-                isChecked: {
-                    // Use a more performant toggle mechanism if available
-                    set: db.raw('NOT isChecked'),
-                },
+                isChecked: !isChecked
             },
         });
 

@@ -46,7 +46,9 @@ export const ListCardItem = ({
         if (!userHasEditingRights) return;
 
         execute({
-            item
+            itemId,
+            listId,
+            isChecked: item.isChecked,
         });
     }
 
