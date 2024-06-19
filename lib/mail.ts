@@ -13,7 +13,7 @@ export const sendTwoFactorTokenEmail = async (
     token: string
 ) => {
     await resend.emails.send({
-        from: "onboarding@resend.dev",
+        from: "info@pakkit.app",
         to: email,
         subject: "2FA Code",
         html: `<p>Your 2FA code: ${token}</p>`,
@@ -28,7 +28,7 @@ export const sendPasswordResetEmail = async (
     const resetLink = `${domain}/auth/new-password?token=${token}`;
 
     await resend.emails.send({
-        from: "onboarding@resend.dev", // TODO: change domain to real domain to be able to send to all addresses. See video @ 07:54:00
+        from: "info@pakkit.app", // TODO: change domain to real domain to be able to send to all addresses. See video @ 07:54:00
         to: email,
         subject: "Reset your password",
         html: `<p>Click <a href="${resetLink}">here</a> to reset password.</p>`,
@@ -43,7 +43,7 @@ export const sendVerificationEmail = async (
     const confirmLink = `${domain}/auth/new-verification?token=${token}`;
 
     await resend.emails.send({
-        from: "onboarding@resend.dev", // TODO: change domain to real domain to be able to send to all addresses. See video @ 07:54:00
+        from: "info@pakkit.app", // TODO: change domain to real domain to be able to send to all addresses. See video @ 07:54:00
         to: email,
         subject: "Confirm your email",
         html: `<p>Click <a href="${confirmLink}">here</a> to confirm email.</p>`
@@ -57,7 +57,7 @@ export const sendSharedToNotificationEmail = async (
     const link = `${domain}/lists/${listId}`;
 
     await resend.emails.send({
-        from: "onboarding@resend.dev", // TODO: change domain to real domain to be able to send to all addresses. See video @ 07:54:00
+        from: "info@pakkit.app", // TODO: change domain to real domain to be able to send to all addresses. See video @ 07:54:00
         to: email,
         subject: `New List Shared`,
         html: `<p>${email} shared a list with you. Click <a href="${link}">here</a> see the list.</p>`
