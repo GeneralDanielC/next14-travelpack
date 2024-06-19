@@ -38,18 +38,16 @@ export const register = async (
 
     if (!user) return { error: "Something went wrong." }
 
-    await setupInitialData(user.id);
+    try {
+        console.log("Trying to setup");
 
-    // const listTypePacking = await db.theme.findFirst({
-    //     where: {
-    //         isListType: true,
-    //         title: "PACKING"
-    //     }
-    // });
-    // if (!listTypePacking) return { error: "Something went wrong initalizing your profile." }
-    // await db.category.createMany({
-    //     data: initialCategories(user.id, listTypePacking.id),
-    // });
+        await setupInitialData({ userId: user.id });
+        console.log("Initial data setup complete for user", user.id);
+
+    } catch (err) {
+        console.log("Error setting up.", err);
+        return { error: "Error setting up" }
+    }
 
     const verificationToken = await generateVerificationToken(email);
 

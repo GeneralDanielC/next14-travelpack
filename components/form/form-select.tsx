@@ -9,21 +9,23 @@ import {
     SelectTrigger,
     SelectValue
 } from "@/components/ui/select";
-import { Category, Item, List, Theme } from "@prisma/client";
 import { useState } from "react";
 import { useFormStatus } from "react-dom";
 import { FormErrors } from "./form-errors";
 import { Label } from "@/components/ui/label";
 
-type editableOptions = {
+type Identifiable = {
     id: string;
-    displayName: string;
-    value: boolean;
-}
+};
 
-interface FormSelectProps {
+type Displayable = {
+    displayName?: string;
+    title?: string;
+};
+
+interface FormSelectProps<T extends Identifiable & Displayable> {
     id: string;
-    data: Category[] | editableOptions[];
+    data: T[];
     selectLabel?: string;
     className?: string;
     placeholder?: string;
@@ -32,7 +34,7 @@ interface FormSelectProps {
     defaultValue?: string;
 }
 
-export const FormSelect = ({
+export const FormSelect = <T extends Identifiable & Displayable>({
     id,
     data,
     selectLabel,
@@ -41,7 +43,7 @@ export const FormSelect = ({
     errors,
     label,
     defaultValue,
-}: FormSelectProps) => {
+}: FormSelectProps<T>) => {
     const { pending } = useFormStatus();
     const [selectDataId, setSelectedDataId] = useState<string | undefined>(defaultValue);
 
@@ -66,7 +68,7 @@ export const FormSelect = ({
                             <SelectLabel>{selectLabel}</SelectLabel>
                         )}
                         {data.map((d) => (
-                            <SelectItem key={d.id} value={d.id}>{d.displayName}</SelectItem>
+                            <SelectItem key={d.id} value={d.id}>{d.displayName || d.title }</SelectItem>
                         ))}
 
                     </SelectGroup>

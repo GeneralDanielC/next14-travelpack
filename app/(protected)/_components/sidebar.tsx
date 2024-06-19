@@ -41,8 +41,6 @@ export const Sidebar = ({
     const user = useCurrentUser();
     const pathname = usePathname();
 
-    const isSmallScreen = window.innerWidth < 640;
-
     const [isExpanded, setIsExpanded] = useState(true);
     const [width, setWidth] = useState("10rem");
     const [paddingLeft, setPaddingLeft] = useState("0");

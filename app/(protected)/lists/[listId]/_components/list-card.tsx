@@ -62,7 +62,7 @@ export const ListCard = ({
     }
 
     const sortCategoriesByDisplayName = (categoriesMap: CategoriesMap): CategoryWithItems[] => {
-        return Object.values(categoriesMap).sort((a, b) => {            
+        return Object.values(categoriesMap).sort((a, b) => {
             const nameA = a.displayName.toLowerCase();
             const nameB = b.displayName.toLowerCase();
             if (nameA < nameB) return -1;
@@ -105,21 +105,17 @@ export const ListCard = ({
                 ]}
             />
             <ListCardHeader list={list} totalCountChecked={totalCountChecked} userIsNotOwnerOfList={userIsNotOwnerOfList} />
-            <CardContent className="overflow-y-scroll max-h-full">
-                <Tabs defaultValue="list">
+            <CardContent className="h-full max-h-full overflow-y-scroll">
+                <Tabs defaultValue="list" className="max-h-full overflow-y-scroll">
                     <TabsList className="grid w-full grid-cols-2">
                         <TabsTrigger value="list">List</TabsTrigger>
                         <TabsTrigger value="settings">Settings</TabsTrigger>
                     </TabsList>
-                    <TabsContent value="list" className="h-full flex flex-col overflow-y-scroll">
-                        {/* Add new item */}
-
-                        <ItemForm categories={categories} list={list} userHasEditingRights={userHasEditingRights}  />
-
+                    <TabsContent value="list" className="h-full flex flex-col justify-between">
                         {/* List render (incl. items and categories) */}
                         <Accordion
                             type="multiple"
-                            className="w-full"
+                            className="h-full flex-grow overflow-y-scroll"
                             defaultValue={categoriesWithItems.map((category) => {
                                 let checkedItems = 0;
                                 category.items.map((item) => {
@@ -142,8 +138,12 @@ export const ListCard = ({
                                 </ListCardCategory>
                             ))}
                         </Accordion>
+                        {/* Add new item */}
+                        <div className="bg-stone-300 dark:bg-stone-700 p-2 rounded-lg w-full sticky bottom-0 flex-shrink-0">
+                            <ItemForm categories={categories} list={list} userHasEditingRights={userHasEditingRights} />
+                        </div>
                     </TabsContent>
-                    <TabsContent value="settings" className="h-full flex flex-col overflow-y-scroll">
+                    <TabsContent value="settings" className="flex flex-col">
                         <ListSettingsForm list={list} themes={themes} userIsNotOwnerOfList={userIsNotOwnerOfList} />
                     </TabsContent>
                 </Tabs>

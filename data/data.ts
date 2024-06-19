@@ -2,6 +2,7 @@
 import { ExtendedUser } from "@/auth";
 import { currentUser } from "../lib/auth";
 import { db } from "../lib/db";
+import { Types } from "@/types";
 
 export const getListsByUserId = async (userId: string) => {
     const listShares = await db.listShare.findMany({
@@ -101,10 +102,43 @@ export const getThemes = async () => {
     return themes;
 }
 
-export const getTypes = async () => {
+export const getListTypes = async () => {
     const types = await db.theme.findMany({
         where: { isListType: true }
     });
 
     return types;
+}
+
+export const getListTypeIds = async () => {
+    const listTypes = await db.theme.findMany({
+        where: {
+            isListType: true,
+        },
+        select: {
+            id: true,
+            title: true
+        }
+    });
+
+    const ids = listTypes.reduce((acc, listType) => {
+        if (listType.title === Types.PACKING) {
+            acc.listTypePackingId = listType.id;
+        } else if (listType.title === Types.GROCERY) {
+            acc.listTypeGroceryId = listType.id;
+        } else if (listType.title === Types.TODO) {
+            acc.listTypeTodoId = listType.id;
+        }
+        return acc;
+    }, {
+        listTypePackingId: '',
+        listTypeGroceryId: '',
+        listTypeTodoId: ''
+    });
+
+    if (!ids.listTypePackingId || !ids.listTypeGroceryId || !ids.listTypeTodoId) {
+        throw new Error('One or more list types were not found');
+    }
+
+    return ids;
 }

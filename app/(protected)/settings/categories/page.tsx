@@ -4,9 +4,11 @@ import Link from "next/link";
 import { FaAngleLeft } from "react-icons/fa";
 import { CardNavigation } from "../../_components/card-navigation";
 import { currentUser } from "@/lib/auth";
-import { getCategoriesByUserId } from "@/data/data";
+import { getCategoriesByUserId, getListTypeIds, getListTypes } from "@/data/data";
 import { ArrowRightIcon, InfoIcon } from "lucide-react";
 import { CategoryCommand } from "./_components/category-command";
+import { CategoryCreateForm } from "./_components/category-create-form";
+import { Types } from "@/types";
 
 const CategoriesPage = async () => {
     const user = await currentUser();
@@ -16,6 +18,32 @@ const CategoriesPage = async () => {
     }
 
     const categories = await getCategoriesByUserId(user.id);
+
+    const listTypes = await getListTypes();
+
+    const listTypeIds = listTypes.reduce((acc, listType) => {
+        if (listType.title === Types.PACKING) {
+            acc.listTypePackingId = listType.id;
+        } else if (listType.title === Types.GROCERY) {
+            acc.listTypeGroceryId = listType.id;
+        } else if (listType.title === Types.TODO) {
+            acc.listTypeTodoId = listType.id;
+        }
+        return acc;
+    }, {
+        listTypePackingId: '',
+        listTypeGroceryId: '',
+        listTypeTodoId: ''
+    });
+    
+    const { listTypePackingId, listTypeGroceryId, listTypeTodoId } = listTypeIds;
+
+    const packingCategories = categories.filter(category => category.listTypeId === listTypePackingId).sort((a, b) => a.displayName.localeCompare(b.displayName));
+
+
+    const groceryCategories = categories.filter(category => category.listTypeId === listTypeGroceryId).sort((a, b) => a.displayName.localeCompare(b.displayName));
+
+    const todoCategories = categories.filter(category => category.listTypeId === listTypeTodoId).sort((a, b) => a.displayName.localeCompare(b.displayName));
 
     categories.sort((a, b) => a.displayName.localeCompare(b.displayName));
 
@@ -35,15 +63,8 @@ const CategoriesPage = async () => {
                     <h1 className="text-2xl font-bold">Categories</h1>
                 </ShadcnCardHeader>
                 <CardContent className="h-full overflow-y-scroll space-y-2">
-                    {/* <div className="w-full mt-2 flex flex-row gap-x-1 items-center bg-accent p-2 rounded-lg">
-                        <InfoIcon className="size-5" />
-                        <span className="text-xs">
-                            You can rename categories to a similar one. The essence needs to be the same.
-                        </span>
-                    </div> */}
-
-                    <CategoryCommand categories={categories} />
-
+                    <CategoryCreateForm listTypes={listTypes}  />
+                    <CategoryCommand categories={{ packingCategories, groceryCategories, todoCategories }} />
 
                 </CardContent>
             </Card>

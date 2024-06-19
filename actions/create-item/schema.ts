@@ -4,7 +4,7 @@ export const CreateItem = z.object({
     title: z.string({
         required_error: "Title is required",
         invalid_type_error: "Title is required",
-    }).min(2, {
+    }).min(1, {
         message: "Title is too short."
     }),
     listId: z.string({

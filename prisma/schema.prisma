@@ -18,7 +18,7 @@ enum UserRole {
 model User {
   id                    String                 @id @default(auto()) @map("_id") @db.ObjectId
   name                  String?
-  email                 String?                 @unique
+  email                 String?                @unique
   emailVerified         DateTime?
   image                 String?
   password              String?
@@ -135,14 +135,14 @@ model ListShare {
 }
 
 model Theme {
-  id              String       @id @default(auto()) @map("_id") @db.ObjectId
+  id              String     @id @default(auto()) @map("_id") @db.ObjectId
   title           String
   emoji           String
   emojiBackground String
   description     String?
-  isListType      Boolean      @default(false)
-  ListsAsType     List[]       @relation(name: "ListType")
-  List            List[]       @relation(name: "ListTheme")
+  isListType      Boolean    @default(false)
+  ListsAsType     List[]     @relation(name: "ListType")
+  List            List[]     @relation(name: "ListTheme")
   // suggestionIds   String[]     @db.ObjectId
   // suggestions     Suggestion[] @relation(fields: [suggestionIds], references: [id])
   categories      Category[]
@@ -170,6 +170,7 @@ model Category {
   listTypeId  String       @db.ObjectId
   listType    Theme        @relation(fields: [listTypeId], references: [id])
   suggestions Suggestion[]
+
 }
 
 model Suggestion {
@@ -193,12 +194,12 @@ model ListLimit {
 }
 
 model UserSubscription {
-  id                     String    @id @default(auto()) @map("_id") @db.ObjectId
-  userId                 String    @unique @db.ObjectId
-  user                   User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-  stripeCustomerId       String?   @unique @map(name: "stripe_customer_id")
-  stripeSubscriptionId   String?   @unique @map(name: "stripe_subscription_id")
-  stripePriceId          String?   @map(name: "stripe_price_id")
-  stripeCurrentPeriodEnd DateTime? @map(name: "stripe_current_period_end")
-  stripeCancelAtPeriodEnd Boolean? @map(name: "stripe_cancel_at_period_end")
+  id                      String    @id @default(auto()) @map("_id") @db.ObjectId
+  userId                  String    @unique @db.ObjectId
+  user                    User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  stripeCustomerId        String?   @unique @map(name: "stripe_customer_id")
+  stripeSubscriptionId    String?   @unique @map(name: "stripe_subscription_id")
+  stripePriceId           String?   @map(name: "stripe_price_id")
+  stripeCurrentPeriodEnd  DateTime? @map(name: "stripe_current_period_end")
+  stripeCancelAtPeriodEnd Boolean?  @map(name: "stripe_cancel_at_period_end")
 }

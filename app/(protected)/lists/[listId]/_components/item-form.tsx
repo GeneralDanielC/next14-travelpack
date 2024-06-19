@@ -51,7 +51,7 @@ export const ItemForm = ({
         execute({
             title,
             listId,
-            ownerUserId
+            ownerUserId,
         });
     }
 
@@ -79,7 +79,7 @@ export const ItemForm = ({
                                 id="title"
                                 type="text"
                                 className="w-full border-none bg-stone-100 dark:bg-stone-800"
-                                placeholder="Title"
+                                placeholder="Eggs..."
                                 errors={fieldErrors}
                                 onFocus={() => setShowSuggestions(true)}
                                 onBlur={() => setShowSuggestions(false)}

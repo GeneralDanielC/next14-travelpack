@@ -8,12 +8,10 @@ import { getUserById } from "@/data/auth/user";
 import { createSafeAction } from "@/lib/create-safe-action";
 
 import { InputType, ReturnType } from "./types";
-import { UpdateCategory } from "./schema";
-import OpenAI from "openai";
-
-const openai = new OpenAI({
-    apiKey: process.env.OPENAI_API_KEY,
-});
+import { CreateCategory } from "./schema";
+import { Types } from "@/types";
+import { incrementAvailableCount, hasAvailableCount } from "@/lib/list-limit";
+import { checkSubscription } from "@/lib/subscription";
 
 const handler = async (data: InputType): Promise<ReturnType> => {
     const user = await currentUser();
@@ -29,31 +27,27 @@ const handler = async (data: InputType): Promise<ReturnType> => {
     }
 
     // No need to validate this input data since it is already done in the create-safe-action.
-    const { categoryId, displayName } = data;
-
-    if (!categoryId) {
-        return { error: "No category found." };
-    }
+    const { displayName, listTypeId } = data;
 
     let category;
 
     try {
         // throw new Error("a"); // artificial error - to be removed
-        category = await db.category.update({
-            where: {
-                userId: user.id,
-                id: categoryId,
-            },
+        category = await db.category.create({
             data: {
                 displayName,
+                workName: displayName.toLowerCase(),
+                listTypeId,
+                userId: dbUser.id,
             }
         });
+
     } catch (error) {
-        return { error: "Failed to update category." }
+        return { error: "Failed to create" }
     }
 
-    revalidatePath(`/categories`);
+    revalidatePath(`/settings/categories`);
     return { data: category };
 }
 
-export const updateCategory = createSafeAction(UpdateCategory, handler);
+export const createCategory = createSafeAction(CreateCategory, handler);

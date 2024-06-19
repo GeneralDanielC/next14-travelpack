@@ -66,4 +66,18 @@ export enum CategoryWorkNames {
     MONEY = "money & finances",
     MAKEUP = "make-up",
     TRAINING = "training gear",
+
+    FRUIT = "fruit & vegetables",
+    DAIRY = "dairy",
+    BAKERY = "bakery",
+    MEAT_SEAFOOD = "meat & seafood",
+    FROZEN = "frozen foods",
+    BEVERAGES = "beverages",
+    PANTRY = "pantry staples",
+    DELI = "deli",
+    HEALTH_BEAUTY = "health & beauty",
+    HOUSEHOLD_ESSENTIALS = "household essentials",
+    SNACKS = "snacks",
+    INTERNATIONAL = "international foods",
+    BABY_PRODUCTS = "baby products",
 }

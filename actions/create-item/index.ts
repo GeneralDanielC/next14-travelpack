@@ -10,7 +10,7 @@ import { createSafeAction } from "@/lib/create-safe-action";
 
 import { InputType, ReturnType } from "./types";
 import { CreateItem } from "./schema";
-import { getListByIdAndUserId, getThemes } from "@/data/data";
+import { getCategoriesByUserId, getListByIdAndUserId, getThemes } from "@/data/data";
 import pusher from "@/lib/pusher";
 
 const openai = new OpenAI({
@@ -36,22 +36,12 @@ const handler = async (data: InputType): Promise<ReturnType> => {
 
     const list = await getListByIdAndUserId(listId, ownerUserId);
 
-    const themes = await getThemes();
-
-    const themesString = themes.map((theme) => {
-        if (!theme.isListType) {
-            return `Theme Name: ${theme.title || 'N/A'}, Description: ${theme.description || 'No description available'}`;
-        }
-    });
-
-    const dbCategories = await db.category.findMany({
-        where: {
-            userId: ownerUserId,
-        }
-    });
+    const dbCategories = await getCategoriesByUserId(ownerUserId);
 
     const categoriesString = dbCategories.map((category) => {
-        return `${category.displayName}, `;
+        if (category.listTypeId === list?.typeId) {
+            return `${category.displayName}, `;
+        }
     });
 
     const prompt = `
@@ -62,18 +52,15 @@ const handler = async (data: InputType): Promise<ReturnType> => {
         \nHere are some examples of categorizing:
         \n- Laptop: Electronics
         \n- Jeans: Clothing
-        \n- Coffee mug: Kitchenware
 
-        \nPlease consider the list type and theme when categorizing the item. 
-        \nThe list types are "Packing list", "To-do list" and "Grocery/shopping list". 
-        \nThe themes are ${themesString}.
         \nThe categories are ${categoriesString}.
         
         \n\nCategorize this item: ${title}
         \nThe list type is: ${list?.type.title}
-        \nThe theme is: ${list?.theme?.title || "none"}
-        \nRemember to pick a category from the list and return the category ONLY typing the category name.`;        
-
+        \nThe theme is: ${list?.theme?.title || "none"}
+        \nRemember to pick a category from the list and return the category ONLY typing the category name. No colons, no commas, just write the category.`;
+    console.log(prompt);
+    
     // CHANGE: add reference to list type.
     // CHANGE: possibly add a long string of all the categories that are available... Maybe unnecessary...
     // ADD THIS CODE WITHIN A TRY CATCH BLOCK
@@ -125,7 +112,7 @@ const handler = async (data: InputType): Promise<ReturnType> => {
                 listId,
             }
         });
-        
+
         await pusher.trigger(`list-${listId}`, 'item-created', {
             item: item,
             action: 'update'

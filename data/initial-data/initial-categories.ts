@@ -1,6 +1,16 @@
 import { CategoryWorkNames } from "@/types";
 
-export const initialCategories = (userId: string, listTypePackingId: string, listTypeGroceryId: string) => [
+interface initialCategoriesProps {
+    userId: string,
+    listTypePackingId: string,
+    listTypeGroceryId: string
+}
+
+export const initialCategories = ({
+    userId,
+    listTypePackingId,
+    listTypeGroceryId
+}: initialCategoriesProps) => [
     {
         displayName: "Miscellaneous",
         workName: CategoryWorkNames.MISC,
@@ -84,5 +94,90 @@ export const initialCategories = (userId: string, listTypePackingId: string, lis
         workName: CategoryWorkNames.TRAINING,
         userId,
         listTypeId: listTypePackingId,
+    },
+    //-------------------
+    {
+        displayName: "Fruit & Vegetables",
+        workName: CategoryWorkNames.FRUIT,
+        userId,
+        listTypeId: listTypeGroceryId,
+    },
+    {
+        displayName: "Dairy",
+        workName: CategoryWorkNames.DAIRY,
+        userId,
+        listTypeId: listTypeGroceryId,
+    },
+    {
+        displayName: "Bakery",
+        workName: CategoryWorkNames.BAKERY,
+        userId,
+        listTypeId: listTypeGroceryId,
+    },
+    {
+        displayName: "Meat & Seafood",
+        workName: CategoryWorkNames.MEAT_SEAFOOD,
+        userId,
+        listTypeId: listTypeGroceryId,
+    },
+    {
+        displayName: "Frozen Foods",
+        workName: CategoryWorkNames.FROZEN,
+        userId,
+        listTypeId: listTypeGroceryId,
+    },
+    {
+        displayName: "Beverages",
+        workName: CategoryWorkNames.BEVERAGES,
+        userId,
+        listTypeId: listTypeGroceryId,
+    },
+    {
+        displayName: "Pantry Staples",
+        workName: CategoryWorkNames.PANTRY,
+        userId,
+        listTypeId: listTypeGroceryId,
+    },
+    {
+        displayName: "Deli",
+        workName: CategoryWorkNames.DELI,
+        userId,
+        listTypeId: listTypeGroceryId,
+    },
+    {
+        displayName: "Health & Beauty",
+        workName: CategoryWorkNames.HEALTH_BEAUTY,
+        userId,
+        listTypeId: listTypeGroceryId,
+    },
+    {
+        displayName: "Household Essentials",
+        workName: CategoryWorkNames.HOUSEHOLD_ESSENTIALS,
+        userId,
+        listTypeId: listTypeGroceryId,
+    },
+    {
+        displayName: "Snacks",
+        workName: CategoryWorkNames.SNACKS,
+        userId,
+        listTypeId: listTypeGroceryId,
+    },
+    {
+        displayName: "International Foods",
+        workName: CategoryWorkNames.INTERNATIONAL,
+        userId,
+        listTypeId: listTypeGroceryId,
+    },
+    {
+        displayName: "Baby Products",
+        workName: CategoryWorkNames.BABY_PRODUCTS,
+        userId,
+        listTypeId: listTypeGroceryId,
+    },
+    {
+        displayName: "Miscellaneous",
+        workName: CategoryWorkNames.MISC,
+        userId,
+        listTypeId: listTypeGroceryId,
     },
 ];

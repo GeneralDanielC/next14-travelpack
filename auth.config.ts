@@ -7,6 +7,7 @@ import Google from "next-auth/providers/google";
 import { LoginSchema } from "@/schemas";
 import { getUserByEmail } from "@/data/auth/user";
 import { NextAuthConfig } from "next-auth";
+import { setupInitialData } from "./data/initial-data/initial-data";
 
 export default {
     providers: [
@@ -27,7 +28,7 @@ export default {
 
                     const user = await getUserByEmail(email);
                     if (!user || !user.password) return null;
-                    
+
                     const passwordsMatch = await bcrypt.compare(
                         password,
                         user.password,
@@ -40,4 +41,9 @@ export default {
             }
         })
     ],
+    events: {
+        createUser: async ({ user }) => {
+            await setupInitialData({ userId: user.id });
+        }
+    }
 } satisfies NextAuthConfig

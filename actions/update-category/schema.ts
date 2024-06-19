@@ -2,7 +2,6 @@ import * as z from "zod";
 
 export const UpdateCategory = z.object({
     categoryId: z.string(),
-    workName: z.string(),
     displayName: z.string({
         required_error: "Name is required",
         invalid_type_error: "Name is required",

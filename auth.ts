@@ -7,6 +7,8 @@ import authConfig from "@/auth.config";
 import { getUserById } from "@/data/auth/user";
 import { getAccountByUserId } from "@/data/auth/account";
 import { getTwoFactorConfirmationByUserId } from "./data/auth/two-factor-confirmation";
+import { getCategoriesByUserId } from "./data/data";
+import { setupInitialData } from "./data/initial-data/initial-data";
 
 export type ExtendedUser = DefaultSession["user"] & {
     role: UserRole;

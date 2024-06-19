@@ -15,7 +15,7 @@ import { NoLists } from "../_components/no-lists";
 
 import { Types } from "@/types";
 import { CardNavigation } from "@/app/(protected)/_components/card-navigation";
-import { getListSharesByUserId, getListsByUserId, getThemes, getTypes } from "@/data/data";
+import { getListSharesByUserId, getListsByUserId, getThemes, getListTypes } from "@/data/data";
 import { CalendarDaysIcon, CheckCircleIcon, InfoIcon, PlusIcon } from "lucide-react";
 import { Chart } from "./_components/chart";
 import { CircularProgress } from "./_components/circular-progress";
@@ -34,7 +34,7 @@ const DashboardPage = async () => {
 
     const themes = await getThemes();
 
-    const types = await getTypes();
+    const types = await getListTypes();
 
     const availableCount = await getAvailableCount();
     const isPro = await checkSubscription();

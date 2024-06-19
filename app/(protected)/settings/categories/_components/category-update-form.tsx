@@ -13,16 +13,17 @@ import { ArrowRightIcon } from "lucide-react";
 import { ElementRef, useRef } from "react";
 import { toast } from "sonner";
 import lodash from "lodash";
+import { deleteCategory } from "@/actions/delete-category";
 
-interface CategoryFormProps {
+interface CategoryUpdateFormProps {
     category: Category,
     toggleDialog: () => void;
 }
 
-export const CategoryForm = ({
+export const CategoryUpdateForm = ({
     category,
     toggleDialog
-}: CategoryFormProps) => {
+}: CategoryUpdateFormProps) => {
     const formRef = useRef<ElementRef<"form">>(null);
 
     const { execute: executeUpdate, fieldErrors } = useAction(updateCategory, {
@@ -39,7 +40,18 @@ export const CategoryForm = ({
 
     const { execute: executeReset } = useAction(resetCategory, {
         onSuccess: (data) => {
-            toast.success(`Category "${data.displayName}" was reset.`);
+            toast.success(`The category "${data.displayName}" has been reset.`);
+            formRef.current?.reset();
+            toggleDialog();
+        },
+        onError: (error) => {
+            toast.error(error);
+        }
+    });
+
+    const { execute: executeDelete } = useAction(deleteCategory, {
+        onSuccess: (data) => {
+            toast.success(`Category "${data.displayName}" has been deleted.`);
             formRef.current?.reset();
             toggleDialog();
         },
@@ -50,12 +62,10 @@ export const CategoryForm = ({
 
     const handleUpdate = (formData: FormData) => {
         const displayName = formData.get("displayName") as string;
-        const workName = formData.get("workName") as string;
         const categoryId = formData.get("categoryId") as string;
 
         executeUpdate({
             displayName,
-            workName,
             categoryId,
         });
     }
@@ -67,8 +77,16 @@ export const CategoryForm = ({
         });
     }
 
+    const handleDelete = (formData: FormData) => {
+        const categoryId = formData.get("categoryId") as string;
+
+        executeDelete({
+            categoryId,
+        });
+    }
+
     return (
-        <>
+        <div className="flex flex-col gap-y-3">
             <form
                 ref={formRef}
                 action={handleUpdate}
@@ -79,7 +97,7 @@ export const CategoryForm = ({
                     type="text"
                     placeholder="Category"
                     errors={fieldErrors}
-                    label="Display Name"
+                    label="Category Name"
                     autofocus={false}
                     defaultValue={category.displayName}
                 />
@@ -88,12 +106,6 @@ export const CategoryForm = ({
                     name="categoryId"
                     hidden
                     value={category.id}
-                />
-                <input
-                    id="workName"
-                    name="workName"
-                    hidden
-                    value={category.workName}
                 />
                 {category.workName.toLowerCase() !== category.displayName.toLowerCase() && (
                     <div className="flex flex-row justify-around items-center bg-accent p-1.5 rounded-lg">
@@ -106,27 +118,49 @@ export const CategoryForm = ({
                     </div>
                 )}
                 <div className="flex flex-row-reverse items-center justify-between">
-                    <FormSubmit className="">
+                    <FormSubmit className="w-full">
                         Save
                     </FormSubmit>
                 </div>
             </form>
-            <form
-                ref={formRef}
-                action={handleReset}
-            >
-                <input
-                    id="categoryId"
-                    name="categoryId"
-                    hidden
-                    value={category.id}
-                />
-                <FormSubmit
-                    variant="destructive"
+            <div className="flex flex-row gap-x-2 items-center justify-between">
+                <form
+                    ref={formRef}
+                    action={handleReset}
+                    className="flex-1"
                 >
-                    Reset
-                </FormSubmit>
-            </form>
-        </>
+                    <input
+                        id="categoryId"
+                        name="categoryId"
+                        hidden
+                        value={category.id}
+                    />
+                    <FormSubmit
+                        variant="link"
+                        className="w-full text-center"
+                    >
+                        Reset
+                    </FormSubmit>
+                </form>
+                <form
+                    ref={formRef}
+                    action={handleDelete}
+                    className="flex-1"
+                >
+                    <input
+                        id="categoryId"
+                        name="categoryId"
+                        hidden
+                        value={category.id}
+                    />
+                    <FormSubmit
+                        variant="link"
+                        className="w-full text-center text-red-500"
+                    >
+                        Delete
+                    </FormSubmit>
+                </form>
+            </div>
+        </div>
     );
 }

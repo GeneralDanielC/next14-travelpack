@@ -8,12 +8,8 @@ import { getUserById } from "@/data/auth/user";
 import { createSafeAction } from "@/lib/create-safe-action";
 
 import { InputType, ReturnType } from "./types";
-import { UpdateCategory } from "./schema";
-import OpenAI from "openai";
-
-const openai = new OpenAI({
-    apiKey: process.env.OPENAI_API_KEY,
-});
+import { DeleteCategory } from "./schema";
+import pusher from "@/lib/pusher";
 
 const handler = async (data: InputType): Promise<ReturnType> => {
     const user = await currentUser();
@@ -29,31 +25,23 @@ const handler = async (data: InputType): Promise<ReturnType> => {
     }
 
     // No need to validate this input data since it is already done in the create-safe-action.
-    const { categoryId, displayName } = data;
-
-    if (!categoryId) {
-        return { error: "No category found." };
-    }
+    const { categoryId } = data;
 
     let category;
 
     try {
-        // throw new Error("a"); // artificial error - to be removed
-        category = await db.category.update({
+        category = await db.category.delete({
             where: {
-                userId: user.id,
-                id: categoryId,
+                id: categoryId
             },
-            data: {
-                displayName,
-            }
         });
+       
     } catch (error) {
-        return { error: "Failed to update category." }
+        return { error: "Failed to delete" }
     }
 
-    revalidatePath(`/categories`);
+    revalidatePath(`/settings/categories`);
     return { data: category };
 }
 
-export const updateCategory = createSafeAction(UpdateCategory, handler);
+export const deleteCategory = createSafeAction(DeleteCategory, handler);

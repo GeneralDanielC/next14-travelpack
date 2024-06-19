@@ -11,14 +11,6 @@ import {
 } from "@/routes";
 import authConfig from "@/auth.config";
 
-// const locales = ['en', 'sv'];
-// const defaultLocale = 'en';
-
-// const intlMiddleware = createIntlMiddleware({
-//     locales,
-//     defaultLocale
-// });
-
 const { auth } = NextAuth(authConfig);
 
 export default auth((req) => {
