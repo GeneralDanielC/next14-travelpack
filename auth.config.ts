@@ -41,9 +41,4 @@ export default {
             }
         })
     ],
-    events: {
-        createUser: async ({ user }) => {
-            await setupInitialData({ userId: user.id });
-        }
-    }
 } satisfies NextAuthConfig

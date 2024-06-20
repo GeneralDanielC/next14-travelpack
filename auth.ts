@@ -1,5 +1,5 @@
 import NextAuth, { DefaultSession } from "next-auth";
-import { UserRole } from "@prisma/client";
+import { Account, UserRole } from "@prisma/client";
 import { PrismaAdapter } from "@auth/prisma-adapter";
 
 import { db } from "@/lib/db";
@@ -39,6 +39,9 @@ export const {
                 where: { id: user.id },
                 data: { emailVerified: new Date() }
             })
+        },
+        async createUser({ user }) {
+            await setupInitialData({ userId: user.id });
         }
     },
     callbacks: {
