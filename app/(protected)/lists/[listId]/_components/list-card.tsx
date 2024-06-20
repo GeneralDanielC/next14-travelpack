@@ -50,6 +50,7 @@ export const ListCard = ({
     const groupItemsByCategory = (items: ItemWithCategory[]): CategoriesMap => {
         return items.reduce<CategoriesMap>((acc, item) => {
             const categoryId = item.categoryId;
+            
             if (!acc[categoryId]) {
                 acc[categoryId] = {
                     ...item.category,
@@ -57,21 +58,20 @@ export const ListCard = ({
                 };
             }
             acc[categoryId].items.push(item);
+            
             return acc;
         }, {});
-    }
+    }    
 
     const sortCategoriesByDisplayName = (categoriesMap: CategoriesMap): CategoryWithItems[] => {
         return Object.values(categoriesMap).sort((a, b) => {
-            const nameA = a.displayName.toLowerCase();
-            const nameB = b.displayName.toLowerCase();
+            const nameA = a.displayName?.toLowerCase() || "";
+            const nameB = b.displayName?.toLowerCase() || "";
             if (nameA < nameB) return -1;
             if (nameA > nameB) return 1;
             return 0;
         });
     }
-
-    console.log(list);
 
     const [groupedItemsByCategory, setGroupedItemsByCategory] = useState(groupItemsByCategory(list.items));
     const [categoriesWithItems, setCategoriesWithItems] = useState(sortCategoriesByDisplayName(groupedItemsByCategory));
@@ -132,7 +132,7 @@ export const ListCard = ({
                                 <ListCardCategory key={category.id} category={category}>
                                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-4">
                                         {category.items.map((item) => (
-                                            <ListCardItem key={item.id} item={item} listId={list.id} categories={categories} userHasEditingRights={userHasEditingRights} />
+                                            <ListCardItem key={item.id} item={item} listId={list.id} listTypeId={category.listTypeId} categories={categories} userHasEditingRights={userHasEditingRights} />
                                         ))}
                                     </div>
                                 </ListCardCategory>

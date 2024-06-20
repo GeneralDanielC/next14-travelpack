@@ -24,15 +24,9 @@ const handler = async (data: InputType): Promise<ReturnType> => {
         return { error: "Unauthorized" }
     }
 
-    const dbUser = await getUserById(user.id);
-
-    if (!dbUser) {
-        return { error: "Unauthorized" }
-    }
-
     // No need to validate this input data since it is already done in the create-safe-action.
     // const { title, categoryId, quantity, listId } = data;
-    const { title, listId, ownerUserId } = data;
+    const { title, listId, ownerUserId, listTypeId } = data;
 
     const list = await getListByIdAndUserId(listId, ownerUserId);
 
@@ -60,45 +54,42 @@ const handler = async (data: InputType): Promise<ReturnType> => {
         \nThe theme is: ${list?.theme?.title || "none"}
         \nRemember to pick a category from the list and return the category ONLY typing the category name. No colons, no commas, just write the category.`;
     console.log(prompt);
-    
+
     // CHANGE: add reference to list type.
     // CHANGE: possibly add a long string of all the categories that are available... Maybe unnecessary...
     // ADD THIS CODE WITHIN A TRY CATCH BLOCK
-    const response = await openai.completions.create({
-        model: "gpt-3.5-turbo-instruct",
-        prompt,
-        temperature: 0,
-        max_tokens: 10,
-        top_p: 1,
-        frequency_penalty: 0,
-        presence_penalty: 0,
-        stop: ["\\n"],
-    });
 
-    const fetchedCategories = response.choices[0].text;
+    let response;
 
-    const fetchedCategoryList = fetchedCategories.split(',').map(cat => cat.trim().toLowerCase());
-
-    console.log("fetchedCategoryList", fetchedCategoryList);
-
-    const miscCategory = await db.category.findFirst({
-        where: {
-            userId: ownerUserId,
-            workName: "Miscellaneous"
-        }
-    });
-
-    const findCategoryId = (dbCategories: any, fetchedCategoryList: String[]) => {
-        for (const dbCat of dbCategories) {
-
-            if (fetchedCategoryList.includes(dbCat.workName.toLowerCase())) {
-                return dbCat.id;
-            }
-        }
-        return miscCategory?.id;
+    try {
+        response = await openai.completions.create({
+            model: "gpt-3.5-turbo-instruct",
+            prompt,
+            temperature: 0,
+            max_tokens: 10,
+            top_p: 1,
+            frequency_penalty: 0,
+            presence_penalty: 0,
+            stop: ["\\n"],
+        });
+    } catch (err) {
+        console.log(err);
+        return { error: "Something went wrong" }
     }
 
-    const categoryId = findCategoryId(dbCategories, fetchedCategoryList);
+    const fetchedCategoryName = response.choices[0].text.trim().toLowerCase();
+    console.log("Fetched category name:", fetchedCategoryName);
+
+    const miscCategory = dbCategories.find((category) => category.listTypeId === listTypeId && category.workName === "miscellaneous");
+
+    const findCategoryId = (dbCategories: any, fetchedCategoryName: string) => {
+        const matchedCategory = dbCategories.find((dbCat: any) =>
+            dbCat.workName.toLowerCase() === fetchedCategoryName
+        );
+        return matchedCategory ? matchedCategory.id : miscCategory?.id;
+    }
+
+    const categoryId = findCategoryId(dbCategories, fetchedCategoryName);
 
     let item;
 
@@ -110,6 +101,9 @@ const handler = async (data: InputType): Promise<ReturnType> => {
                 categoryId,
                 quantity: 0,
                 listId,
+            },
+            include: {
+                category: true,
             }
         });
 

@@ -1,11 +1,11 @@
-import { ListComplete } from '@/types';
-import { Item, List } from '@prisma/client';
+import { ItemWithCategory, ListComplete } from '@/types';
+import { Category, Item, List } from '@prisma/client';
 import Pusher from 'pusher-js';
 import { useEffect, useState } from 'react';
 
 type ItemDataType = {
     action: string;
-    item: Item;
+    item: ItemWithCategory;
 }
 
 type ListDataType = {
@@ -22,12 +22,24 @@ export const useRealtimeList = (completeList: ListComplete) => {
             forceTLS: true
         });
 
-        console.log(pusher);
-
         const channel = pusher.subscribe(`list-${list.id}`);
 
+        const updateList = (updateFn: (prevList: ListComplete) => ListComplete) => {
+            setList(prevList => {
+                const updatedList = updateFn(prevList);
+                
+                return {
+                    ...updatedList,
+                    items: updatedList.items.map(item => ({
+                        ...item,
+                        category: item.category
+                    })),
+                };
+            });
+        };
+
         const handleItemUpdated = (data: ItemDataType) => {
-            setList(prevList => ({
+            updateList(prevList => ({
                 ...prevList,
                 items: prevList.items.map(item =>
                     item.id === data.item.id ? { ...item, ...data.item } : item
@@ -36,25 +48,23 @@ export const useRealtimeList = (completeList: ListComplete) => {
         }
 
         const handleItemCreated = (data: ItemDataType) => {
-            setList(prevList => ({
+            console.log("Data", data);
+            
+            updateList(prevList => ({
                 ...prevList,
                 items: [...prevList.items, data.item]
             }));
         };
 
         const handleItemDeleted = (data: ItemDataType) => {
-            console.log(data);
-
-            setList(prevList => ({
+            updateList(prevList => ({
                 ...prevList,
                 items: prevList.items.filter(item => item.id !== data.item.id)
             }));
         };
 
         const handleItemChecked = (data: ItemDataType) => {
-            console.log("Data", data);
-
-            setList(prevList => ({
+            updateList(prevList => ({
                 ...prevList,
                 items: prevList.items.map(item =>
                     item.id === data.item.id ? { ...item, isChecked: data.item.isChecked } : item
@@ -63,7 +73,7 @@ export const useRealtimeList = (completeList: ListComplete) => {
         };
 
         const handleListUpdated = (data: ListDataType) => {
-            setList(prevList => ({
+            updateList(prevList => ({
                 ...prevList,
                 ...data.list
             }));

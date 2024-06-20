@@ -16,6 +16,7 @@ import { ItemSettingsForm } from "./item-settings-form";
 interface ListCardItemProps {
     item: Item;
     listId: string;
+    listTypeId: string;
     categories?: Category[];
     userHasEditingRights?: boolean;
 }
@@ -23,6 +24,7 @@ interface ListCardItemProps {
 export const ListCardItem = ({
     item,
     listId,
+    listTypeId,
     categories,
     userHasEditingRights
 }: ListCardItemProps) => {
@@ -106,7 +108,7 @@ export const ListCardItem = ({
                 </Button>
             </form>
             {userHasEditingRights && (
-                <ItemSettingsForm item={item} categories={categories} />
+                <ItemSettingsForm item={item} categories={categories} listTypeId={listTypeId} />
             )}
         </div>
     )

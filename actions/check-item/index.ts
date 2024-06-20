@@ -18,12 +18,6 @@ const handler = async (data: InputType): Promise<ReturnType> => {
         return { error: "Unauthorized" }
     }
 
-    const dbUser = await getUserById(user.id);
-
-    if (!dbUser) {
-        return { error: "Unauthorized" }
-    }
-
     // No need to validate this input data since it is already done in the create-safe-action.
     const { itemId, listId, isChecked } = data;
 
@@ -31,7 +25,7 @@ const handler = async (data: InputType): Promise<ReturnType> => {
 
     try {
         // throw new Error("a"); // artificial error - to be removed
-        console.log("userid", dbUser.id);
+        console.log("userid", user.id);
 
         item = await db.item.update({
             where: {
@@ -39,8 +33,8 @@ const handler = async (data: InputType): Promise<ReturnType> => {
                 listId,
                 list: {
                     OR: [
-                        { userId: dbUser.id },
-                        { shares: { some: { userId: dbUser.id } } },
+                        { userId: user.id },
+                        { shares: { some: { userId: user.id } } },
                     ],
                 },
             },

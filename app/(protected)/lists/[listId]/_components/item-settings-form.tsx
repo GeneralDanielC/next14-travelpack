@@ -23,14 +23,18 @@ import { toast } from "sonner";
 interface ItemSettingsForm {
     item: Item;
     categories?: Category[];
+    listTypeId: string;
 }
 
 export const ItemSettingsForm = ({
     item,
     categories,
+    listTypeId,
 }: ItemSettingsForm) => {
     const formRef = useRef<ElementRef<"form">>(null);
     const [open, setOpen] = useState(false);
+
+    const acceptableCategories = categories?.filter(category => category.listTypeId === listTypeId);
 
     const { execute: executeUpdate, fieldErrors } = useAction(updateItem, {
         onSuccess: (data) => {
@@ -122,7 +126,7 @@ export const ItemSettingsForm = ({
                                 id="categoryId"
                                 className="border-none bg-stone-100 dark:bg-stone-800"
                                 selectLabel="Category"
-                                data={categories}
+                                data={acceptableCategories}
                                 placeholder="Category"
                                 label="Category"
                                 defaultValue={item.categoryId}

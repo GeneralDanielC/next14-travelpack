@@ -52,6 +52,7 @@ export const ItemForm = ({
             title,
             listId,
             ownerUserId,
+            listTypeId: list.typeId
         });
     }
 
@@ -86,6 +87,7 @@ export const ItemForm = ({
                                 onChange={handleSearchChange}
                                 autofocus={false}
                             />
+                            
                             <input
                                 id="listId"
                                 name="listId"

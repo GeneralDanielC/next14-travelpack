@@ -12,4 +12,5 @@ export const CreateItem = z.object({
         invalid_type_error: "Category is required"
     }),
     ownerUserId: z.string(),
+    listTypeId: z.string(),
 });

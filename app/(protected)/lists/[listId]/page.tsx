@@ -19,7 +19,7 @@ const ListPage = async ({
         return <FullscreenError code={401} heading="Unauthorized" message="It seems as if you don't have access to this page." />;
     }
 
-    const list = await getListByIdAndUserId(params.listId, user?.id);
+    const list = await getListByIdAndUserId(params.listId, user?.id);    
 
     if (!list) {
         return <FullscreenError code={404} heading="Not Found" message="The list you were looking for could not be found." />
@@ -41,13 +41,6 @@ const ListPage = async ({
     //         themes: true,
     //     }
     // });
-
-
-    if (!list) {
-        return (
-            <div>No list found</div>
-        )
-    }
 
     return (
         <ListCard list={list} themes={themes} categories={categories} />
