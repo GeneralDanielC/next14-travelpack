@@ -10,8 +10,9 @@ import { createSafeAction } from "@/lib/create-safe-action";
 
 import { InputType, ReturnType } from "./types";
 import { CreateItem } from "./schema";
-import { getCategoriesByUserId, getListByIdAndUserId, getThemes } from "@/data/data";
+import { getCategoriesByUserId, getListByIdAndUserId, getThemes, getTodoListTypeId } from "@/data/data";
 import pusher from "@/lib/pusher";
+import { CategoryWorkNames } from "@/types";
 
 const openai = new OpenAI({
     apiKey: process.env.OPENAI_API_KEY,
@@ -27,6 +28,8 @@ const handler = async (data: InputType): Promise<ReturnType> => {
     // No need to validate this input data since it is already done in the create-safe-action.
     // const { title, categoryId, quantity, listId } = data;
     const { title, listId, ownerUserId, listTypeId } = data;
+
+    if (!listTypeId) return { error: "Missing data. Something went wrong!" }
 
     const list = await getListByIdAndUserId(listId, ownerUserId);
 
@@ -53,32 +56,38 @@ const handler = async (data: InputType): Promise<ReturnType> => {
         \nThe list type is: ${list?.type.title}
         \nThe theme is: ${list?.theme?.title || "none"}
         \nRemember to pick a category from the list and return the category ONLY typing the category name. No colons, no commas, just write the category.`;
-    console.log(prompt);
 
     // CHANGE: add reference to list type.
     // CHANGE: possibly add a long string of all the categories that are available... Maybe unnecessary...
     // ADD THIS CODE WITHIN A TRY CATCH BLOCK
 
     let response;
+    let fetchedCategoryName;
 
-    try {
-        response = await openai.completions.create({
-            model: "gpt-3.5-turbo-instruct",
-            prompt,
-            temperature: 0,
-            max_tokens: 10,
-            top_p: 1,
-            frequency_penalty: 0,
-            presence_penalty: 0,
-            stop: ["\\n"],
-        });
-    } catch (err) {
-        console.log(err);
-        return { error: "Something went wrong" }
+    const todoListTypeId = await getTodoListTypeId();
+
+    if (!todoListTypeId) return { error: "Missing data. Try again later." }
+    if (listTypeId !== todoListTypeId.id) {
+        try {
+            response = await openai.completions.create({
+                model: "gpt-3.5-turbo-instruct",
+                prompt,
+                temperature: 0,
+                max_tokens: 10,
+                top_p: 1,
+                frequency_penalty: 0,
+                presence_penalty: 0,
+                stop: ["\\n"],
+            });
+
+            fetchedCategoryName = response?.choices[0].text.trim().toLowerCase();
+        } catch (err) {
+            console.log(err);
+            return { error: "Something went wrong" }
+        }
+    } else {
+        fetchedCategoryName = CategoryWorkNames.UNCATEGORIZED;
     }
-
-    const fetchedCategoryName = response.choices[0].text.trim().toLowerCase();
-    console.log("Fetched category name:", fetchedCategoryName);
 
     const miscCategory = dbCategories.find((category) => category.listTypeId === listTypeId && category.workName === "miscellaneous");
 

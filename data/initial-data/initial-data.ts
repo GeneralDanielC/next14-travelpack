@@ -14,7 +14,8 @@ interface setupInitialDataProps {
 interface createInitialCategoriesProps {
     userId: string,
     listTypePackingId: string,
-    listTypeGroceryId: string
+    listTypeGroceryId: string,
+    listTypeTodoId: string,
 }
 
 export const setupInitialData = async ({ userId }: setupInitialDataProps) => {
@@ -31,7 +32,7 @@ export const setupInitialData = async ({ userId }: setupInitialDataProps) => {
 
         console.log("Trying to create categories");
 
-        const categories = await createInitialCategories({ userId, listTypePackingId, listTypeGroceryId });
+        const categories = await createInitialCategories({ userId, listTypePackingId, listTypeGroceryId, listTypeTodoId });
 
         console.log("Categories created:", categories);
 
@@ -68,13 +69,14 @@ const createInitialSuggestions = async (userId: string, themes: Theme[], categor
 const createInitialCategories = async ({
     userId,
     listTypePackingId,
-    listTypeGroceryId
+    listTypeGroceryId,
+    listTypeTodoId,
 }: createInitialCategoriesProps) => {
     console.log("Creating categories in DB for user", userId);
 
     try {
         await db.category.createMany({
-            data: initialCategories({ userId, listTypePackingId, listTypeGroceryId }),
+            data: initialCategories({ userId, listTypePackingId, listTypeGroceryId, listTypeTodoId }),
         });
         console.log("Categories created successfully");
 

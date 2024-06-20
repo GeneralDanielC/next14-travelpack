@@ -80,4 +80,9 @@ export enum CategoryWorkNames {
     SNACKS = "snacks",
     INTERNATIONAL = "international foods",
     BABY_PRODUCTS = "baby products",
+
+    UNCATEGORIZED = "uncategorized",
+    HIGH_PRIO = "high priority",
+    MED_PRIO = "medium priority",
+    LOW_PRIO = "low priority",
 }

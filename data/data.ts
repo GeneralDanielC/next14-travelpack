@@ -142,3 +142,15 @@ export const getListTypeIds = async () => {
 
     return ids;
 }
+
+export const getTodoListTypeId = async () => {
+    return await db.theme.findFirst({
+        where: {
+            isListType: true,
+            title: Types.TODO,
+        },
+        select: {
+            id: true,
+        }
+    });
+}

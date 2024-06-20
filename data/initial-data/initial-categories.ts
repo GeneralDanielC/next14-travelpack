@@ -3,13 +3,15 @@ import { CategoryWorkNames } from "@/types";
 interface initialCategoriesProps {
     userId: string,
     listTypePackingId: string,
-    listTypeGroceryId: string
+    listTypeGroceryId: string,
+    listTypeTodoId: string,
 }
 
 export const initialCategories = ({
     userId,
     listTypePackingId,
-    listTypeGroceryId
+    listTypeGroceryId,
+    listTypeTodoId,
 }: initialCategoriesProps) => [
     {
         displayName: "Miscellaneous",
@@ -179,5 +181,30 @@ export const initialCategories = ({
         workName: CategoryWorkNames.MISC,
         userId,
         listTypeId: listTypeGroceryId,
+    },
+    //-------
+    {
+        displayName: "Uncategorized",
+        workName: CategoryWorkNames.UNCATEGORIZED,
+        userId,
+        listTypeId: listTypeTodoId,
+    },
+    {
+        displayName: "High Priority",
+        workName: CategoryWorkNames.HIGH_PRIO,
+        userId,
+        listTypeId: listTypeTodoId,
+    },
+    {
+        displayName: "Medium Priority",
+        workName: CategoryWorkNames.MED_PRIO,
+        userId,
+        listTypeId: listTypeTodoId,
+    },
+    {
+        displayName: "Low Priority",
+        workName: CategoryWorkNames.LOW_PRIO,
+        userId,
+        listTypeId: listTypeTodoId,
     },
 ];
