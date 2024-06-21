@@ -38,16 +38,16 @@ export const register = async (
 
     if (!user) return { error: "Something went wrong." }
 
-    try {
-        console.log("Trying to setup");
+    // try {
+    //     console.log("Trying to setup");
 
-        await setupInitialData({ userId: user.id });
-        console.log("Initial data setup complete for user", user.id);
+    //     await setupInitialData({ userId: user.id });
+    //     console.log("Initial data setup complete for user", user.id);
 
-    } catch (err) {
-        console.log("Error setting up.", err);
-        return { error: "Error setting up" }
-    }
+    // } catch (err) {
+    //     console.log("Error setting up.", err);
+    //     return { error: "Error setting up" }
+    // }
 
     const verificationToken = await generateVerificationToken(email);
 

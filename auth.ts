@@ -41,12 +41,15 @@ export const {
             })
         },
         async createUser({ user }) {
+            console.log("Trying to create categories.");
+
             await setupInitialData({ userId: user.id });
         }
     },
     callbacks: {
         async signIn({ user, account }) {
-
+            console.log("trying to sign in");
+            
             // Allow OAuth without email verification
             if (account?.provider !== "credentials") return true;
 
