@@ -7,18 +7,12 @@ import Google from "next-auth/providers/google";
 import { LoginSchema } from "@/schemas";
 import { getUserByEmail } from "@/data/auth/user";
 import { NextAuthConfig } from "next-auth";
-import { setupInitialData } from "./data/initial-data/initial-data";
 
 export default {
     providers: [
         Google({
             clientId: process.env.GOOGLE_CLIENT_ID,
             clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-            authorization: {
-                params: {
-                    redirect_uri: `${process.env.NEXT_PUBLIC_APP_URL}/api/auth/callback/google`
-                }
-            }
         }),
         Github({
             clientId: process.env.GITHUB_CLIENT_ID,

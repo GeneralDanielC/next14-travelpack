@@ -43,7 +43,13 @@ export const {
         async createUser({ user }) {
             console.log("Trying to create categories.");
 
-            await setupInitialData({ userId: user.id });
+            try {
+                await setupInitialData({ userId: user.id });
+                console.log("Successfully setup data");
+                
+            } catch (err) {
+                console.log(err);
+            }
         }
     },
     callbacks: {
