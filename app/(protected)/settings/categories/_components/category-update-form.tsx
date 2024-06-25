@@ -79,10 +79,12 @@ export const CategoryUpdateForm = ({
 
     const handleDelete = (formData: FormData) => {
         const categoryId = formData.get("categoryId") as string;
-
-        executeDelete({
-            categoryId,
-        });
+        if (category.removable) {
+            executeDelete({
+                categoryId,
+                removable: category.removable,
+            });
+        }
     }
 
     return (
@@ -142,24 +144,26 @@ export const CategoryUpdateForm = ({
                         Reset
                     </FormSubmit>
                 </form>
-                <form
-                    ref={formRef}
-                    action={handleDelete}
-                    className="flex-1"
-                >
-                    <input
-                        id="categoryId"
-                        name="categoryId"
-                        hidden
-                        value={category.id}
-                    />
-                    <FormSubmit
-                        variant="link"
-                        className="w-full text-center text-red-500"
+                {category.removable && (
+                    <form
+                        ref={formRef}
+                        action={handleDelete}
+                        className="flex-1"
                     >
-                        Delete
-                    </FormSubmit>
-                </form>
+                        <input
+                            id="categoryId"
+                            name="categoryId"
+                            hidden
+                            value={category.id}
+                        />
+                        <FormSubmit
+                            variant="link"
+                            className="w-full text-center text-red-500"
+                        >
+                            Delete
+                        </FormSubmit>
+                    </form>
+                )}
             </div>
         </div>
     );

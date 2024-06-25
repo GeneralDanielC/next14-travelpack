@@ -19,6 +19,8 @@ import { copyList } from "@/actions/copy-list";
 import { ListComplete, Types } from "@/types";
 import { leaveListShare } from "@/actions/leave-list-share";
 import { redirect, useRouter } from "next/navigation";
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
+import { Button } from "@/components/ui/button";
 
 interface ListSettingsFormProps {
   list: ListComplete;
@@ -115,7 +117,7 @@ export const ListSettingsForm = ({
   }
 
   return (
-    <div className="flex flex-col space-y-3 h-full mx-0.5">
+    <div className="flex-1 flex flex-col space-y-3 mx-0.5">
       {userIsNotOwnerOfList && (
         <span className="text-xs text-center">The settings of this list can only be accessed by the owner.</span>
       )}
@@ -189,37 +191,81 @@ export const ListSettingsForm = ({
       </form>
 
       {!userIsNotOwnerOfList && (
-        <form action={handleDelete}>
-          <input
-            hidden
-            id="listId"
-            name="listId"
-            value={list.id}
-          />
-          <FormSubmit
-            variant="ghost"
-            className="text-rose-500 font-extrabold w-full hover:bg-rose-500/10 hover:text-rose-500 hover:border-rose-500/70 hover:border flex items-center"
-          >
-            Delete
-          </FormSubmit>
-        </form>
+        <AlertDialog>
+          <AlertDialogTrigger asChild>
+            <Button
+              variant="ghost"
+              className="text-rose-500 font-extrabold w-full hover:bg-rose-500/10 hover:text-rose-500 hover:border-rose-500/70 hover:border flex items-center"
+            >
+              Delete
+            </Button>
+          </AlertDialogTrigger>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+              <AlertDialogDescription>This action cannot be undone. This will permanently delete your list.</AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel>Cancel</AlertDialogCancel>
+              <form action={handleDelete}>
+                <input
+                  hidden
+                  id="listId"
+                  name="listId"
+                  value={list.id}
+                />
+                <AlertDialogAction asChild>
+                  <FormSubmit
+                    variant="ghost"
+                    className="bg-rose-500/10 border border-rose-500/70 text-rose-500 font-extrabold w-full hover:bg-rose-500/20 hover:text-rose-500 hover:border-rose-500/80 hover:border flex items-center"
+                  >
+                    Continue
+                  </FormSubmit>
+                </AlertDialogAction>
+              </form>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
+
       )}
 
       {userIsNotOwnerOfList && (
-        <form action={handleLeaveShare}>
-          <input
-            hidden
-            id="listId"
-            name="listId"
-            value={list.id}
-          />
-          <FormSubmit
-            variant="ghost"
-            className="text-rose-500 font-extrabold w-full hover:bg-rose-500/10 hover:text-rose-500 hover:border-rose-500/70 hover:border flex items-center"
-          >
-            Leave this list
-          </FormSubmit>
-        </form>
+
+        <AlertDialog>
+          <AlertDialogTrigger asChild>
+            <Button
+              variant="ghost"
+              className="text-rose-500 font-extrabold w-full hover:bg-rose-500/10 hover:text-rose-500 hover:border-rose-500/70 hover:border flex items-center"
+            >
+              Leave this list
+            </Button>
+          </AlertDialogTrigger>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+              <AlertDialogDescription>This action cannot be undone. The owner of the list will have to share this list with you again.</AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel>Cancel</AlertDialogCancel>
+              <form action={handleLeaveShare}>
+                <input
+                  hidden
+                  id="listId"
+                  name="listId"
+                  value={list.id}
+                />
+                <AlertDialogAction>
+                  <FormSubmit
+                    variant="ghost"
+                    className="bg-rose-500/10 border border-rose-500/70 text-rose-500 font-extrabold w-full hover:bg-rose-500/20 hover:text-rose-500 hover:border-rose-500/80 hover:border flex items-center"
+                  >
+                    Continue
+                  </FormSubmit>
+                </AlertDialogAction>
+              </form>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
       )}
     </div>
 

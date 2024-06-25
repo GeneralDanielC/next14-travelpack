@@ -185,7 +185,7 @@ const DashboardPage = async () => {
                             )}
 
                         </div>
-                        {lists.length > 2 && (
+                        {lists.length > 3 && (
                             <Button
                                 variant="ghost"
                                 className="w-full"

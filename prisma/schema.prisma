@@ -170,7 +170,7 @@ model Category {
   listTypeId  String       @db.ObjectId
   listType    Theme        @relation(fields: [listTypeId], references: [id])
   suggestions Suggestion[]
-
+  removable   Boolean      @default(true)
 }
 
 model Suggestion {

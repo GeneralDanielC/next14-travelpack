@@ -6,9 +6,8 @@ import { Progress } from "@/components/ui/progress";
 import { dateToLocaleString } from "@/lib/date";
 import { cn } from "@/lib/utils";
 import { ListComplete, Types } from "@/types";
-import { PlusIcon, Share, User2Icon } from "lucide-react";
-import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { Share, User2Icon } from "lucide-react";
+import { usePathname, useRouter } from "next/navigation";
 import { useState } from "react";
 import { FaAngleLeft } from "react-icons/fa";
 import { BsCopy } from "react-icons/bs";
@@ -17,7 +16,6 @@ import { toast } from "sonner";
 import { Separator } from "@/components/ui/separator";
 import { ListShareForm } from "./list-share-form";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { FormSubmit } from "@/components/form/form-submit";
 import { ListShareUnshareForm } from "./list-share-unshare-form";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 
@@ -34,7 +32,7 @@ export const ListCardHeader = ({
     hideButtons,
     userIsNotOwnerOfList
 }: ListCardHeaderProps) => {
-    const pathname = usePathname();
+    const router = useRouter();
 
     const [shareUrl, setShareUrl] = useState(`${process.env.NEXT_PUBLIC_APP_URL}/preview/${list.userId}/${list.id}`);
 
@@ -42,11 +40,9 @@ export const ListCardHeader = ({
         <CardHeader>
             {!hideButtons && (
                 <div className="flex flex-row justify-between items-center">
-                    <Button size="sm" variant="ghost" asChild>
-                        <Link prefetch={true} href="/dashboard">
-                            <FaAngleLeft className="w-4 h-4" />
-                            Back
-                        </Link>
+                    <Button size="sm" variant="ghost" onClick={() => router.back()}>
+                        <FaAngleLeft className="w-4 h-4" />
+                        Back
                     </Button>
 
                     <Dialog>

@@ -38,7 +38,7 @@ export const FormDatePicker = ({
     return (
         <Popover>
             <PopoverTrigger asChild>
-                <div className="space-y-1 h-full w-full">
+                <div className="space-y-1 w-full">
                     <div className="flex flex-col gap-y-2">
                         {label && (
                             <Label

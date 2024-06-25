@@ -72,6 +72,16 @@ export const useRealtimeList = (completeList: ListComplete) => {
             }));
         };
 
+        const handleAllItemsUnchecked = () => {
+            updateList(prevList => ({
+                ...prevList,
+                items: prevList.items.map(item => ({
+                    ...item,
+                    isChecked: false
+                }))
+            }));
+        };
+
         const handleListUpdated = (data: ListDataType) => {
             updateList(prevList => ({
                 ...prevList,
@@ -83,6 +93,7 @@ export const useRealtimeList = (completeList: ListComplete) => {
         channel.bind('item-created', handleItemCreated);
         channel.bind('item-deleted', handleItemDeleted);
         channel.bind('item-checked', handleItemChecked);
+        channel.bind('all-items-unchecked', handleAllItemsUnchecked);
         channel.bind('list-updated', handleListUpdated);
 
         return () => {

@@ -8,7 +8,7 @@ import { getUserById } from "@/data/auth/user";
 import { createSafeAction } from "@/lib/create-safe-action";
 
 import { InputType, ReturnType } from "./types";
-import { DeleteCategory } from "./schema";
+import { UncheckAllItems } from "./schema";
 import pusher from "@/lib/pusher";
 
 const handler = async (data: InputType): Promise<ReturnType> => {
@@ -18,32 +18,34 @@ const handler = async (data: InputType): Promise<ReturnType> => {
         return { error: "Unauthorized" }
     }
 
-    const dbUser = await getUserById(user.id);
-
-    if (!dbUser) {
-        return { error: "Unauthorized" }
-    }
-
     // No need to validate this input data since it is already done in the create-safe-action.
-    const { categoryId, removable } = data;
+    const { listId } = data;
 
-    if (!removable) return { error: "Category cannot be deleted" }
-
-    let category;
+    let items;
 
     try {
-        category = await db.category.delete({
+        // throw new Error("a"); // artificial error - to be removed
+
+        items = await db.item.updateMany({
             where: {
-                id: categoryId
+                listId,
+            },
+            data: {
+                isChecked: false,
             },
         });
 
+        await pusher.trigger(`list-${listId}`, 'all-items-unchecked', {
+            action: 'update'
+        });
     } catch (error) {
-        return { error: "Failed to delete" }
+        console.error(error);
+
+        return { error: "Failed to update items." }
     }
 
-    revalidatePath(`/settings/categories`);
-    return { data: category };
+    revalidatePath(`/list/${listId}`);
+    return { data: "Success" };
 }
 
-export const deleteCategory = createSafeAction(DeleteCategory, handler);
+export const uncheckAllItems = createSafeAction(UncheckAllItems, handler);

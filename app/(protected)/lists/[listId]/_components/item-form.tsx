@@ -7,16 +7,18 @@ import { FormSubmit } from "@/components/form/form-submit"
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
+import { ITEM_FORM_PLACEHOLDERS } from "@/constants/item-form-placeholders";
 import { useAction } from "@/hooks/use-action";
-import { SuggestionWithCategoryAndTheme } from "@/types";
+import { ListComplete, SuggestionWithCategoryAndTheme, Types } from "@/types";
 import { Category, List } from "@prisma/client"
 import { Plus } from "lucide-react"
-import { ElementRef, useRef, useState } from "react";
+import { ElementRef, useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
+import randomItem from 'random-item';
 
 interface ItemFormProps {
     categories: Category[];
-    list: List;
+    list: ListComplete;
     userHasEditingRights?: boolean;
     suggestions?: SuggestionWithCategoryAndTheme[];
 }
@@ -29,6 +31,7 @@ export const ItemForm = ({
 }: ItemFormProps) => {
     const formRef = useRef<ElementRef<"form">>(null);
     const [showSuggestions, setShowSuggestions] = useState(false);
+    const [placeholder, setPlaceholder] = useState("");
 
     const [searchTerm, setSearchTerm] = useState("");
 
@@ -66,6 +69,13 @@ export const ItemForm = ({
         return suggestion.title.toLowerCase().includes(searchTerm.toLowerCase());
     });
 
+
+    useEffect(() => {
+        const listTypeTitle = list.type.title;
+        const currentArray = ITEM_FORM_PLACEHOLDERS[listTypeTitle as keyof typeof ITEM_FORM_PLACEHOLDERS];
+        setPlaceholder(randomItem(currentArray));
+    }, []);
+
     return (
         <>
             {userHasEditingRights && (
@@ -80,7 +90,7 @@ export const ItemForm = ({
                                 id="title"
                                 type="text"
                                 className="w-full border-none bg-stone-100 dark:bg-stone-800"
-                                placeholder="Eggs..."
+                                placeholder={`${placeholder}...`}
                                 errors={fieldErrors}
                                 onFocus={() => setShowSuggestions(true)}
                                 onBlur={() => setShowSuggestions(false)}

@@ -109,7 +109,7 @@ export const Sidebar = ({
                                     size="lg"
                                     className={cn(
                                         "px-3",
-                                        pathname === "/dashboard" && "bg-accent"
+                                        pathname === "/dashboard" && "bg-accent dark:bg-stone-600"
                                     )}
                                     asChild
                                 >
@@ -125,7 +125,7 @@ export const Sidebar = ({
                                     size="lg"
                                     className={cn(
                                         "px-3",
-                                        pathname.includes("/lists") && "bg-accent"
+                                        pathname.includes("/lists") && "bg-accent dark:bg-stone-600"
                                     )}
                                     asChild
                                 >
@@ -141,7 +141,7 @@ export const Sidebar = ({
                                     size="lg"
                                     className={cn(
                                         "px-3",
-                                        pathname === "/settings/categories" && "bg-accent"
+                                        pathname === "/settings/categories" && "bg-accent dark:bg-stone-600"
                                     )}
                                     asChild
                                 >

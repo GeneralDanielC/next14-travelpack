@@ -42,7 +42,7 @@ export const CategoryCreateForm = ({
     return (
         <Drawer>
             <DrawerTrigger asChild>
-                <Button className="pl-2">
+                <Button className="pl-2 w-full" asChild>
                     <div className="flex flex-row gap-x-1 items-center">
                         <PlusIcon />
                         <span>New Category</span>
@@ -52,7 +52,7 @@ export const CategoryCreateForm = ({
             <DrawerContent className="pb-10 px-4 border-none">
                 <div className="mx-auto w-full max-w-sm">
                     <DrawerHeader>
-                        <DrawerTitle>Create New Category</DrawerTitle>
+                        <DrawerTitle>New Category</DrawerTitle>
                         <DrawerDescription>Create a unique category tailored to your needs.</DrawerDescription>
                     </DrawerHeader>
                     <form
