@@ -110,7 +110,7 @@ export const ListCard = ({
                             <div className="h-full overflow-y-hidden">
                                 {/* List render (incl. items and categories) */}
                                 {list.items.length > 0 ? (
-                                    < Accordion
+                                    <Accordion
                                         type="multiple"
                                         className="h-full overflow-y-scroll"
                                         defaultValue={categoriesWithItems.map((category) => {
@@ -149,7 +149,7 @@ export const ListCard = ({
                                 )}
                             </div>
 
-                            <div className="sticky bottom-0 w-full space-y-2">
+                            <div className="sticky bottom-10 w-full space-y-2">
                                 <div className="bg-stone-300 dark:bg-stone-700 px-2 py-[1px] rounded-lg w-full">
                                     <ItemForm categories={categories} list={list} userHasEditingRights={userHasEditingRights} />
                                 </div>
