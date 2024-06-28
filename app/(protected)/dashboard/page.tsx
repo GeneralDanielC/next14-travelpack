@@ -23,6 +23,8 @@ import Link from "next/link";
 import { getAvailableCount } from "@/lib/list-limit";
 import { MAX_FREE_LISTS } from "@/constants/lists";
 import { checkSubscription } from "@/lib/subscription";
+import randomItem from "random-item";
+import { TipsPlaceholders } from "@/constants/tips-placeholders";
 
 const DashboardPage = async () => {
     const user = await currentUser();
@@ -98,7 +100,7 @@ const DashboardPage = async () => {
                                     </div>
                                     <div className="h-full flex items-center">
                                         <span className="text-xs">
-                                            Different list types provides different categorization.
+                                            {randomItem(TipsPlaceholders)}
                                         </span>
                                     </div>
                                 </div>
@@ -131,7 +133,7 @@ const DashboardPage = async () => {
                                             )
                                         }
                                     }) : (
-                                        <span className="text-left text-xs w-full mt-2">No lists yet.</span>
+                                        <span className="text-left text-[10px] w-full mt-2">No upcoming events.</span>
                                     )}
                                 </div>
                             </div>

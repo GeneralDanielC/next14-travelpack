@@ -20,9 +20,10 @@ import { Category, Theme } from "@prisma/client";
 import { ItemForm } from "./item-form";
 import { CardNavigation } from "@/app/(protected)/_components/card-navigation";
 import { useCurrentUser } from "@/hooks/use-current-user";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useRealtimeList } from "@/hooks/use-realtime-list";
 import { UncheckAllForm } from "./uncheck-all-form";
+import { toast } from "sonner";
 
 
 interface ListCardProps {
@@ -44,6 +45,10 @@ export const ListCard = ({
 }: ListCardProps) => {
     const user = useCurrentUser();
     const list = useRealtimeList(passedList);
+
+    const [minimizeHeader, setMinimizeHeader] = useState(false);
+    const prevScrollY = useRef(0);
+
 
     const [totalCountChecked, setTotalCountChecked] = useState(list.items.filter(item => item.isChecked).length);
 
@@ -89,8 +94,18 @@ export const ListCard = ({
         setCategoriesWithItems(sortCategoriesByDisplayName(groupedItemsByCategory));
     }, [groupedItemsByCategory]);
 
+    const handleScroll = (e: any) => {
+        const currentScrollY = e.target.scrollTop;
+        if (window.innerWidth <= 640 && currentScrollY > 0) {
+            setMinimizeHeader(true);
+        } else {
+            setMinimizeHeader(false);
+        }
+        prevScrollY.current = currentScrollY;
+    }
+
     return (
-        <Card className="w-full h-screen flex flex-col rounded-l-3xl rounded-r-none shadow-none border-none">
+        <Card className="w-full h-full flex flex-col rounded-l-3xl rounded-r-none shadow-none border-none">
             <CardNavigation
                 user={user}
                 breadcrumbs={[
@@ -98,7 +113,7 @@ export const ListCard = ({
                     { name: list.title, href: `/lists/${list.id}` }
                 ]}
             />
-            <ListCardHeader list={list} totalCountChecked={totalCountChecked} userIsNotOwnerOfList={userIsNotOwnerOfList} />
+            <ListCardHeader list={list} totalCountChecked={totalCountChecked} userIsNotOwnerOfList={userIsNotOwnerOfList} minimizeHeader={minimizeHeader} />
             <CardContent className="flex-1 flex flex-col overflow-hidden">
                 <Tabs defaultValue="list" className="flex-1 flex-col overflow-hidden">
                     <TabsList className="grid w-full grid-cols-2">
@@ -111,6 +126,7 @@ export const ListCard = ({
                                 {/* List render (incl. items and categories) */}
                                 {list.items.length > 0 ? (
                                     <Accordion
+                                        onScroll={handleScroll}
                                         type="multiple"
                                         className="h-full overflow-y-scroll"
                                         defaultValue={categoriesWithItems.map((category) => {
@@ -149,7 +165,7 @@ export const ListCard = ({
                                 )}
                             </div>
 
-                            <div className="sticky bottom-10 w-full space-y-2">
+                            <div className="relative bottom-0 w-full space-y-2">
                                 <div className="bg-stone-300 dark:bg-stone-700 px-2 py-[1px] rounded-lg w-full">
                                     <ItemForm categories={categories} list={list} userHasEditingRights={userHasEditingRights} />
                                 </div>

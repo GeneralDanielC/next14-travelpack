@@ -14,6 +14,8 @@ import { checkItem } from "@/actions/check-item";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { ItemSettingsForm } from "./item-settings-form";
+import { deleteItem } from "@/actions/delete-item";
+import { FormSubmit } from "@/components/form/form-submit";
 
 interface ListCardItemProps {
     item: Item;
@@ -43,6 +45,15 @@ export const ListCardItem = ({
         }
     });
 
+    const { execute: executeDelete } = useAction(deleteItem, {
+        onSuccess: (data) => {
+            toast.success(`List item deleted.`);
+        },
+        onError: (error) => {
+            toast.error(error);
+        }
+    })
+
     const handleSubmit = (formData: FormData) => {
         const itemId = formData.get("itemId") as string;
 
@@ -64,15 +75,26 @@ export const ListCardItem = ({
         setItemIsChecked(!itemIsChecked);
     }
 
+    const handleDeleteItem = () => {
+        if (!userHasEditingRights) return;
+
+        executeDelete({
+            listId,
+            itemId: item.id,
+        });
+    }
+
     // Framer Motion variables
-    let ref = useRef(null);
+    let ref = useRef<HTMLDivElement>(null);
     let x = useMotionValue(0);
     let isPresent = useIsPresent();
     let xPx = useMotionTemplate`${x}px`;
     let [align, setAlign] = useState('end');
     useMotionValueEvent(x, 'change', (x) => {
-        let a = x < -ref.current?.offsetWidth * 0.8 ? 'start' : 'end';
-        setAlign(a);
+        if (ref.current) {
+            let a = x < -ref.current?.offsetWidth * 0.8 ? 'start' : 'end';
+            setAlign(a);
+        }
     });
 
     const inertiaTransition = {
@@ -86,20 +108,24 @@ export const ListCardItem = ({
         <motion.div
             ref={ref}
             style={{ x, '--x': xPx } as CSSProperties}
-            className="relative flex items-center overflow-hidden"
+            className="relative flex items-center overflow-visible w-full"
             drag="x"
             dragConstraints={{ right: 0 }}
             onDragEnd={(e, { offset }) => {
                 let v = offset.x > -20 ? 0 : -100;
-                if (x.get() < -ref.current?.offsetWidth * 0.8) {
-                    v = -ref.current?.offsetWidth;
-                    // Trigger item removal here if needed
+                if (ref.current) {
+                    if (x.get() < -ref.current.offsetWidth * 0.8) {
+                        v = -ref.current.offsetWidth;
+
+                        handleDeleteItem();
+                    }
+                    animate(x, v, {
+                        ...inertiaTransition,
+                        min: v,
+                        max: v
+                    });
                 }
-                animate(x, v, {
-                    ...inertiaTransition,
-                    min: v,
-                    max: v
-                });
+
             }}
             onDragStart={() => {
                 document.dispatchEvent(new PointerEvent('pointercancel'));
@@ -143,28 +169,31 @@ export const ListCardItem = ({
                     <ItemSettingsForm item={item} categories={categories} listTypeId={listTypeId} />
                 )}
             </div>
-            <Button
-                className="bg-red-600 pressed:bg-red-700 cursor-default text-lg outline-none border-none transition-colors text-white flex items-center absolute top-0 left-[100%] py-2 h-full z-0 isolate focus-visible:outline focus-visible:outline-blue-600 focus-visible:-outline-offset-2"
-                style={{
-                    // width: 'max(100px, calc(-1 * var(--x)))',
-                    // justifyContent: align
-                }}
-                onClick={() => console.log('Delete action')}
-                onFocus={() => x.set(-100)}
-                onBlur={() => x.set(0)}
+            <form
+                action={handleDeleteItem}
             >
-                <motion.span
-                    initial={false}
-                    className="px-4"
-                    animate={{
-                        transform: align === 'start'
-                            ? ['translateX(calc(-100% - var(--x)))', 'translateX(0)']
-                            : ['translateX(calc(100% + var(--x)))', 'translateX(0)']
+                <FormSubmit
+                    className="bg-red-400 hover:bg-red-500/80 active:bg-red-500 text-xs flex items-center absolute top-0 left-[100%] py-2 h-full shadow-none"
+                    style={{
+                        width: 'max(100px, calc(-1 * var(--x)))',
+                        justifyContent: align
                     }}
+                    onFocus={() => x.set(-100)}
+                    onBlur={() => x.set(0)}
                 >
-                    Delete
-                </motion.span>
-            </Button>
+                    <motion.span
+                        initial={false}
+                        className="px-4"
+                        animate={{
+                            transform: align === 'start'
+                                ? ['translateX(calc(-100% - var(--x)))', 'translateX(0)']
+                                : ['translateX(calc(100% + var(--x)))', 'translateX(0)']
+                        }}
+                    >
+                        Delete
+                    </motion.span>
+                </FormSubmit>
+            </form>
         </motion.div>
     );
 }

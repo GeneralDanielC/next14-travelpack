@@ -37,7 +37,7 @@ export const ItemForm = ({
 
     const { execute, fieldErrors } = useAction(createItem, {
         onSuccess: (data) => {
-            toast.success(`Item "${data.title}" created.`);
+            // toast.success(`Item "${data.title}" created.`);
             formRef.current?.reset();
             setSearchTerm("");
         },
@@ -74,7 +74,7 @@ export const ItemForm = ({
         const listTypeTitle = list.type.title;
         const currentArray = ITEM_FORM_PLACEHOLDERS[listTypeTitle as keyof typeof ITEM_FORM_PLACEHOLDERS];
         setPlaceholder(randomItem(currentArray));
-    }, []);
+    }, [list]);
 
     return (
         <>
