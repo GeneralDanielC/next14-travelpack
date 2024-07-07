@@ -2,38 +2,19 @@
 
 import React from "react";
 
-type Item = {
-    freeIcon: React.ReactElement,
-    freeTitle: string,
-    proIcon: React.ReactElement,
-    proTitle: string,
-}
-
 interface BillingListItemProps {
-    sectionTitle: string,
-    billingItems: Item[],
+    title: string,
+    children: React.ReactElement,
 }
 
 export const BillingListItem = ({
-    sectionTitle,
-    billingItems,
+    title,
+    children
 }: BillingListItemProps) => {
     return (
-        <div className="flex flex-row">
-            <span>{sectionTitle}</span>
-            {billingItems.map((item, index) => (
-                <React.Fragment key={index}>
-                    <div className="dark:bg-stone-900 p-2 rounded-xl flex flex-row gap-x-2">
-                        {item.freeIcon}
-                        <span className="text-xs">{item.freeTitle}</span>
-                    </div>
-                    <div className="dark:bg-stone-900 p-2 rounded-xl flex flex-row gap-x-2">
-                        {item.proIcon}
-                        <span className="text-xs">{item.proTitle}</span>
-                    </div>
-                </React.Fragment>
-            ))}
-
+        <div className="flex flex-row items-center gap-x-2">
+            {children}
+            <span className="text-xs">{title}</span>
         </div>
     )
 }

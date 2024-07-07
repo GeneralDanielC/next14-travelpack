@@ -1,7 +1,7 @@
 "use client";
 
 import { toast } from "sonner";
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, forwardRef } from "react";
 import { Category, Item } from "@prisma/client";
 import { useFormStatus } from "react-dom";
 import { motion, useMotionValue, useMotionTemplate, useMotionValueEvent, animate, useIsPresent } from 'framer-motion';
@@ -23,20 +23,22 @@ interface ListCardItemProps {
     listTypeId: string;
     categories?: Category[];
     userHasEditingRights?: boolean;
+    isDragging?: boolean;
 }
 
-export const ListCardItem = ({
+export const ListCardItem = forwardRef<HTMLDivElement, ListCardItemProps>(({
     item,
     listId,
     listTypeId,
     categories,
-    userHasEditingRights
-}: ListCardItemProps) => {
+    userHasEditingRights,
+    isDragging
+}, ref) => {
     const { pending } = useFormStatus();
 
     const [itemIsChecked, setItemIsChecked] = useState(item?.isChecked);
 
-    const { execute } = useAction(checkItem, {
+    const { execute: executeCheck } = useAction(checkItem, {
         onSuccess: (data) => {
             setItemIsChecked(data.isChecked);
         },
@@ -59,7 +61,7 @@ export const ListCardItem = ({
 
         if (!userHasEditingRights) return;
 
-        execute({
+        executeCheck({
             itemId,
             listId,
             isChecked: item.isChecked,
@@ -81,18 +83,19 @@ export const ListCardItem = ({
         executeDelete({
             listId,
             itemId: item.id,
+            categoryId: item.categoryId
         });
     }
 
     // Framer Motion variables
-    let ref = useRef<HTMLDivElement>(null);
+    let motionRef = useRef<HTMLDivElement>(null);
     let x = useMotionValue(0);
     let isPresent = useIsPresent();
     let xPx = useMotionTemplate`${x}px`;
     let [align, setAlign] = useState('end');
     useMotionValueEvent(x, 'change', (x) => {
-        if (ref.current) {
-            let a = x < -ref.current?.offsetWidth * 0.8 ? 'start' : 'end';
+        if (motionRef.current) {
+            let a = x < -motionRef.current?.offsetWidth * 0.8 ? 'start' : 'end';
             setAlign(a);
         }
     });
@@ -106,16 +109,16 @@ export const ListCardItem = ({
 
     return (
         <motion.div
-            ref={ref}
+            ref={motionRef}
             style={{ x, '--x': xPx } as CSSProperties}
             className="relative flex items-center overflow-visible w-full"
             drag="x"
             dragConstraints={{ right: 0 }}
             onDragEnd={(e, { offset }) => {
                 let v = offset.x > -20 ? 0 : -100;
-                if (ref.current) {
-                    if (x.get() < -ref.current.offsetWidth * 0.8) {
-                        v = -ref.current.offsetWidth;
+                if (motionRef.current) {
+                    if (x.get() < -motionRef.current.offsetWidth * 0.8) {
+                        v = -motionRef.current.offsetWidth;
 
                         handleDeleteItem();
                     }
@@ -130,6 +133,7 @@ export const ListCardItem = ({
             onDragStart={() => {
                 document.dispatchEvent(new PointerEvent('pointercancel'));
             }}
+
         >
             <div className="flex items-center gap-x-0.5 w-full">
                 <form action={handleSubmit} className="w-full">
@@ -138,62 +142,74 @@ export const ListCardItem = ({
                         disabled={!userHasEditingRights || pending}
                         size="sm"
                         variant="ghost"
-                        className="w-full flex flex-row items-center justify-between"
+                        className="w-full flex flex-row items-center justify-between cursor-pointer"
                         onClick={handleCheckItem}
+                        type="submit"
+                        asChild
                     >
-                        <div className={cn(
-                            "flex flex-row items-center gap-x-2",
-                            itemIsChecked && "line-through text-stone-400/70"
-                        )}>
-                            <input
-                                disabled={pending}
-                                type="checkbox"
-                                checked={itemIsChecked}
-                                onClick={handleCheckItem}
-                                className="rounded-md checked:bg-stone-700 shadow-md checked:hover:bg-stone-600 checked:focus:bg-stone-700 focus:ring-stone-700
+                        <div onClick={() => document.getElementById(`submit-button-${item.id}`)?.click()} className="w-full text-left">
+                            <div
+                                className={cn(
+                                    "flex flex-row items-center gap-x-2",
+                                    itemIsChecked && "line-through text-stone-400/70"
+                                )}>
+                                <input
+                                    disabled={pending}
+                                    type="checkbox"
+                                    checked={itemIsChecked}
+                                    onClick={(e) => {
+                                        document.getElementById(`submit-button-${item.id}`)?.click();
+                                        handleCheckItem(e);
+                                    }}
+                                    className="rounded-md checked:bg-stone-700 shadow-md checked:hover:bg-stone-600 checked:focus:bg-stone-700 focus:ring-stone-700
                                 dark:bg-stone-500"
-                            />
-                            <span>{item.title}</span>
-                        </div>
-                        <div className="flex flex-row items-center gap-x-2">
-                            {item.quantity !== 0 && (
-                                <Badge className={cn(
-                                    "",
-                                    itemIsChecked && "bg-stone-400/70 line-through"
-                                )}>{item.quantity}</Badge>
-                            )}
+                                />
+                                <span>{item.title}</span>
+                            </div>
+                            <div className="flex flex-row items-center gap-x-2">
+                                {item.quantity !== 0 && (
+                                    <Badge className={cn(
+                                        "",
+                                        itemIsChecked && "bg-stone-400/70 line-through"
+                                    )}>{item.quantity}</Badge>
+                                )}
+                            </div>
                         </div>
                     </Button>
+                    <button type="submit" id={`submit-button-${item.id}`} className="hidden" />
                 </form>
                 {userHasEditingRights && (
                     <ItemSettingsForm item={item} categories={categories} listTypeId={listTypeId} />
                 )}
             </div>
-            <form
-                action={handleDeleteItem}
-            >
-                <FormSubmit
-                    className="bg-red-400 hover:bg-red-500/80 active:bg-red-500 text-xs flex items-center absolute top-0 left-[100%] py-2 h-full shadow-none"
-                    style={{
-                        width: 'max(100px, calc(-1 * var(--x)))',
-                        justifyContent: align
-                    }}
-                    onFocus={() => x.set(-100)}
-                    onBlur={() => x.set(0)}
+            {!isDragging && window.innerWidth <= 640 && (
+                <form
+                    action={handleDeleteItem}
+                    className="block sm:hidden"
                 >
-                    <motion.span
-                        initial={false}
-                        className="px-4"
-                        animate={{
-                            transform: align === 'start'
-                                ? ['translateX(calc(-100% - var(--x)))', 'translateX(0)']
-                                : ['translateX(calc(100% + var(--x)))', 'translateX(0)']
+                    <FormSubmit
+                        className="bg-red-400 hover:bg-red-500/80 active:bg-red-500 text-xs flex items-center absolute top-0 left-[100%] py-2 h-full shadow-none"
+                        style={{
+                            width: 'max(100px, calc(-1 * var(--x)))',
+                            justifyContent: align
                         }}
+                        onFocus={() => x.set(-100)}
+                        onBlur={() => x.set(0)}
                     >
-                        Delete
-                    </motion.span>
-                </FormSubmit>
-            </form>
+                        <motion.span
+                            initial={false}
+                            className="px-4"
+                            animate={{
+                                transform: align === 'start'
+                                    ? ['translateX(calc(-100% - var(--x)))', 'translateX(0)']
+                                    : ['translateX(calc(100% + var(--x)))', 'translateX(0)']
+                            }}
+                        >
+                            Delete
+                        </motion.span>
+                    </FormSubmit>
+                </form>
+            )}
         </motion.div>
     );
-}
+});

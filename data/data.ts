@@ -37,9 +37,6 @@ export const getListsByUserId = async (userId: string) => {
         },
     });
 
-    console.log(lists.concat(extractedShares));
-
-
     return lists.concat(extractedShares);
 }
 
@@ -89,6 +86,9 @@ export const getCategoriesByUserId = async (userId: string) => {
     const categories = await db.category.findMany({
         where: {
             userId
+        },
+        include: {
+            items: true
         }
     });
     return categories;

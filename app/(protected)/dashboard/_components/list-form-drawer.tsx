@@ -29,8 +29,8 @@ export const ListFormDrawer = ({
             <DrawerContent className="pb-10 px-4 border-none">
                 <div className="mx-auto w-full max-w-sm">
                     <DrawerHeader>
-                        <DrawerTitle className="text-center">Create List</DrawerTitle>
-                        <DrawerDescription className="text-center">Create a new list.</DrawerDescription>
+                        <DrawerTitle className="text-center">New List</DrawerTitle>
+                        <DrawerDescription className="text-center">Create a list that fits your desires.</DrawerDescription>
                     </DrawerHeader>
                     <ListForm themes={themes} types={types} setOpen={setOpen} />
                 </div>

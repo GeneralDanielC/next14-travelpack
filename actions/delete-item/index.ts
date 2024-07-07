@@ -26,24 +26,54 @@ const handler = async (data: InputType): Promise<ReturnType> => {
     }
 
     // No need to validate this input data since it is already done in the create-safe-action.
-    const { listId, itemId } = data;
+    const { listId, itemId, categoryId } = data;
 
     let item;
 
     try {
+        // Delete the item
         item = await db.item.delete({
             where: {
-                listId,
                 id: itemId
             },
         });
+
+        // Fetch remaining items in the same category and reorder them
+        const remainingItems = await db.item.findMany({
+            where: {
+                categoryId,
+                listId
+            },
+            orderBy: {
+                order: 'asc'
+            }
+        });
+
+        // Adjust the order of the remaining items
+        const updatedItems = remainingItems.map((item, index) => ({
+            ...item,
+            order: index
+        }));
+
+        // Update items in db
+        const transaction = updatedItems.map(item => db.item.update({
+            where: {
+                id: item.id,
+            },
+            data: {
+                order: item.order
+            }
+        }));
+
+        await db.$transaction(transaction);
 
         await pusher.trigger(`list-${listId}`, 'item-deleted', {
             item: item,
             action: 'delete'
         });
-       
+
     } catch (error) {
+        console.error(error);
         return { error: "Failed to delete" }
     }
 

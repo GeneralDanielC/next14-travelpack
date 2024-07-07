@@ -27,15 +27,18 @@ import { Separator } from "@/components/ui/separator";
 import { toast } from "sonner";
 import { BsCopy } from "react-icons/bs";
 import { useState } from "react";
+import { cn } from "@/lib/utils";
 
 interface ShareDialogProps {
     list: ListComplete;
     userIsNotOwnerOfList?: boolean;
+    hideText?: boolean;
 }
 
 export const ShareDialog = ({
     list,
-    userIsNotOwnerOfList
+    userIsNotOwnerOfList,
+    hideText
 }: ShareDialogProps) => {
     const [shareUrl, setShareUrl] = useState(`${process.env.NEXT_PUBLIC_APP_URL}/preview/${list.userId}/${list.id}`);
 
@@ -47,10 +50,9 @@ export const ShareDialog = ({
                     variant="ghost"
                 >
                     <div className="flex flex-row items-center gap-x-1">
-                        <span>Share</span>
-                        <Share className="size-4" />
+                        {!hideText && <span>Share</span>}
+                        <Share className={cn("size-4")} />
                     </div>
-
                 </Button>
             </DialogTrigger>
             <DialogContent>

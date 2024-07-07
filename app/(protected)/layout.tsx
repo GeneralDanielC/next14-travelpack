@@ -5,21 +5,19 @@ import { db } from "@/lib/db";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
 import { ModalProvider } from "@/components/providers/modal-provider";
+import { getListsByUserId } from "@/data/data";
+import { FullscreenError } from "./_components/fullscreen-error";
 
 const DashboardLayout = async ({
     children
 }: { children: React.ReactNode }) => {
     const user = await currentUser();
-    const lists = await db.list.findMany({
-        where: {
-            userId: user?.id,
-        },
-        include: {
-            theme: true,
-            items: true,
-            type: true,
-        }
-    });
+
+    if (!user) {
+        return <FullscreenError code={400} heading="Unauthorized" message="You don't have permission to view this page." />
+    }
+
+    const lists = await getListsByUserId(user.id)
 
     const themes = await db.theme.findMany({
         where: { isListType: false }

@@ -17,6 +17,7 @@ interface FormInputProps {
     disabled?: boolean;
     errors?: Record<string, string[] | undefined>;
     className?: string;
+    value?: string | number | readonly string[] | undefined;
     defaultValue?: string | number | readonly string[] | undefined;
     onBlur?: () => void;
     onFocus?: () => void;
@@ -35,6 +36,7 @@ export const FormInput = forwardRef<HTMLInputElement, FormInputProps>(({
     disabled,
     errors,
     className,
+    value,
     defaultValue = "",
     onBlur,
     onFocus,
@@ -44,7 +46,7 @@ export const FormInput = forwardRef<HTMLInputElement, FormInputProps>(({
     autofocus
 }, ref) => {
     const { pending } = useFormStatus();
-
+    
     return (
         <div className="space-y-2 w-full">
             <div className="space-y-1">
@@ -61,6 +63,7 @@ export const FormInput = forwardRef<HTMLInputElement, FormInputProps>(({
                     onFocus={onFocus}
                     onChange={onChange}
                     defaultValue={defaultValue || ""}
+                    value={value}
                     ref={ref}
                     required={required}
                     name={id}

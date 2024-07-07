@@ -23,8 +23,12 @@ import { useCurrentUser } from "@/hooks/use-current-user";
 import { useEffect, useRef, useState } from "react";
 import { useRealtimeList } from "@/hooks/use-realtime-list";
 import { UncheckAllForm } from "./uncheck-all-form";
-import { toast } from "sonner";
 
+import { DragDropContext, Draggable, Droppable } from "@hello-pangea/dnd";
+import { cn } from "@/lib/utils";
+import { updateItemOrder } from "@/actions/update-item-order";
+import { toast } from "sonner";
+import { useAction } from "@/hooks/use-action";
 
 interface ListCardProps {
     list: ListComplete;
@@ -37,6 +41,14 @@ interface CategoriesMap {
     [key: string]: CategoryWithItems;
 }
 
+function reorder<T>(list: T[], startIndex: number, endIndex: number) {
+    const result = Array.from(list);
+    const [removed] = result.splice(startIndex, 1);
+    result.splice(endIndex, 0, removed);
+
+    return result;
+}
+
 export const ListCard = ({
     list: passedList,
     themes,
@@ -44,11 +56,11 @@ export const ListCard = ({
     suggestions,
 }: ListCardProps) => {
     const user = useCurrentUser();
+
     const list = useRealtimeList(passedList);
 
     const [minimizeHeader, setMinimizeHeader] = useState(false);
     const prevScrollY = useRef(0);
-
 
     const [totalCountChecked, setTotalCountChecked] = useState(list.items.filter(item => item.isChecked).length);
 
@@ -63,6 +75,8 @@ export const ListCard = ({
                 };
             }
             acc[categoryId].items.push(item);
+
+            acc[categoryId].items.sort((a, b) => (a.order ?? 0) - (b.order ?? 0));         
 
             return acc;
         }, {});
@@ -104,6 +118,86 @@ export const ListCard = ({
         prevScrollY.current = currentScrollY;
     }
 
+    const { execute: executeUpdateItemOrder } = useAction(updateItemOrder, {
+        onSuccess: () => {
+            toast.success("Success!")
+        },
+        onError: (error: any) => {
+            toast.error(error)
+        }
+    })
+
+    const onDragEnd = (result: any) => {
+        const { destination, source } = result;
+    
+        // If dropped outside droppable area
+        if (!destination) return;
+    
+        // If no destination or item dropped in the same place
+        if (destination.droppableId === source.droppableId && destination.index === source.index) return;
+    
+        // Clone the list to prevent direct state mutation
+        const newCategoriesWithItems = [...categoriesWithItems];
+    
+        // Moving item within the same category
+        if (destination.droppableId === source.droppableId) {
+            const categoryIndex = newCategoriesWithItems.findIndex(category => category.id === source.droppableId);
+            if (categoryIndex === -1) return;
+    
+            const category = newCategoriesWithItems[categoryIndex];
+            const reorderedItems = reorder(category.items, source.index, destination.index);
+    
+            newCategoriesWithItems[categoryIndex] = {
+                ...category,
+                items: reorderedItems
+            };
+    
+        } else {
+            // Moving item to a different category
+            const sourceCategoryIndex = newCategoriesWithItems.findIndex(category => category.id === source.droppableId);
+            const destCategoryIndex = newCategoriesWithItems.findIndex(category => category.id === destination.droppableId);
+    
+            if (sourceCategoryIndex === -1 || destCategoryIndex === -1) return;
+    
+            const sourceCategory = newCategoriesWithItems[sourceCategoryIndex];
+            const destCategory = newCategoriesWithItems[destCategoryIndex];
+    
+            const sourceItems = Array.from(sourceCategory.items);
+            const [movedItem] = sourceItems.splice(source.index, 1);
+    
+            const destItems = Array.from(destCategory.items);
+            destItems.splice(destination.index, 0, movedItem);
+    
+            newCategoriesWithItems[sourceCategoryIndex] = {
+                ...sourceCategory,
+                items: sourceItems
+            };
+            newCategoriesWithItems[destCategoryIndex] = {
+                ...destCategory,
+                items: destItems
+            };
+        }
+    
+        // Update the order values before sending to the server
+        const updatedItems = newCategoriesWithItems.flatMap(category => 
+            category.items.map((item, index) => ({
+                ...item,
+                order: index,
+                categoryId: category.id
+            }))
+        );
+    
+        // Update the state
+        setCategoriesWithItems(newCategoriesWithItems);
+    
+        // Send the updated items to the server
+        executeUpdateItemOrder({
+            listId: list.id,
+            items: updatedItems
+        });
+    }; 
+    
+    
     return (
         <Card className="w-full h-full flex flex-col rounded-l-3xl rounded-r-none shadow-none border-none">
             <CardNavigation
@@ -124,33 +218,77 @@ export const ListCard = ({
                         <div className="flex-1 overflow-scroll flex flex-col h-full">
                             <div className="h-full overflow-y-hidden">
                                 {/* List render (incl. items and categories) */}
-                                {list.items.length > 0 ? (
-                                    <Accordion
-                                        onScroll={handleScroll}
-                                        type="multiple"
-                                        className="h-full overflow-y-scroll"
-                                        defaultValue={categoriesWithItems.map((category) => {
-                                            let checkedItems = 0;
-                                            category.items.map((item) => {
-                                                if (item.isChecked) {
-                                                    checkedItems += 1;
-                                                }
-                                            })
 
-                                            if (checkedItems !== category.items.length) return category.id;
-                                        })}
+                                {list.items.length > 0 ? (
+                                    <DragDropContext
+                                        onDragStart={() => {
+                                            if (window.navigator.vibrate) {
+                                                window.navigator.vibrate(100);
+                                            }
+                                        }}
+                                        onDragEnd={onDragEnd}
                                     >
-                                        {/* Map categories */}
-                                        {categoriesWithItems.map((category) => (
-                                            <ListCardCategory key={category.id} category={category}>
-                                                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-4">
-                                                    {category.items.map((item) => (
-                                                        <ListCardItem key={item.id} item={item} listId={list.id} listTypeId={category.listTypeId} categories={categories} userHasEditingRights={userHasEditingRights} />
-                                                    ))}
-                                                </div>
-                                            </ListCardCategory>
-                                        ))}
-                                    </Accordion>
+                                        <Accordion
+                                            onScroll={handleScroll}
+                                            type="multiple"
+                                            className="h-full overflow-y-scroll"
+                                            defaultValue={categoriesWithItems.map((category) => {
+                                                let checkedItems = 0;
+                                                category.items.map((item) => {
+                                                    if (item.isChecked) {
+                                                        checkedItems += 1;
+                                                    }
+                                                })
+
+                                                if (checkedItems !== category.items.length) return category.id;
+                                            })}
+                                        >
+                                            {/* Map categories */}
+                                            {categoriesWithItems.map((category) => (
+                                                <ListCardCategory key={category.id} category={category}>
+                                                    <Droppable droppableId={category.id} key={category.id} type="item" direction={window.innerWidth <= 640 ? "vertical" : undefined}>
+                                                        {(provided) => (
+                                                            <div
+                                                                {...provided.droppableProps}
+                                                                ref={provided.innerRef}
+
+                                                                className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-4"
+                                                            >
+                                                                {category.items.map((item, index) => (
+                                                                    <Draggable key={item.id} draggableId={item.id} index={index}>
+                                                                        {(provided, snapshot) => (
+                                                                            <div>
+                                                                                <div
+                                                                                    ref={provided.innerRef}
+                                                                                    {...provided.draggableProps}
+                                                                                    {...provided.dragHandleProps}
+                                                                                    className={cn(
+                                                                                        "w-full overflow-hidden",
+                                                                                        snapshot.isDragging && "bg-accent/50 backdrop-blur-sm rounded-lg"
+                                                                                    )}
+                                                                                >
+                                                                                    <ListCardItem
+                                                                                        item={item}
+                                                                                        listId={list.id}
+                                                                                        listTypeId={category.listTypeId}
+                                                                                        categories={categories}
+                                                                                        userHasEditingRights={userHasEditingRights}
+                                                                                        isDragging={snapshot.isDragging}
+                                                                                    />
+                                                                                </div>
+                                                                            </div>
+                                                                        )}
+                                                                    </Draggable>
+                                                                ))}
+                                                                {provided.placeholder}
+                                                            </div>
+                                                        )}
+
+                                                    </Droppable>
+                                                </ListCardCategory>
+                                            ))}
+                                        </Accordion>
+                                    </DragDropContext>
                                 ) : (
                                     <div className="h-full overflow-y-hidden flex flex-col items-center justify-center">
                                         <span className="font-semibold">Nothing here yet.</span>

@@ -1,18 +1,18 @@
 "use client";
 
 import { useState } from "react";
-import { Category } from "@prisma/client";
 
 import { Input } from "@/components/ui/input";
 import { CategoryGrid } from "./category-grid";
 import { Button } from "@/components/ui/button";
 import { PlusIcon } from "lucide-react";
+import { CategoryWithItems } from "@/types";
 
 interface CategoryCommandProps {
     categories: {
-        packingCategories: Category[],
-        groceryCategories: Category[],
-        todoCategories: Category[],
+        packingCategories: CategoryWithItems[],
+        groceryCategories: CategoryWithItems[],
+        todoCategories: CategoryWithItems[],
     }
 }
 
@@ -29,7 +29,7 @@ export const CategoryCommand = ({
         setSearchTerm(e.target.value);
     }
 
-    const filterCategories = (categories: Category[]) => {
+    const filterCategories = (categories: CategoryWithItems[]) => {
         if (!searchTerm.trim()) return categories;
         return categories.filter(category => category.displayName.toLowerCase().includes(searchTerm.toLowerCase()));
     }

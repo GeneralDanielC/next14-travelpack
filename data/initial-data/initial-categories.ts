@@ -16,6 +16,7 @@ export const initialCategories = ({
     {
         displayName: "Miscellaneous",
         workName: CategoryWorkNames.MISC,
+        originalName: CategoryWorkNames.MISC,
         userId,
         listTypeId: listTypePackingId,
         removable: false,
@@ -23,6 +24,7 @@ export const initialCategories = ({
     {
         displayName: "Clothing",
         workName: CategoryWorkNames.CLOTHING,
+        originalName: CategoryWorkNames.CLOTHING,
         userId,
         listTypeId: listTypePackingId,
         removable: true,
@@ -30,6 +32,7 @@ export const initialCategories = ({
     {
         displayName: "Outdoor Clothes & Gear",
         workName: CategoryWorkNames.OUTDOOR,
+        originalName: CategoryWorkNames.OUTDOOR,
         userId,
         listTypeId: listTypePackingId,
         removable: true,
@@ -37,6 +40,7 @@ export const initialCategories = ({
     {
         displayName: "Toiletries",
         workName: CategoryWorkNames.TOILETRIES,
+        originalName: CategoryWorkNames.TOILETRIES,
         userId,
         listTypeId: listTypePackingId,
         removable: true,
@@ -44,6 +48,7 @@ export const initialCategories = ({
     {
         displayName: "Electronics",
         workName: CategoryWorkNames.ELECTRONICS,
+        originalName: CategoryWorkNames.ELECTRONICS,
         userId,
         listTypeId: listTypePackingId,
         removable: true,
@@ -51,6 +56,7 @@ export const initialCategories = ({
     {
         displayName: "Food & Drinks",
         workName: CategoryWorkNames.FOODDRINKS,
+        originalName: CategoryWorkNames.FOODDRINKS,
         userId,
         listTypeId: listTypePackingId,
         removable: true,
@@ -58,6 +64,7 @@ export const initialCategories = ({
     {
         displayName: "Accessories",
         workName: CategoryWorkNames.ACCESSORIES,
+        originalName: CategoryWorkNames.ACCESSORIES,
         userId,
         listTypeId: listTypePackingId,
         removable: true,
@@ -65,6 +72,7 @@ export const initialCategories = ({
     {
         displayName: "Footwear",
         workName: CategoryWorkNames.FOOTWEAR,
+        originalName: CategoryWorkNames.FOOTWEAR,
         userId,
         listTypeId: listTypePackingId,
         removable: true,
@@ -72,6 +80,7 @@ export const initialCategories = ({
     {
         displayName: "Travel Documents",
         workName: CategoryWorkNames.DOCUMENTS,
+        originalName: CategoryWorkNames.DOCUMENTS,
         userId,
         listTypeId: listTypePackingId,
         removable: true,
@@ -79,6 +88,7 @@ export const initialCategories = ({
     {
         displayName: "Pet Supplies",
         workName: CategoryWorkNames.PETS,
+        originalName: CategoryWorkNames.PETS,
         userId,
         listTypeId: listTypePackingId,
         removable: true,
@@ -86,6 +96,7 @@ export const initialCategories = ({
     {
         displayName: "Baby Supplies",
         workName: CategoryWorkNames.BABY,
+        originalName: CategoryWorkNames.BABY,
         userId,
         listTypeId: listTypePackingId,
         removable: true,
@@ -93,6 +104,7 @@ export const initialCategories = ({
     {
         displayName: "Money & Finances",
         workName: CategoryWorkNames.MONEY,
+        originalName: CategoryWorkNames.MONEY,
         userId,
         listTypeId: listTypePackingId,
         removable: true,
@@ -100,6 +112,7 @@ export const initialCategories = ({
     {
         displayName: "Make-up",
         workName: CategoryWorkNames.MAKEUP,
+        originalName: CategoryWorkNames.MAKEUP,
         userId,
         listTypeId: listTypePackingId,
         removable: true,
@@ -107,6 +120,7 @@ export const initialCategories = ({
     {
         displayName: "Training Gear",
         workName: CategoryWorkNames.TRAINING,
+        originalName: CategoryWorkNames.TRAINING,
         userId,
         listTypeId: listTypePackingId,
         removable: true,
@@ -115,6 +129,7 @@ export const initialCategories = ({
     {
         displayName: "Fruit & Vegetables",
         workName: CategoryWorkNames.FRUIT,
+        originalName: CategoryWorkNames.FRUIT,
         userId,
         listTypeId: listTypeGroceryId,
         removable: true,
@@ -122,6 +137,7 @@ export const initialCategories = ({
     {
         displayName: "Dairy",
         workName: CategoryWorkNames.DAIRY,
+        originalName: CategoryWorkNames.DAIRY,
         userId,
         listTypeId: listTypeGroceryId,
         removable: true,
@@ -129,6 +145,7 @@ export const initialCategories = ({
     {
         displayName: "Bakery",
         workName: CategoryWorkNames.BAKERY,
+        originalName: CategoryWorkNames.BAKERY,
         userId,
         listTypeId: listTypeGroceryId,
         removable: true,
@@ -136,6 +153,7 @@ export const initialCategories = ({
     {
         displayName: "Meat & Seafood",
         workName: CategoryWorkNames.MEAT_SEAFOOD,
+        originalName: CategoryWorkNames.MEAT_SEAFOOD,
         userId,
         listTypeId: listTypeGroceryId,
         removable: true,
@@ -143,6 +161,7 @@ export const initialCategories = ({
     {
         displayName: "Frozen Foods",
         workName: CategoryWorkNames.FROZEN,
+        originalName: CategoryWorkNames.FROZEN,
         userId,
         listTypeId: listTypeGroceryId,
         removable: true,
@@ -150,6 +169,7 @@ export const initialCategories = ({
     {
         displayName: "Beverages",
         workName: CategoryWorkNames.BEVERAGES,
+        originalName: CategoryWorkNames.BEVERAGES,
         userId,
         listTypeId: listTypeGroceryId,
         removable: true,
@@ -157,6 +177,7 @@ export const initialCategories = ({
     {
         displayName: "Pantry Staples",
         workName: CategoryWorkNames.PANTRY,
+        originalName: CategoryWorkNames.PANTRY,
         userId,
         listTypeId: listTypeGroceryId,
         removable: true,
@@ -164,6 +185,7 @@ export const initialCategories = ({
     {
         displayName: "Deli",
         workName: CategoryWorkNames.DELI,
+        originalName: CategoryWorkNames.DELI,
         userId,
         listTypeId: listTypeGroceryId,
         removable: true,
@@ -171,6 +193,7 @@ export const initialCategories = ({
     {
         displayName: "Health & Beauty",
         workName: CategoryWorkNames.HEALTH_BEAUTY,
+        originalName: CategoryWorkNames.HEALTH_BEAUTY,
         userId,
         listTypeId: listTypeGroceryId,
         removable: true,
@@ -178,6 +201,7 @@ export const initialCategories = ({
     {
         displayName: "Household Essentials",
         workName: CategoryWorkNames.HOUSEHOLD_ESSENTIALS,
+        originalName: CategoryWorkNames.HOUSEHOLD_ESSENTIALS,
         userId,
         listTypeId: listTypeGroceryId,
         removable: true,
@@ -185,6 +209,7 @@ export const initialCategories = ({
     {
         displayName: "Snacks",
         workName: CategoryWorkNames.SNACKS,
+        originalName: CategoryWorkNames.SNACKS,
         userId,
         listTypeId: listTypeGroceryId,
         removable: true,
@@ -192,6 +217,7 @@ export const initialCategories = ({
     {
         displayName: "International Foods",
         workName: CategoryWorkNames.INTERNATIONAL,
+        originalName: CategoryWorkNames.INTERNATIONAL,
         userId,
         listTypeId: listTypeGroceryId,
         removable: true,
@@ -199,6 +225,7 @@ export const initialCategories = ({
     {
         displayName: "Baby Products",
         workName: CategoryWorkNames.BABY_PRODUCTS,
+        originalName: CategoryWorkNames.BABY_PRODUCTS,
         userId,
         listTypeId: listTypeGroceryId,
         removable: true,
@@ -206,6 +233,7 @@ export const initialCategories = ({
     {
         displayName: "Miscellaneous",
         workName: CategoryWorkNames.MISC,
+        originalName: CategoryWorkNames.MISC,
         userId,
         listTypeId: listTypeGroceryId,
         removable: false,
@@ -214,6 +242,7 @@ export const initialCategories = ({
     {
         displayName: "Uncategorized",
         workName: CategoryWorkNames.UNCATEGORIZED,
+        originalName: CategoryWorkNames.UNCATEGORIZED,
         userId,
         listTypeId: listTypeTodoId,
         removable: false,
@@ -221,6 +250,7 @@ export const initialCategories = ({
     {
         displayName: "High Priority",
         workName: CategoryWorkNames.HIGH_PRIO,
+        originalName: CategoryWorkNames.HIGH_PRIO,
         userId,
         listTypeId: listTypeTodoId,
         removable: true,
@@ -228,6 +258,7 @@ export const initialCategories = ({
     {
         displayName: "Medium Priority",
         workName: CategoryWorkNames.MED_PRIO,
+        originalName: CategoryWorkNames.MED_PRIO,
         userId,
         listTypeId: listTypeTodoId,
         removable: true,
@@ -235,6 +266,7 @@ export const initialCategories = ({
     {
         displayName: "Low Priority",
         workName: CategoryWorkNames.LOW_PRIO,
+        originalName: CategoryWorkNames.LOW_PRIO,
         userId,
         listTypeId: listTypeTodoId,
         removable: true,

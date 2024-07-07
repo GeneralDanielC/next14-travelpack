@@ -61,25 +61,21 @@ export const ItemSettingsForm = ({
         const title = formData.get("title") as string;
         const quantity = formData.get("quantity") as string;
         const categoryId = formData.get("categoryId") as string;
-        const listId = formData.get("listId") as string;
-        const itemId = formData.get("itemId") as string;
 
         executeUpdate({
             title,
             quantity: quantity !== "" ? parseInt(quantity) : 0,
             categoryId,
-            listId,
-            itemId,
+            listId: item.listId,
+            itemId: item.id,
         });
     }
 
-    const handleDelete = (formData: FormData) => {
-        const listId = formData.get("listId") as string;
-        const itemId = formData.get("itemId") as string;
-
+    const handleDelete = () => {
         executeDelete({
-            listId,
-            itemId,
+            listId: item.listId,
+            itemId: item.id,
+            categoryId: item.categoryId
         });
     }
 
@@ -133,36 +129,12 @@ export const ItemSettingsForm = ({
                                 defaultValue={item.categoryId}
                                 errors={fieldErrors}
                             />
-                            <input
-                                id="listId"
-                                name="listId"
-                                hidden
-                                value={item.listId}
-                            />
-                            <input
-                                id="itemId"
-                                name="itemId"
-                                hidden
-                                value={item.id}
-                            />
                             <FormSubmit className="w-full mt-5">
                                 Save
                             </FormSubmit>
                         </div>
                     </form>
                     <form action={handleDelete}>
-                        <input
-                            id="listId"
-                            name="listId"
-                            hidden
-                            value={item.listId}
-                        />
-                        <input
-                            id="itemId"
-                            name="itemId"
-                            hidden
-                            value={item.id}
-                        />
                         <FormSubmit
                             variant="ghost"
                             className="text-rose-500 font-extrabold w-full hover:bg-rose-500/10 hover:text-rose-500 hover:border-rose-500/70 hover:border flex items-center"

@@ -32,25 +32,26 @@ export const CardNavigation = ({
     return (
         <ShadCardHeader className="pb-0">
             <div className="flex flex-row justify-between items-center">
-                <Breadcrumb>
-                    <BreadcrumbList>
-                        <BreadcrumbItem>
-                            <BreadcrumbLink href={hideUser ? "/" : "/dashboard"}>pakkit</BreadcrumbLink>
-                        </BreadcrumbItem>
-                        {!hideUser && (
-                            <BreadcrumbSeparator />
-                        )}
-                        {breadcrumbs?.map((breadcrumb, index) => (
-                            <React.Fragment key={index}>
-                                <BreadcrumbItem>
-                                    <BreadcrumbLink href={breadcrumb.href}>{breadcrumb.name}</BreadcrumbLink>
-                                </BreadcrumbItem>
-                                {breadcrumbs.length - 1 !== index && <BreadcrumbSeparator />}
-                            </React.Fragment>
-                        ))}
-
-                    </BreadcrumbList>
-                </Breadcrumb>
+                <div className="flex overflow-hidden max-w-full">
+                    <Breadcrumb className="flex-1">
+                        <BreadcrumbList className="flex-1 flex items-center overflow-hidden">
+                            <BreadcrumbItem className="flex-shrink-0">
+                                <BreadcrumbLink href={hideUser ? "/" : "/dashboard"}>pakkit</BreadcrumbLink>
+                            </BreadcrumbItem>
+                            {!hideUser && (
+                                <BreadcrumbSeparator className="flex-shrink-0" />
+                            )}
+                            {breadcrumbs?.map((breadcrumb, index) => (
+                                <React.Fragment key={index}>
+                                    <BreadcrumbItem className="flex-shrink-0">
+                                        <BreadcrumbLink className="truncate max-w-[100px]" href={breadcrumb.href}>{breadcrumb.name}</BreadcrumbLink>
+                                    </BreadcrumbItem>
+                                    {breadcrumbs.length - 1 !== index && <BreadcrumbSeparator className="flex-shrink-0" />}
+                                </React.Fragment>
+                            ))}
+                        </BreadcrumbList>
+                    </Breadcrumb>
+                </div>
                 <div className="flex items-center">
                     <ThemeToggle />
                     {!hideUser && (

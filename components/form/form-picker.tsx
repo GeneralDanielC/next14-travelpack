@@ -19,6 +19,7 @@ interface FormPickerProps {
     size?: "default" | "sm";
     label?: string;
     setValue?: React.Dispatch<React.SetStateAction<string>>;
+    pagnation?: boolean;
 }
 
 export const FormPicker = ({
@@ -29,6 +30,7 @@ export const FormPicker = ({
     size,
     label,
     setValue,
+    pagnation,
 }: FormPickerProps) => {
     const { pending } = useFormStatus();
 
@@ -72,7 +74,9 @@ export const FormPicker = ({
                             <span
                                 className={cn(
                                     "text-6xl rounded-full h-full flex items-center justify-center w-full p-4 shadow-xl",
-                                    `${data.emojiBackground} ${size === "sm" && "text-3xl p-3"}`
+                                    `${size === "sm" && "text-3xl p-3"}`,
+                                    data.emojiBackground,
+                                    `dark:${data.emojiBackground}/50`
                                 )}
                             >
                                 {data.emoji}
@@ -83,9 +87,8 @@ export const FormPicker = ({
                                 </div>
                             )}
                         </div>
-                        <span className="text-stone-500/80 dark:text-stone-100 text-sm">
+                        <span className="text-stone-500/80 dark:text-stone-100 text-xs text-center">
                             {data.title}
-                            {data.description}
                         </span>
                     </div>
                 ))}

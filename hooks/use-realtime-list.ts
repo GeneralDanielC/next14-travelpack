@@ -13,6 +13,11 @@ type ListDataType = {
     list: List;
 }
 
+type ReorderDataType = {
+    action: string;
+    items: ItemWithCategory[];
+}
+
 export const useRealtimeList = (completeList: ListComplete) => {
     const [list, setList] = useState(completeList);
 
@@ -27,7 +32,7 @@ export const useRealtimeList = (completeList: ListComplete) => {
         const updateList = (updateFn: (prevList: ListComplete) => ListComplete) => {
             setList(prevList => {
                 const updatedList = updateFn(prevList);
-                
+
                 return {
                     ...updatedList,
                     items: updatedList.items.map(item => ({
@@ -49,7 +54,7 @@ export const useRealtimeList = (completeList: ListComplete) => {
 
         const handleItemCreated = (data: ItemDataType) => {
             console.log("Data", data);
-            
+
             updateList(prevList => ({
                 ...prevList,
                 items: [...prevList.items, data.item]
@@ -89,12 +94,26 @@ export const useRealtimeList = (completeList: ListComplete) => {
             }));
         };
 
+        const handleItemsReordered = (data: ReorderDataType) => {
+            console.log(data);
+            
+            updateList(prevList => ({
+                ...prevList,
+                items: data.items.map((updatedItem: any) => ({
+                    ...prevList.items.find(item => item.id === updatedItem.id)!,
+                    order: updatedItem.order,
+                    categoryId: updatedItem.categoryId
+                }))
+            }));
+        }
+
         channel.bind('item-updated', handleItemUpdated);
         channel.bind('item-created', handleItemCreated);
         channel.bind('item-deleted', handleItemDeleted);
         channel.bind('item-checked', handleItemChecked);
         channel.bind('all-items-unchecked', handleAllItemsUnchecked);
         channel.bind('list-updated', handleListUpdated);
+        channel.bind('items-reordered', handleItemsReordered);
 
         return () => {
             channel.unbind_all();
@@ -104,3 +123,4 @@ export const useRealtimeList = (completeList: ListComplete) => {
 
     return list;
 };
+

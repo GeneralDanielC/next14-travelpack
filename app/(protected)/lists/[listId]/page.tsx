@@ -29,19 +29,6 @@ const ListPage = async ({
     
     const categories = await getCategoriesByUserId(list.userId);
 
-    // const suggestions = await db.suggestion.findMany({
-    //     where: {
-    //         userId: user.id,
-    //         themeIds: {
-    //             has: list.themeId
-    //         }
-    //     },
-    //     include: {
-    //         category: true,
-    //         themes: true,
-    //     }
-    // });
-
     return (
         <ListCard list={list} themes={themes} categories={categories} />
     );

@@ -13,7 +13,7 @@ export const ListCardCategory = ({
     children,
     category,
 }: ListCardCategoryProps) => {
-
+ 
     let checkedItems = 0;
     category.items.map((item) => {
         if (item.isChecked) {

@@ -10,4 +10,5 @@ export const UpdateCategory = z.object({
     }).max(25, {
         message: "Name is too long."
     }),
+    workName: z.string(),
 });

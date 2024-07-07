@@ -36,14 +36,17 @@ const handler = async (data: InputType): Promise<ReturnType> => {
         return { error: "No category found." };
     }
 
-    const oldCategory = await db.category.findFirst({
+    const existingCategory = await db.category.findFirst({
         where: {
             userId: user.id,
             id: categoryId,
+        },
+        select: {
+            originalName: true,
         }
     });
 
-    if (!oldCategory) {
+    if (!existingCategory) {
         return { error: "No category found." };
     }
 
@@ -57,7 +60,7 @@ const handler = async (data: InputType): Promise<ReturnType> => {
                 id: categoryId,
             },
             data: {
-                displayName: lodash.startCase(oldCategory.workName),
+                displayName: lodash.startCase(existingCategory.originalName),
             }
         });
     } catch (error) {

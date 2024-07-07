@@ -36,6 +36,7 @@ export const ListForm = ({
     const { execute, fieldErrors } = useAction(createList, {
         onSuccess: (data) => {
             toast.success(`List "${data.title}" created.`);
+
             setOpen(false);
             formRef.current?.reset();
         },
@@ -78,7 +79,7 @@ export const ListForm = ({
             action={handleSubmit}
         >
             <div className="flex flex-col gap-y-3">
-                <h1 className="text-center uppercase font-bold text-xs text-stone-500">List Type</h1>
+                <span className="text-center uppercase font-bold text-xs text-stone-500">Type</span>
                 <FormPicker
                     id="typeId"
                     data={types}
@@ -88,15 +89,16 @@ export const ListForm = ({
                 <motion.div
                     initial="hidden"
                     animate={displayThemes ? "visible" : "hidden"}
-                    transition={{ type: "spring", stiffness: 100 }}
+                    transition={{ type: "spring", stiffness: 50 }}
                     variants={animationVariants}
-                    className="overflow-hidden"
+                    className="overflow-hidden space-y-3"
                 >
-                    <h1 className="text-center uppercase font-bold text-xs text-stone-500">Theme</h1>
+                    <span className="text-center uppercase font-bold text-xs text-stone-500 block">Theme</span>
                     <FormPicker
                         id="themeId"
                         data={themes}
                         errors={fieldErrors}
+                        pagnation
                         size={isSmallScreen ? "sm" : "default"}
                     />
                 </motion.div>

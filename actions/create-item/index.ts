@@ -25,8 +25,6 @@ const handler = async (data: InputType): Promise<ReturnType> => {
         return { error: "Unauthorized" }
     }
 
-    // No need to validate this input data since it is already done in the create-safe-action.
-    // const { title, categoryId, quantity, listId } = data;
     const { title, listId, ownerUserId, listTypeId } = data;
 
     if (!listTypeId) return { error: "Missing data. Something went wrong!" }
@@ -57,10 +55,6 @@ const handler = async (data: InputType): Promise<ReturnType> => {
         \nThe theme is: ${list?.theme?.title || "none"}
         \nRemember to pick a category from the list and return the category ONLY typing the category name. No colons, no commas, just write the category.`;
 
-    // CHANGE: add reference to list type.
-    // CHANGE: possibly add a long string of all the categories that are available... Maybe unnecessary...
-    // ADD THIS CODE WITHIN A TRY CATCH BLOCK
-
     let response;
     let fetchedCategoryName;
 
@@ -73,7 +67,7 @@ const handler = async (data: InputType): Promise<ReturnType> => {
                 model: "gpt-3.5-turbo-instruct",
                 prompt,
                 temperature: 0,
-                max_tokens: 10,
+                max_tokens: 20,
                 top_p: 1,
                 frequency_penalty: 0,
                 presence_penalty: 0,
@@ -100,28 +94,78 @@ const handler = async (data: InputType): Promise<ReturnType> => {
 
     const categoryId = findCategoryId(dbCategories, fetchedCategoryName);
 
+    const existingItem = await db.item.findFirst({
+        where: {
+            title,
+            listId,
+        },
+        select: {
+            id: true,
+            quantity: true,
+        }
+    });
+
     let item;
 
-    try {
-        // throw new Error("a"); // artificial error - to be removed
-        item = await db.item.create({
-            data: {
-                title,
-                categoryId,
-                quantity: 0,
-                listId,
-            },
-            include: {
-                category: true,
-            }
-        });
+    if (existingItem) {
+        try {
+            const incrementValue = existingItem.quantity === 0 ? 2 : 1;
 
-        await pusher.trigger(`list-${listId}`, 'item-created', {
-            item: item,
-            action: 'update'
-        });
-    } catch (error) {
-        return { error: "Failed to create" }
+            item = await db.item.update({
+                where: {
+                    id: existingItem.id,
+                },
+                data: {
+                    quantity: {
+                        increment: incrementValue
+                    }
+                }
+            });
+            await pusher.trigger(`list-${listId}`, 'item-updated', {
+                item: item,
+                action: 'update'
+            });
+        } catch (error) {
+            return { error: "Failed to create item" }
+        }
+    } else {
+        try {
+            // throw new Error("a"); // artificial error - to be removed
+
+            const maxOrderItem = await db.item.findFirst({
+                where: {
+                    categoryId,
+                },
+                orderBy: {
+                    order: 'desc',
+                },
+                select: {
+                    order: true,
+                }
+            });
+
+            const newOrder = maxOrderItem ? maxOrderItem.order + 1 : 0;
+
+            item = await db.item.create({
+                data: {
+                    title,
+                    categoryId,
+                    quantity: 0,
+                    listId,
+                    order: newOrder,
+                },
+                include: {
+                    category: true,
+                }
+            });
+
+            await pusher.trigger(`list-${listId}`, 'item-created', {
+                item: item,
+                action: 'update'
+            });
+        } catch (error) {
+            return { error: "Failed to create" }
+        }
     }
 
     revalidatePath(`/list/${listId}`);

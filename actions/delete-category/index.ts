@@ -39,7 +39,7 @@ const handler = async (data: InputType): Promise<ReturnType> => {
         });
 
     } catch (error) {
-        return { error: "Failed to delete" }
+        return { error: "Failed to delete. Try remove all list items in this category." }
     }
 
     revalidatePath(`/settings/categories`);

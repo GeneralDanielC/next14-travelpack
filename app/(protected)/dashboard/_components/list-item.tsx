@@ -53,7 +53,7 @@ export const ListItem = ({
                     </div>
                     <div className="flex flex-col justify-between w-full py-2">
                         <div className="flex flex-row justify-between items-center max-w-sm">
-                            <span className="text-md w-full block truncate">{list.title}</span>
+                            <span className="text-md max-w-[180px] truncate">{list.title}</span>
                             {size !== "sm" && (
                                 list.shares?.length > 0 && <Users className="size-4 mr-1" />
                             )}

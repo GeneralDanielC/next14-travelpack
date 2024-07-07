@@ -66,18 +66,10 @@ const SettingsPage = async () => {
                                         <Button disabled={!isPro}>{!isPro && "Your current plan"}</Button>
                                     )}
                                     <div className="flex flex-col p-2 gap-y-0.5">
-                                        <div className="flex flex-row items-center gap-x-2">
-                                            <Check className="size-5" />
-                                            <span className="text-xs">AI-powered categorization</span>
-                                        </div>
-                                        <div className="flex flex-row items-center gap-x-2">
-                                            <Check className="size-5" />
-                                            <span className="text-xs">Packing lists with 3 available themes</span>
-                                        </div> 
-                                        <div className="flex flex-row items-center gap-x-2">
-                                            <Check className="size-5" />
-                                            <span className="text-xs">Limited to 3 lists</span>
-                                        </div>
+                                        <BillingListItem title="AI-powered categorization"><Check className="size-5" /></BillingListItem>
+                                        <BillingListItem title="Packing lists with 3 available themes"><Check className="size-5" /></BillingListItem>
+                                        <BillingListItem title="Limited to 3 lists"><Check className="size-5" /></BillingListItem>
+
                                         {/* <div className="flex flex-row items-center gap-x-2">
                                             <Check className="size-5" />
                                             <span className="text-xs">Limited to 15 items per list</span>

@@ -48,6 +48,9 @@ export const ListCardHeader = ({
                         )}>{list.type.title === Types.PACKING ? list.theme?.emoji : list.type.emoji}
                     </span>
                     <h1 className="text-md text-center font-semibold">{list.title}</h1>
+                    <div className="absolute right-6">
+                        <ShareDialog hideText list={list} userIsNotOwnerOfList={userIsNotOwnerOfList} />
+                    </div>
                 </div>
             ) : (
                 <>
@@ -69,8 +72,8 @@ export const ListCardHeader = ({
                             )}>{list.type.title === Types.PACKING ? list.theme?.emoji : list.type.emoji}
                         </span>
                         <div className="flex flex-col flex-wrap items-start justify-center w-full">
-                            <div className="flex w-full items-center justify-between">
-                                <h1 className="text-xl sm:text-2xl font-semibold">{list.title}</h1>
+                            <div className="flex w-full items-center justify-between overflow-hidden max-w-[200px] sm:max-w-[300px] md:max-w-[500px]">
+                                <h1 className="text-xl sm:text-2xl font-semibold truncate">{list.title}</h1>
                             </div>
                             {!minimizeHeader && (
                                 <span className="text-sm">{dateToLocaleString(list.departAt || list.createdAt)}</span>

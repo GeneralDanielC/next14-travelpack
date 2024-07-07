@@ -64,7 +64,7 @@ const handler = async (data: InputType): Promise<ReturnType> => {
         list = await db.list.create({
             data: {
                 title,
-                themeId,
+                themeId: packingType.id === typeId ? themeId : null,
                 departAt,
                 typeId,
                 userId: user.id,

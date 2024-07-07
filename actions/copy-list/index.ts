@@ -9,6 +9,8 @@ import { createSafeAction } from "@/lib/create-safe-action";
 
 import { InputType, ReturnType } from "./types";
 import { CopyList } from "./schema";
+import { hasAvailableCount } from "@/lib/list-limit";
+import { checkSubscription } from "@/lib/subscription";
 
 const handler = async (data: InputType): Promise<ReturnType> => {
     const user = await currentUser();
@@ -21,6 +23,13 @@ const handler = async (data: InputType): Promise<ReturnType> => {
 
     if (!dbUser) {
         return { error: "Unauthorized" }
+    }
+
+    const canCreate = await hasAvailableCount();
+    const isPro = await checkSubscription();
+
+    if (!canCreate && !isPro) {
+        return { error: "You have reached your limit of free lists. Please upgrade to create more." }
     }
 
     // No need to validate this input data since it is already done in the create-safe-action.
@@ -46,7 +55,7 @@ const handler = async (data: InputType): Promise<ReturnType> => {
         });
 
         console.log(listToCopy);
-        
+
 
         if (!listToCopy) {
             return { error: "List not found." }
@@ -82,6 +91,7 @@ const handler = async (data: InputType): Promise<ReturnType> => {
                                 isChecked: item.isChecked,
                                 quantity: item.quantity,
                                 categoryId: item.categoryId,
+                                order: item.order,
                             })),
                         }
                     },
