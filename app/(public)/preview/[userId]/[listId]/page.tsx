@@ -16,19 +16,21 @@ const PreviewListPage = async ({
 
     const list = await getListByIdAndUserId(params.listId, params.userId);
 
-    const totalCountChecked = await db.item.count({
-        where: {
-            listId: params.listId,
-            isChecked: true
-        }
-    });
-
-    if (!list || !totalCountChecked) {
+    if (!list) {
         return <FullscreenError code={404} heading="Not found" message="The list you were looking for could not be found." />
     }
+    
+    const totalCountChecked = list.items.reduce((count, item) => {
+        if (item.isChecked) {
+            count++;
+        }
+        return count;
+    }, 0);
 
     return (
-        <PreviewCard data={list} totalCountChecked={totalCountChecked} />
+        <div className="pt-3 w-full h-full">
+            <PreviewCard data={list} totalCountChecked={totalCountChecked} />
+        </div>
     );
 }
 

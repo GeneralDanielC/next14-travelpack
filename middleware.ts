@@ -14,17 +14,18 @@ import authConfig from "@/auth.config";
 const { auth } = NextAuth(authConfig);
 
 export default auth((req) => {
-    
+
     const { nextUrl } = req;
     const isLoggedIn = !!req.auth;
 
     const isApiAuthRoute = nextUrl.pathname.startsWith(apiAuthPrefix);
     const isPublicRoute = publicRoutes.includes(nextUrl.pathname);
+    const isPreviewRoute = nextUrl.pathname.startsWith('/preview/');
     const isAuthRoute = authRoutes.includes(nextUrl.pathname);
 
-    if (isApiAuthRoute) {
-        return null;
-    }
+    if (isPreviewRoute) return null;
+
+    if (isApiAuthRoute) return null;
 
     if (isAuthRoute) {
         if (isLoggedIn) {

@@ -59,6 +59,9 @@ export const PreviewCard = ({
                 <Accordion
                     type="multiple"
                     className="w-full"
+                    defaultValue={categoriesWithItems.map((category) => {
+                        return category.id;
+                    })}
                 >
                     {/* Map categories */}
                     {categoriesWithItems.map((category) => (

@@ -35,11 +35,13 @@ export const CardNavigation = ({
                 <div className="flex overflow-hidden max-w-full">
                     <Breadcrumb className="flex-1">
                         <BreadcrumbList className="flex-1 flex items-center overflow-hidden">
-                            <BreadcrumbItem className="flex-shrink-0">
-                                <BreadcrumbLink href={hideUser ? "/" : "/dashboard"}>pakkit</BreadcrumbLink>
-                            </BreadcrumbItem>
                             {!hideUser && (
-                                <BreadcrumbSeparator className="flex-shrink-0" />
+                                <React.Fragment>
+                                    <BreadcrumbItem className="flex-shrink-0">
+                                        <BreadcrumbLink href={hideUser ? "/" : "/dashboard"}>pakkit</BreadcrumbLink>
+                                    </BreadcrumbItem>
+                                    <BreadcrumbSeparator className="flex-shrink-0" />
+                                </React.Fragment>
                             )}
                             {breadcrumbs?.map((breadcrumb, index) => (
                                 <React.Fragment key={index}>
@@ -53,22 +55,24 @@ export const CardNavigation = ({
                     </Breadcrumb>
                 </div>
                 <div className="flex items-center">
-                    <ThemeToggle />
                     {!hideUser && (
-                        <Button
-                            variant="ghost"
-                            size="icon"
-                            asChild
-                        >
-                            <Link prefetch={true} href="/settings/user">
-                                <Avatar className="h-5 w-5">
-                                    <AvatarImage src={user?.image || ""} />
-                                    <AvatarFallback>
-                                        <User2Icon className="size-5" />
-                                    </AvatarFallback>
-                                </Avatar>
-                            </Link>
-                        </Button>
+                        <React.Fragment>
+                            <ThemeToggle />
+                            <Button
+                                variant="ghost"
+                                size="icon"
+                                asChild
+                            >
+                                <Link prefetch={true} href="/settings/user">
+                                    <Avatar className="h-5 w-5">
+                                        <AvatarImage src={user?.image || ""} />
+                                        <AvatarFallback>
+                                            <User2Icon className="size-5" />
+                                        </AvatarFallback>
+                                    </Avatar>
+                                </Link>
+                            </Button>
+                        </React.Fragment>
                     )}
                 </div>
             </div>

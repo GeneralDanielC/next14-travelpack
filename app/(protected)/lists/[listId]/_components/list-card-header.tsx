@@ -26,6 +26,7 @@ interface ListCardHeaderProps {
     hideButtons?: boolean;
     userIsNotOwnerOfList?: boolean;
     minimizeHeader?: boolean;
+    showName?: boolean;
 }
 
 export const ListCardHeader = ({
@@ -34,6 +35,7 @@ export const ListCardHeader = ({
     hideButtons,
     userIsNotOwnerOfList,
     minimizeHeader,
+    showName,
 }: ListCardHeaderProps) => {
     const router = useRouter();
 
@@ -83,6 +85,10 @@ export const ListCardHeader = ({
                                 <Progress value={(totalCountChecked / list.items.length) * 100} />
                                 <span className="text-xs font-normal w-[50px]">{totalCountChecked} / {list.items.length}</span>
                             </div>
+                            {showName && (
+                                <span className="text-xs">{list.user.name}</span>
+                            )}
+
                         </div>
                     </div>
                 </>
