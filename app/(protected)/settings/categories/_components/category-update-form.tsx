@@ -113,7 +113,7 @@ export const CategoryUpdateForm = ({
                 <button type="submit" id={`update-submit-button-${category.id}`} hidden />
             </form>
 
-            {category.originalName.toLowerCase() !== category.displayName.toLowerCase() && (
+            {category.originalName.toLowerCase() !== category.workName.toLowerCase() && (
                 <div className="flex flex-col items-center w-full justify-center">
                     <div className="flex flex-row justify-around items-center w-full bg-accent p-1.5 rounded-lg">
                         <div className="flex flex-col justify-center items-center">

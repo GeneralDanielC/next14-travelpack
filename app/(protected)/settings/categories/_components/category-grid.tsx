@@ -24,12 +24,12 @@ export const CategoryGrid = ({ filteredCategories }: CategoryGridProps) => {
     };
 
     return (
-        <div className="grid grid-cols-2 md:grid-cols-3 gap-1">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-1">
             {filteredCategories.map((category) => (
                 <Button
                     key={category.id}
                     variant="outline"
-                    className="justify-start"
+                    className="justify-start truncate"
                     onClick={() => openDialog(category)}
                 >
                     <span>{category.displayName}</span>

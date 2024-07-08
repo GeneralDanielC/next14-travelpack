@@ -61,6 +61,7 @@ const handler = async (data: InputType): Promise<ReturnType> => {
             },
             data: {
                 displayName: lodash.startCase(existingCategory.originalName),
+                workName: lodash.startCase(existingCategory.originalName)
             }
         });
     } catch (error) {
