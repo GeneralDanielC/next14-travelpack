@@ -36,8 +36,8 @@ const handler = async (data: InputType): Promise<ReturnType> => {
         category = await db.category.create({
             data: {
                 displayName,
-                workName: displayName.toLowerCase().replace(/[^a-zA-Z0-9\s]/g, '').trim(),
-                originalName: displayName.toLowerCase().replace(/[^a-zA-Z0-9\s]/g, '').trim(),
+                workName: displayName.toLowerCase(),
+                originalName: displayName.toLowerCase(),
                 listTypeId,
                 userId: dbUser.id,
             }

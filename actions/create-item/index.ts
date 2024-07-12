@@ -39,10 +39,11 @@ const handler = async (data: InputType): Promise<ReturnType> => {
         }
     });
 
+
     const prompt = `
         Categorize the following items into one category based on their type, without using any bullet points or dashes. Write the category in a simple word/words. Use the categories from the provided list below.
         
-        For example, "Laptop" would be categorized as "Electroincs", and "Jeans" would be "Clothing". 
+        For example, "Laptop" would be categorized as "Electroincs", and "Jeans" would be "Clothing". There may be subcategories to say "Clothing", named for example "Underwear".
 
         \nHere are some examples of categorizing:
         \n- Laptop: Electronics
@@ -53,7 +54,10 @@ const handler = async (data: InputType): Promise<ReturnType> => {
         \n\nCategorize this item: ${title}
         \nThe list type is: ${list?.type.title}
         \nThe theme is: ${list?.theme?.title || "none"}
-        \nRemember to pick a category from the list and return the category ONLY typing the category name. No colons, no commas, just write the category.`;
+        \nRemember to pick a category from the list and return the category ONLY typing the category name. No colons, no commas, no new lines, just write the category and absolutely nothing else. If there are special characters or emojis, remove them.`;
+
+    console.log(prompt);
+
 
     let response;
     let fetchedCategoryName;
@@ -74,7 +78,13 @@ const handler = async (data: InputType): Promise<ReturnType> => {
                 stop: ["\\n"],
             });
 
+            console.log(response);
+
             fetchedCategoryName = response?.choices[0].text.trim().toLowerCase();
+            fetchedCategoryName.replace(/\n/g, '');
+
+            console.log(fetchedCategoryName);
+
         } catch (err) {
             console.log(err);
             return { error: "Something went wrong" }
@@ -86,11 +96,14 @@ const handler = async (data: InputType): Promise<ReturnType> => {
     const miscCategory = dbCategories.find((category) => category.listTypeId === listTypeId && category.workName === "miscellaneous");
 
     const findCategoryId = (dbCategories: any, fetchedCategoryName: string) => {
+
         const matchedCategory = dbCategories.find((dbCat: any) =>
-            dbCat.workName.toLowerCase() === fetchedCategoryName
+            dbCat.workName.toLowerCase() === fetchedCategoryName.toLowerCase()
         );
+
         return matchedCategory ? matchedCategory.id : miscCategory?.id;
     }
+
 
     const categoryId = findCategoryId(dbCategories, fetchedCategoryName);
 

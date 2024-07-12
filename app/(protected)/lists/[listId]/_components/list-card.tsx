@@ -59,7 +59,8 @@ export const ListCard = ({
 
     const list = useRealtimeList(passedList);
 
-    const [minimizeHeader, setMinimizeHeader] = useState(false);
+    const [minimizeHeader, setMinimizeHeader] = useState<boolean>(false);
+    const [openAccordions, setOpenAccordions] = useState<string[]>([]);
     const prevScrollY = useRef(0);
 
     const [totalCountChecked, setTotalCountChecked] = useState(list.items.filter(item => item.isChecked).length);
@@ -76,7 +77,7 @@ export const ListCard = ({
             }
             acc[categoryId].items.push(item);
 
-            acc[categoryId].items.sort((a, b) => (a.order ?? 0) - (b.order ?? 0));         
+            acc[categoryId].items.sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
 
             return acc;
         }, {});
@@ -108,6 +109,24 @@ export const ListCard = ({
         setCategoriesWithItems(sortCategoriesByDisplayName(groupedItemsByCategory));
     }, [groupedItemsByCategory]);
 
+    useEffect(() => {
+        const initialOpenAccordions = categoriesWithItems.filter(category =>
+            category.items.some(item => !item.isChecked)
+        ).map(category => category.id);
+        setOpenAccordions(initialOpenAccordions);
+    }, [categoriesWithItems]);
+
+    const toggleAccordion = (categoryId: string) => {
+        setOpenAccordions(prev => {
+            const currentIndex = prev.indexOf(categoryId);
+            if (currentIndex === -1) {
+                return [...prev, categoryId];
+            } else {
+                return prev.filter(id => id !== categoryId);
+            }
+        })
+    }
+
     const handleScroll = (e: any) => {
         const currentScrollY = e.target.scrollTop;
         if (window.innerWidth <= 640 && currentScrollY > 0) {
@@ -120,7 +139,7 @@ export const ListCard = ({
 
     const { execute: executeUpdateItemOrder } = useAction(updateItemOrder, {
         onSuccess: () => {
-            toast.success("Success!")
+            toast.success("Successfully reordered items.")
         },
         onError: (error: any) => {
             toast.error(error)
@@ -129,45 +148,45 @@ export const ListCard = ({
 
     const onDragEnd = (result: any) => {
         const { destination, source } = result;
-    
+
         // If dropped outside droppable area
         if (!destination) return;
-    
+
         // If no destination or item dropped in the same place
         if (destination.droppableId === source.droppableId && destination.index === source.index) return;
-    
+
         // Clone the list to prevent direct state mutation
         const newCategoriesWithItems = [...categoriesWithItems];
-    
+
         // Moving item within the same category
         if (destination.droppableId === source.droppableId) {
             const categoryIndex = newCategoriesWithItems.findIndex(category => category.id === source.droppableId);
             if (categoryIndex === -1) return;
-    
+
             const category = newCategoriesWithItems[categoryIndex];
             const reorderedItems = reorder(category.items, source.index, destination.index);
-    
+
             newCategoriesWithItems[categoryIndex] = {
                 ...category,
                 items: reorderedItems
             };
-    
+
         } else {
             // Moving item to a different category
             const sourceCategoryIndex = newCategoriesWithItems.findIndex(category => category.id === source.droppableId);
             const destCategoryIndex = newCategoriesWithItems.findIndex(category => category.id === destination.droppableId);
-    
+
             if (sourceCategoryIndex === -1 || destCategoryIndex === -1) return;
-    
+
             const sourceCategory = newCategoriesWithItems[sourceCategoryIndex];
             const destCategory = newCategoriesWithItems[destCategoryIndex];
-    
+
             const sourceItems = Array.from(sourceCategory.items);
             const [movedItem] = sourceItems.splice(source.index, 1);
-    
+
             const destItems = Array.from(destCategory.items);
             destItems.splice(destination.index, 0, movedItem);
-    
+
             newCategoriesWithItems[sourceCategoryIndex] = {
                 ...sourceCategory,
                 items: sourceItems
@@ -177,27 +196,27 @@ export const ListCard = ({
                 items: destItems
             };
         }
-    
+
         // Update the order values before sending to the server
-        const updatedItems = newCategoriesWithItems.flatMap(category => 
+        const updatedItems = newCategoriesWithItems.flatMap(category =>
             category.items.map((item, index) => ({
                 ...item,
                 order: index,
                 categoryId: category.id
             }))
         );
-    
+
         // Update the state
         setCategoriesWithItems(newCategoriesWithItems);
-    
+
         // Send the updated items to the server
         executeUpdateItemOrder({
             listId: list.id,
             items: updatedItems
         });
-    }; 
-    
-    
+    };
+
+
     return (
         <Card className="w-full h-full flex flex-col rounded-l-3xl rounded-r-none shadow-none border-none">
             <CardNavigation
@@ -207,7 +226,7 @@ export const ListCard = ({
                     { name: list.title, href: `/lists/${list.id}` }
                 ]}
             />
-            <ListCardHeader list={list} totalCountChecked={totalCountChecked} userIsNotOwnerOfList={userIsNotOwnerOfList} minimizeHeader={minimizeHeader} />
+            <ListCardHeader list={list} totalCountChecked={totalCountChecked} userIsNotOwnerOfList={userIsNotOwnerOfList} />
             <CardContent className="flex-1 flex flex-col overflow-hidden">
                 <Tabs defaultValue="list" className="flex-1 flex-col overflow-hidden">
                     <TabsList className="grid w-full grid-cols-2">
@@ -232,20 +251,14 @@ export const ListCard = ({
                                             onScroll={handleScroll}
                                             type="multiple"
                                             className="h-full overflow-y-scroll"
-                                            defaultValue={categoriesWithItems.map((category) => {
-                                                let checkedItems = 0;
-                                                category.items.map((item) => {
-                                                    if (item.isChecked) {
-                                                        checkedItems += 1;
-                                                    }
-                                                })
-
-                                                if (checkedItems !== category.items.length) return category.id;
-                                            })}
+                                            defaultValue={openAccordions}
                                         >
                                             {/* Map categories */}
                                             {categoriesWithItems.map((category) => (
-                                                <ListCardCategory key={category.id} category={category}>
+                                                <ListCardCategory
+                                                    key={category.id}
+                                                    category={category}
+                                                >
                                                     <Droppable droppableId={category.id} key={category.id} type="item" direction={window.innerWidth <= 640 ? "vertical" : undefined}>
                                                         {(provided) => (
                                                             <div
