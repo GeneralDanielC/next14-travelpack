@@ -27,7 +27,7 @@ const handler = async (data: InputType): Promise<ReturnType> => {
     // No need to validate this input data since it is already done in the create-safe-action.
     const { userEmail, listId, canEdit } = data;
 
-    const newShareUser = await getUserByEmail(userEmail);
+    const newShareUser = await getUserByEmail(userEmail.toLowerCase().trim());
 
     if (!newShareUser) {
         return { error: "No user found. Try again with another email." };

@@ -35,7 +35,7 @@ const handler = async (data: InputType): Promise<ReturnType> => {
 
     const categoriesString = dbCategories.map((category) => {
         if (category.listTypeId === list?.typeId) {
-            return `${category.displayName}, `;
+            return `${category.workName}, `;
         }
     });
 

@@ -10,6 +10,7 @@ import { createSafeAction } from "@/lib/create-safe-action";
 import { InputType, ReturnType } from "./types";
 import { UpdateCategory } from "./schema";
 import OpenAI from "openai";
+import { removeEmojis } from "@/lib/string";
 
 const openai = new OpenAI({
     apiKey: process.env.OPENAI_API_KEY,
@@ -57,7 +58,7 @@ const handler = async (data: InputType): Promise<ReturnType> => {
                 },
                 data: {
                     displayName,
-                    workName: displayName.toLowerCase().replace(/[^a-zA-Z0-9\s]/g, '').trim()
+                    workName: removeEmojis(displayName.toLowerCase()).trim()
                 }
             });
         } catch (error) {
