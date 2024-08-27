@@ -54,7 +54,7 @@ const handler = async (data: InputType): Promise<ReturnType> => {
         \n\nCategorize this item: ${title}
         \nThe list type is: ${list?.type.title}
         \nThe theme is: ${list?.theme?.title || "none"}
-        \nRemember to pick a category from the list and return the category ONLY typing the category name. No colons, no commas, no new lines, just write the category and absolutely nothing else. If there are special characters or emojis, remove them.`;
+        \nRemember to pick a category from the list and return the category ONLY typing the category name. Answer in the same language that your chosen category is written. No colons, no commas, no new lines, just write the category and absolutely nothing else. If there are special characters or emojis, remove them.`;
 
     console.log(prompt);
 
@@ -103,7 +103,6 @@ const handler = async (data: InputType): Promise<ReturnType> => {
 
         return matchedCategory ? matchedCategory.id : miscCategory?.id;
     }
-
 
     const categoryId = findCategoryId(dbCategories, fetchedCategoryName);
 

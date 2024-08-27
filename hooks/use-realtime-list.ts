@@ -107,6 +107,13 @@ export const useRealtimeList = (completeList: ListComplete) => {
             }));
         }
 
+        const handleAllItemsDeleted = (data: ItemDataType) => {
+            updateList(prevList => ({
+                ...prevList,
+                items: []
+            }));
+        };
+
         channel.bind('item-updated', handleItemUpdated);
         channel.bind('item-created', handleItemCreated);
         channel.bind('item-deleted', handleItemDeleted);
@@ -114,6 +121,7 @@ export const useRealtimeList = (completeList: ListComplete) => {
         channel.bind('all-items-unchecked', handleAllItemsUnchecked);
         channel.bind('list-updated', handleListUpdated);
         channel.bind('items-reordered', handleItemsReordered);
+        channel.bind('all-item-deleted', handleAllItemsDeleted);
 
         return () => {
             channel.unbind_all();

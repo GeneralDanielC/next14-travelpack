@@ -21,6 +21,7 @@ import { leaveListShare } from "@/actions/leave-list-share";
 import { redirect, useRouter } from "next/navigation";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
+import { deleteAllItems } from "@/actions/delete-all-items";
 
 interface ListSettingsFormProps {
   list: ListComplete;
@@ -50,6 +51,15 @@ export const ListSettingsForm = ({
   const { execute: executeCopy } = useAction(copyList, {
     onSuccess: (data) => {
       toast.success(`List copied.`);
+    },
+    onError: (error) => {
+      toast.error(error);
+    }
+  });
+
+  const { execute: executeClearList } = useAction(deleteAllItems, {
+    onSuccess: (data) => {
+      toast.success(`List cleared.`);
     },
     onError: (error) => {
       toast.error(error);
@@ -95,6 +105,14 @@ export const ListSettingsForm = ({
 
     executeCopy({
       userId,
+      listId,
+    });
+  }
+
+  const handleClearList = (formData: FormData) => {
+    const listId = formData.get("listId") as string;
+
+    executeClearList({
       listId,
     });
   }
@@ -183,10 +201,24 @@ export const ListSettingsForm = ({
           value={list.userId}
         />
         <FormSubmit
-          variant="ghost"
+          variant="outline"
           className="w-full flex items-center"
         >
           Copy
+        </FormSubmit>
+      </form>
+      <form action={handleClearList}>
+        <input 
+          hidden
+          id="listId"
+          name="listId"
+          value={list.id}
+        />
+        <FormSubmit
+          variant="outline"
+          className="w-full flex items-center"
+        >
+          Clear List
         </FormSubmit>
       </form>
 
