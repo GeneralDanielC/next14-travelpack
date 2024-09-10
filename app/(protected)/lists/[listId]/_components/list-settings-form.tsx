@@ -216,7 +216,7 @@ export const ListSettingsForm = ({
         />
         <FormSubmit
           variant="outline"
-          className="w-full flex items-center"
+          className="w-full flex items-center text-rose-500 font-bold"
         >
           Clear List
         </FormSubmit>

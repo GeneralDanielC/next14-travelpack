@@ -33,28 +33,28 @@ const handler = async (data: InputType): Promise<ReturnType> => {
 
     const dbCategories = await getCategoriesByUserId(ownerUserId);
 
-    const categoriesString = dbCategories.map((category) => {
-        if (category.listTypeId === list?.typeId) {
-            return `${category.workName}, `;
-        }
-    });
+    const categoriesString = dbCategories
+        .filter((category) => category.listTypeId === list?.typeId)
+        .map((category) => category.workName)
+        .join(', ');
 
 
     const prompt = `
-        Categorize the following items into one category based on their type, without using any bullet points or dashes. Write the category in a simple word/words. Use the categories from the provided list below.
-        
-        For example, "Laptop" would be categorized as "Electroincs", and "Jeans" would be "Clothing". There may be subcategories to say "Clothing", named for example "Underwear".
+        You are tasked with categorizing grocery items into one of the categories listed below. Select the category that best describes the item's typical section in a grocery store. Ensure that the category you pick corresponds directly to how the item would be found in a grocery store. 
 
-        \nHere are some examples of categorizing:
-        \n- Laptop: Electronics
-        \n- Jeans: Clothing
-
-        \nThe categories are ${categoriesString}.
+        For example:
+        - Laptop would not be found in a grocery store, so it would not fit any of these categories.
+        - Pommes (French fries) are typically found in the frozen section, so they should be categorized as "frozen foods".
         
-        \n\nCategorize this item: ${title}
+        The categories are: ${categoriesString.trim()}.
+        
+        \nCategorize this item: ${title}
         \nThe list type is: ${list?.type.title}
         \nThe theme is: ${list?.theme?.title || "none"}
-        \nRemember to pick a category from the list and return the category ONLY typing the category name. Answer in the same language that your chosen category is written. No colons, no commas, no new lines, just write the category and absolutely nothing else. If there are special characters or emojis, remove them.`;
+        
+        Answer ONLY with the category name from the list. Use the exact wording from the provided categories. No additional punctuation, no new lines, and remove any special characters or emojis.
+`;
+
 
     console.log(prompt);
 
@@ -67,21 +67,23 @@ const handler = async (data: InputType): Promise<ReturnType> => {
     if (!todoListTypeId) return { error: "Missing data. Try again later." }
     if (listTypeId !== todoListTypeId.id) {
         try {
-            response = await openai.completions.create({
-                model: "gpt-3.5-turbo-instruct",
-                prompt,
-                temperature: 0,
-                max_tokens: 20,
+            response = await openai.chat.completions.create({
+                model: "gpt-4o-mini",
+                messages: [
+                    { role: "user", content: prompt }
+                ],
+                temperature: 0.2,
+                max_tokens: 10,
                 top_p: 1,
                 frequency_penalty: 0,
                 presence_penalty: 0,
                 stop: ["\\n"],
             });
 
-            console.log(response);
+            console.log(response.choices[0].message);
 
-            fetchedCategoryName = response?.choices[0].text.trim().toLowerCase();
-            fetchedCategoryName.replace(/\n/g, '');
+            fetchedCategoryName = response?.choices[0].message.content?.trim().toLowerCase();
+            fetchedCategoryName ? fetchedCategoryName.replace(/\n/g, '') : CategoryWorkNames.MISC;
 
             console.log(fetchedCategoryName);
 

@@ -56,15 +56,6 @@ export const ListCardHeader = ({
                 </div>
             ) : (
                 <>
-                    {!hideButtons && (
-                        <div className="flex flex-row justify-between items-center">
-                            <Button size="sm" variant="ghost" onClick={() => router.back()}>
-                                <FaAngleLeft className="w-4 h-4" />
-                                Back
-                            </Button>
-                            <ShareDialog list={list} userIsNotOwnerOfList={userIsNotOwnerOfList} />
-                        </div>
-                    )}
                     <div className="flex items-center gap-x-7 pb-2">
                         <span
                             className={cn(
@@ -74,8 +65,11 @@ export const ListCardHeader = ({
                             )}>{list.type.title === Types.PACKING ? list.theme?.emoji : list.type.emoji}
                         </span>
                         <div className="flex flex-col flex-wrap items-start justify-center w-full">
-                            <div className="flex w-full items-center justify-between overflow-hidden max-w-[200px] sm:max-w-[300px] md:max-w-[500px]">
-                                <h1 className="text-xl sm:text-2xl font-semibold truncate">{list.title}</h1>
+                            <div className="flex w-full items-center flex-row justify-between">
+                                <div className="flex w-full items-center justify-between overflow-hidden max-w-[200px] sm:max-w-[300px] md:max-w-[500px]">
+                                    <h1 className="text-xl sm:text-2xl font-semibold truncate">{list.title}</h1>
+                                </div>
+                                <ShareDialog list={list} userIsNotOwnerOfList={userIsNotOwnerOfList} />
                             </div>
                             {!minimizeHeader && (
                                 <span className="text-sm">{dateToLocaleString(list.departAt || list.createdAt)}</span>
