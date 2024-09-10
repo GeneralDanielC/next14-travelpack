@@ -31,12 +31,12 @@ const handler = async (data: InputType): Promise<ReturnType> => {
             where: {
                 id: itemId,
                 listId,
-                list: {
-                    OR: [
-                        { userId: user.id },
-                        { shares: { some: { userId: user.id } } },
-                    ],
-                },
+                // list: {
+                //     OR: [
+                //         { userId: user.id },
+                //         { shares: { some: { userId: user.id } } },
+                //     ],
+                // },
             },
             data: {
                 isChecked: !isChecked

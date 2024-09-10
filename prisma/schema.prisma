@@ -159,6 +159,9 @@ model Item {
   categoryId String   @db.ObjectId
   category   Category @relation(fields: [categoryId], references: [id])
   order      Int
+
+  @@index([listId, id])  // Compound index for queries using both listId and id
+  @@index([isChecked])       // Index for isChecked field to optimize queries based on checked status
 }
 
 model Category {
