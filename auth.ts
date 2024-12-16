@@ -29,6 +29,8 @@ export const {
     signOut,
     update,
 } = NextAuth({
+    adapter: PrismaAdapter(db),
+    session: { strategy: "jwt" },
     pages: {
         signIn: "/auth/login",
         error: "/auth/error",
@@ -73,7 +75,7 @@ export const {
                     where: { id: twoFactorConfirmation.id }
                 });
             }
-
+            
             return true;
         },
         async session({ token, session }) {
@@ -115,7 +117,6 @@ export const {
             return token;
         }
     },
-    adapter: PrismaAdapter(db),
-    session: { strategy: "jwt" },
+    
     ...authConfig,
 });

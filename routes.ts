@@ -8,7 +8,8 @@ export const publicRoutes = [
     "/",
     "/preview",
     "/auth/new-verification",
-    "/api/webhook"
+    "/api/webhook",
+    "/api/login"
 ];
 
 /**
@@ -21,7 +22,7 @@ export const authRoutes = [
     "/auth/register",
     "/auth/error",
     "/auth/reset",
-    "/auth/new-password"
+    "/auth/new-password",
 ];
 
 /**
