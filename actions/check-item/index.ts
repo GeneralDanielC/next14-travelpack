@@ -53,10 +53,8 @@ const handler = async (data: InputType): Promise<ReturnType> => {
         return { error: "Failed to update item." }
     }
 
-    setTimeout(() => {
-        revalidatePath(`/list/${listId}`);
-    }, 5000);
-    
+    revalidatePath(`/list/${listId}`);
+
     return { data: item };
 }
 
