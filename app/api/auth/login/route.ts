@@ -3,6 +3,7 @@ import { signIn } from "@/auth";
 
 export async function POST(request: Request) {
   try {
+    // add validated fiels as for the server action...
     const { email, password } = await request.json();
     if (!email || !password) {
       return NextResponse.json({ ok: false, error: "Missing email or password" }, { status: 400 });
