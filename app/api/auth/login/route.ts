@@ -12,9 +12,9 @@ export async function POST(request: Request) {
       redirect: false,
       email,
       password,
-    });    
-    console.log("result",result);
-    
+    });
+    console.log("result", result);
+
     if (!result) {
       return NextResponse.json({ ok: false, error: "No response from signIn" }, { status: 500 });
     }
